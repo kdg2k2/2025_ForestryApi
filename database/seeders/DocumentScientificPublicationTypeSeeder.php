@@ -14,21 +14,22 @@ class DocumentScientificPublicationTypeSeeder extends Seeder
     {
         $arr = [
             "Khác",
-            "Thư viện số",
-            "Bài trình bày hội thảo",
-            "Sổ tay",
-            "Kỷ yếu",
-            "Giáo trình",
-            "Sách tham khảo",
-            "Bài báo",
-            "Hồ sơ năng lực",
+            "Thư Viện Số",
+            "Bài Trình Bày Hội Thảo",
+            "Sổ Tay",
+            "Kỷ Yếu",
+            "Giáo Trình",
+            "Sách Tham Khảo",
+            "Bài Báo",
+            "Hồ Sơ Năng Lực",
         ];
 
-        $arr = array_map(function ($item) {
+        $timestamp = now()->format("Y-m-d H:i:s");
+        $arr = array_map(function ($item) use ($timestamp) {
             return [
                 "name" => $item,
-                "created_at" => now()->format("Y-m-d H:i:s"),
-                "updated_at" => now()->format("Y-m-d H:i:s"),
+                "created_at" => $timestamp,
+                "updated_at" => $timestamp,
             ];
         }, $arr);
 

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('id_document')->constrained('documents')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('id_type')->constrained('document_legal_types')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('doc_number');
             $table->enum('validity', ['active', 'expired', 'upcoming', 'undefined']); // hiệu lực
         });

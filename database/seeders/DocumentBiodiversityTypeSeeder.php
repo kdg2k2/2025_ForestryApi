@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\DocumentLegalType;
+use App\Models\DocumentBiodiversityType;
 use Illuminate\Database\Seeder;
 
-class DocumentLegalTypeSeeder extends Seeder
+class DocumentBiodiversityTypeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,15 +14,8 @@ class DocumentLegalTypeSeeder extends Seeder
     {
         $arr = [
             "Khác",
-            "Tiêu Chuẩn Việt Nam",
-            "Văn Bản",
-            "Công Văn",
-            "Quyết Định Ubnd Tỉnh",
-            "Nghị Quyết Hđnd Tỉnh",
-            "Thông Tư Liên Tịch",
-            "Quyết Định",
-            "Thông Tư",
-            "Nghị Định",
+            "Động Vật",
+            "Thực Vật",
         ];
 
         $timestamp = now()->format("Y-m-d H:i:s");
@@ -34,6 +27,6 @@ class DocumentLegalTypeSeeder extends Seeder
             ];
         }, $arr);
 
-        DocumentLegalType::insert($arr);
+        DocumentBiodiversityType::insert($arr);
     }
 }

@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_units', function (Blueprint $table) {
+        Schema::create('bio_national_park_types', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name')->unique();
-            $table->string('abbreviation')->nullable()->unique();
         });
     }
 
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_units');
+        Schema::dropIfExists('bio_national_park_types');
     }
 };

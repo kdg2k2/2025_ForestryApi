@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('id_document')->constrained('documents')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('id_type')->constrained('document_scientific_publication_types')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('co_author')->nullable(); // đồng tác giả
             $table->integer('year');
             $table->string('edition')->nullable(); // số xuất bản

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_units', function (Blueprint $table) {
+        Schema::create('bio_plant_national_parks', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name')->unique();
-            $table->string('abbreviation')->nullable()->unique();
+            $table->foreignId("id_nationpark")->constrained("bio_national_parks")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId("id_animal")->constrained("bio_animals")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_units');
+        Schema::dropIfExists('bio_plant_national_parks');
     }
 };

@@ -14,25 +14,27 @@ class DocumentTypeSeeder extends Seeder
     {
         $arr = [
             "Khác",
-            "Văn bản pháp lý",
-            "Ấn phẩm khoa học",
-            "Quyền tác giả",
-            "Chứng nhận",
-            "Hồ sơ năng lực",
-            "Rừng ven biển",
-            "Đề án DLST",
-            "Tài liệu tham khảo",
-            "Đề tài/Dự án/Nhiệm vụ",
-            "Bài giảng",
-            "Sổ tay/Tài liệu hướng dẫn",
-            "Công văn/Văn bản",
+            "Văn Bản Pháp Lý",
+            "Ấn Phẩm Khoa Học",
+            "Đa Dạng Sinh Học",
+            "Quyền Tác Giả",
+            "Chứng Nhận",
+            "Hồ Sơ Năng Lực",
+            "Rừng Ven Biển",
+            "Đề Án Dlst",
+            "Tài Liệu Tham Khảo",
+            "Đề Tài/Dự Án/Nhiệm Vụ",
+            "Bài Giảng",
+            "Sổ Tay/Tài Liệu Hướng Dẫn",
+            "Công Văn/Văn Bản",
         ];
 
-        $arr = array_map(function ($item) {
+        $timestamp = now()->format("Y-m-d H:i:s");
+        $arr = array_map(function ($item) use ($timestamp) {
             return [
                 "name" => $item,
-                "created_at" => now()->format("Y-m-d H:i:s"),
-                "updated_at" => now()->format("Y-m-d H:i:s"),
+                "created_at" => $timestamp,
+                "updated_at" => $timestamp,
             ];
         }, $arr);
 
