@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('address')->nullable();
             $table->text('path')->nullable();
-            $table->foreignId('id_role')->nullable()->constrained('user_roles')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('id_unit')->nullable()->constrained('user_units')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('id_role')->nullable()->constrained('user_roles')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->dateTime('role_expires_in')->nullable();
             $table->timestamps();
         });
 

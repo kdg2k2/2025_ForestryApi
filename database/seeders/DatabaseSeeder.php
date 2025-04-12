@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Tắt kiểm tra khóa ngoại
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         $this->call(UserRoleSeeder::class);
         $this->call(UserUnitSeeder::class);
@@ -25,6 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DocumentScientificPublicationTypeSeeder::class);
 
         // Bật lại kiểm tra khóa ngoại
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
