@@ -35,5 +35,8 @@ class DatabaseSeeder extends Seeder
         $this->call(BioExpertSeeder::class);
 
         $this->call(MapVn2000ProjectionSeeder::class);
+
+        $this->call(MapLayerTypeSeeder::class);
+        $this->call(MapLayerSeeder::class);
     }
 }

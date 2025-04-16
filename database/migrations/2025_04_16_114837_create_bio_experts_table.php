@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name');
             $table->string('email')->nullable()->unique();
-            $table->string('work_unit')->nullable();
+            $table->foreignId('id_unit')->nullable()->constrained('user_units')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('specialize')->nullable();
             $table->string('path')->nullable();
         });

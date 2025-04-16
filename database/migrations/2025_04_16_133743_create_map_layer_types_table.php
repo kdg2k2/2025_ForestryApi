@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // chứa ảnh của các câu hỏi cho chuyên gia đa dạng sinh học
-        Schema::create('bio_expert_ask_images', function (Blueprint $table) {
+        Schema::create('map_layer_types', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('id_ask')->constrained('bio_expert_asks')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->text('path');
+            $table->string("name")->unique();
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bio_expert_ask_images');
+        Schema::dropIfExists('map_layer_types');
     }
 };

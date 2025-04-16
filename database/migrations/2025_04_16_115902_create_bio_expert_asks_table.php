@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // đặt câu hỏi cho chuyên gia đa dạng sinh học
         Schema::create('bio_expert_asks', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
