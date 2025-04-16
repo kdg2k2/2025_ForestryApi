@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // bản đồ mùa vụ trồng rừng
         Schema::create('map_forest_planting_season_data', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

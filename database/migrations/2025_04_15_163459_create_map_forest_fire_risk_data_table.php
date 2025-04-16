@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // bản đồ cấp nguy cơ cháy
         Schema::create('map_forest_fire_risk_data', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

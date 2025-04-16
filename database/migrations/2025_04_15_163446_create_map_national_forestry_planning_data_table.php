@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // bản đồ Quy hoạch Lâm nghiệp quốc gia
         Schema::create('map_national_forestry_planning_data', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

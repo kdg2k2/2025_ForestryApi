@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // bản đồ rừng ven biển
         Schema::create('map_forest_coastal_data', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

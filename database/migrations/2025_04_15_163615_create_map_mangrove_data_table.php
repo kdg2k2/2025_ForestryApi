@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // bản đồ rừng ngập mặn
         Schema::create('map_mangrove_data', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

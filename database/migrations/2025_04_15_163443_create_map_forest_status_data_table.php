@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-
+        //  bản đồ hiện trạng rừng
         Schema::create('map_forest_status_data', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
