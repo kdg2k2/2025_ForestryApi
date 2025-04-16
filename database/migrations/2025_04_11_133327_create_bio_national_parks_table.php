@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('bio_national_parks', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->text("name")->nullable();
             $table->text("logo")->nullable();
             $table->text("intro_img")->nullable();

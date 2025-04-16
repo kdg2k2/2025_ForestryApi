@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreignId('id_document_type')->constrained('document_types')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('name')->unique();
             $table->date('issued_date')->nullable(); // ngày ban hành

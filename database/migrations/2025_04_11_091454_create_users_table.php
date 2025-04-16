@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
+            $table->softDeletes();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
@@ -21,7 +23,6 @@ return new class extends Migration
             $table->foreignId('id_unit')->nullable()->constrained('user_units')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('id_role')->nullable()->constrained('user_roles')->cascadeOnDelete()->cascadeOnUpdate();
             $table->dateTime('role_expires_in')->nullable();
-            $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

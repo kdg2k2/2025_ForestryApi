@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BioPlantImage extends Model
 {
+    use SoftDeletes;
     protected $table = "bio_plant_images";
     protected $guarded = [];
 

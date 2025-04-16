@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('user_units', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->string('name')->unique();
             $table->string('abbreviation')->nullable()->unique();
         });

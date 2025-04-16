@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('document_scientific_publications', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreignId('id_document')->constrained('documents')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('id_type')->constrained('document_scientific_publication_types')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('co_author')->nullable(); // đồng tác giả

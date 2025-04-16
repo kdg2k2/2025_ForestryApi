@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('bio_animal_national_parks', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreignId("id_nationpark")->constrained("bio_national_parks")->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId("id_animal")->constrained("bio_animals")->cascadeOnDelete()->cascadeOnUpdate();
         });

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('document_shares', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->string('name');
             $table->string('email');
             $table->string('phone');

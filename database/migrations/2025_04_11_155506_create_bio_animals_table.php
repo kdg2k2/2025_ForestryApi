@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('bio_animals', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->text("nganhlatin")->nullable();
             $table->text("nganhtv")->nullable();
             $table->text("manganh")->nullable();

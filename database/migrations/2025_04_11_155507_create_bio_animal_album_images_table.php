@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('bio_animal_album_images', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->text("path");
         });
     }

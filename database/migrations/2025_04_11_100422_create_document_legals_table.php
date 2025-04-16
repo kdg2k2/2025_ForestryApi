@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('document_legals', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreignId('id_document')->constrained('documents')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('id_type')->constrained('document_legal_types')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('doc_number');

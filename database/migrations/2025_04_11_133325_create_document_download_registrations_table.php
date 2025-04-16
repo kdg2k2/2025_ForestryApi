@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('document_download_registrations', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreignId('id_subscriber')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('id_document')->nullable()->constrained('documents')->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('purpose_download'); // mục đích tải

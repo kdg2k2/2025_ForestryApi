@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DocumentShare extends Model
 {
+    use SoftDeletes;
     protected $table = "document_shares";
     protected $guarded = [];
 
@@ -14,7 +16,8 @@ class DocumentShare extends Model
         return $this->belongsTo(User::class, "id_approver");
     }
 
-    public function unit(){
-        return $this->belongsTo(UserUnit::class,"id_unit");
+    public function unit()
+    {
+        return $this->belongsTo(UserUnit::class, "id_unit");
     }
 }

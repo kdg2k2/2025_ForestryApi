@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('user_roles', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->string('name_en')->unique();
             $table->string('name_vn')->unique();
         });
