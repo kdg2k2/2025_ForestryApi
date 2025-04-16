@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use PDO;
-use PDOException;
 
 class DropDB extends Command
 {

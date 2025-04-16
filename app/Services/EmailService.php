@@ -16,7 +16,7 @@ class EmailService extends BaseService
             });
 
             // nếu là local thì chỉ mail cho dev
-            if ($this->checkLocal() == true)
+            if ($this->isLocal() == true)
                 $emails = ['dangnguyen.xmg@xuanmaijsc.vn'];
 
             // gửi mail
@@ -34,13 +34,5 @@ class EmailService extends BaseService
                 }
             );
         });
-    }
-
-    public function checkLocal()
-    {
-        $check = explode('127.0.0.1', url('/'));
-        if (count($check) > 1)
-            return true;
-        return false;
     }
 }
