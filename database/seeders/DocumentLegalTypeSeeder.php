@@ -34,6 +34,7 @@ class DocumentLegalTypeSeeder extends Seeder
             ];
         }, $arr);
 
+        DocumentLegalType::truncate();
         DocumentLegalType::insert($arr);
     }
 }

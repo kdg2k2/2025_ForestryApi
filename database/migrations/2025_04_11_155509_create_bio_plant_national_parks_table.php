@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId("id_nationpark")->constrained("bio_national_parks")->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId("id_animal")->constrained("bio_animals")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId("id_plant")->constrained("bio_plants")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

@@ -16,12 +16,12 @@ return new class extends Migration
             $table->timestamps();
             $table->text("name")->nullable();
             $table->text("logo")->nullable();
-            $table->text("introImg")->nullable();
+            $table->text("intro_img")->nullable();
             $table->text("fb")->nullable();
             $table->text("homepage")->nullable();
             $table->text("intro")->nullable();
             $table->text("location")->nullable();
-            $table->text("hisGeo")->nullable();
+            $table->text("his_geo")->nullable();
             $table->text("biodiversity")->nullable();
             $table->text("slug")->nullable();
             $table->double("x")->nullable();

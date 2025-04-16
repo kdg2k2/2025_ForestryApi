@@ -38,6 +38,7 @@ class DocumentTypeSeeder extends Seeder
             ];
         }, $arr);
 
+        DocumentType::truncate();
         DocumentType::insert($arr);
     }
 }

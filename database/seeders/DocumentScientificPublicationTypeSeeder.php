@@ -33,6 +33,7 @@ class DocumentScientificPublicationTypeSeeder extends Seeder
             ];
         }, $arr);
 
+        DocumentScientificPublicationType::truncate();
         DocumentScientificPublicationType::insert($arr);
     }
 }
