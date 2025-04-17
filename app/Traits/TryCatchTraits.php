@@ -31,31 +31,31 @@ trait TryCatchTraits
         $mess = null;
         $code = null;
 
-        function getErrorCode($e)
-        {
-            $statusCode = $e->getCode() ?: 500;
-            $statusCode = is_int($statusCode) && $statusCode >= 100 && $statusCode < 600
-                ? $statusCode
-                : 500;
-            return $statusCode;
-        }
-
         try {
             return $callback();
         } catch (TokenExpiredException $e) {
             $mess = "Refresh token expired";
-            $code = getErrorCode($e);
+            $code = $this->getErrorCode($e);
         } catch (TokenInvalidException $e) {
             $mess = "Invalid refresh token";
-            $code = getErrorCode($e);
+            $code = $this->getErrorCode($e);
         } catch (ValidationException $e) {
             $mess = implode(", ",  Arr::flatten($e->errors()));
             $code = $e->status;
         } catch (Exception $e) {
             $mess = $e->getMessage();
-            $code = getErrorCode($e);
+            $code = $this->getErrorCode($e);
         }
 
         return response()->json(["err" => $mess], $code);
+    }
+
+    protected function getErrorCode($e)
+    {
+        $statusCode = $e->getCode() ?: 500;
+        $statusCode = is_int($statusCode) && $statusCode >= 100 && $statusCode < 600
+            ? $statusCode
+            : 500;
+        return $statusCode;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Traits;
+
 trait CheckLocalTraits
 {
     public function isLocal()

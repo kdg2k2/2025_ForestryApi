@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Traits\AssetPathTraits;
+use App\Traits\CheckLocalTraits;
 use App\Traits\TryCatchTraits;
-use CheckLocalTraits;
 
 class BaseService
 {

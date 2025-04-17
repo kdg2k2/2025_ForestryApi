@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserRoleController;
 use App\Http\Controllers\Api\UserUnitController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,9 +17,17 @@ Route::prefix("auth")->controller(AuthController::class)->group(function () {
 Route::prefix("user")->group(function () {
     # đơn vị
     Route::prefix("unit")->controller(UserUnitController::class)->group(function () {
-        Route::get("list", "list");
-        Route::post("store", "store");
-        Route::patch("update", "update");
-        Route::delete("delete", "delete");
+        Route::get("list", "list")->name("user.unit.list");
+        Route::post("store", "store")->name("user.unit.store");
+        Route::patch("update", "update")->name("user.unit.update");
+        Route::delete("delete", "delete")->name("user.unit.delete");
+    });
+
+    # phân quyền
+    Route::prefix("role")->controller(UserRoleController::class)->group(function () {
+        Route::get("list", "list")->name("user.role.list");
+        Route::post("store", "store")->name("user.role.store");
+        Route::patch("update", "update")->name("user.role.update");
+        Route::delete("delete", "delete")->name("user.role.delete");
     });
 });
