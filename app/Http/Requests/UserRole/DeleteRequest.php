@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\UserUnit;
+namespace App\Http\Requests\UserRole;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ListRequest extends FormRequest
+class DeleteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,8 +20,8 @@ class ListRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'per_page' => $this->per_page ?? config('paginate.per_page'),
-            'page' => $this->page ?? 1,
+            // Thêm các giá trị mặc định ở đây
+            // 'field' => $this->field ?? 'default_value',
         ]);
     }
 
@@ -33,9 +33,7 @@ class ListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'paginate' => 'required|in:0,1',
-            'per_page' => 'nullable|integer|min:1',
-            'page' => 'nullable|integer|min:1',
+            'id' => 'required|integer|exists:user_roles,id',
         ];
     }
 }

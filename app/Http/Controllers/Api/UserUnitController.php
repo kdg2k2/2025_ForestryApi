@@ -8,7 +8,6 @@ use App\Http\Requests\UserUnit\ListRequest;
 use App\Http\Requests\UserUnit\StoreRequest;
 use App\Http\Requests\UserUnit\UpdateRequest;
 use App\Services\UserUnitService;
-use Illuminate\Http\Request;
 
 class UserUnitController extends Controller
 {
