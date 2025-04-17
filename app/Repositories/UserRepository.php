@@ -12,11 +12,16 @@ class UserRepository extends BaseService
         return $this->catchAPI(function () use ($request) {
             $query = User::orderByDesc("id");
 
-            if ($request['paginate'] == 1) {
-                $data = $query->paginate($request['per_page']);
-                return $this->transformList($data->getCollection());
-            }
-            return $this->transformList($query->get());
+            if (!empty($request["id_unit"]))
+                $query->where("id_unit", $request["id_unit"]);
+
+            if (!empty($request["id_role"]))
+                $query->where("id_role", $request["id_role"]);
+
+            $records = $this->transformList($query->get())->toArray();
+            if ($request["paginate"] == 1)
+                $records = $this->paginate($records, $request["per_page"], $request["page"]);
+            return $records;
         });
     }
 
@@ -31,7 +36,7 @@ class UserRepository extends BaseService
     public function update(array $request)
     {
         return $this->catchAPI(function () use ($request) {
-            $record = User::find($request['id']);
+            $record = User::find($request["id"]);
             $record->update($request);
             return $this->transformRecord($record);
         });
@@ -40,13 +45,13 @@ class UserRepository extends BaseService
     public function delete(array $request)
     {
         return $this->catchAPI(function () use ($request) {
-            return User::find($request['id'])->delete();
+            return User::find($request["id"])->delete();
         });
     }
 
-    protected function transformList($data)
+    protected function transformList($records)
     {
-        return $data->transform(function ($item) {
+        return $records->transform(function ($item) {
             return $this->transformRecord($item);
         });
     }

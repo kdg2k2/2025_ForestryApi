@@ -20,8 +20,8 @@ class ListRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'per_page' => $this->per_page ?? config('paginate.per_page'),
-            'page' => $this->page ?? 1,
+            'per_page' => $this->per_page ?? null,
+            'page' => $this->page ?? null,
         ]);
     }
 

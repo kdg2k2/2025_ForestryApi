@@ -12,9 +12,10 @@ class UserUnitRepository extends BaseService
         return $this->catchAPI(function () use ($request) {
             $query = UserUnit::orderByDesc("id");
 
-            if ($request['paginate'] == 1)
-                return $query->paginate($request['per_page']);
-            return $query->get();
+            $records = $query->get()->toArray();
+            if ($request["paginate"] == 1)
+                return $this->paginate($records, $request["per_page"], $request["page"]);
+            return $$records;
         });
     }
 
@@ -28,7 +29,7 @@ class UserUnitRepository extends BaseService
     public function update(array $request)
     {
         return $this->catchAPI(function () use ($request) {
-            $record = UserUnit::find($request['id']);
+            $record = UserUnit::find($request["id"]);
             $record->update($request);
             return $record;
         });
@@ -37,7 +38,7 @@ class UserUnitRepository extends BaseService
     public function delete(array $request)
     {
         return $this->catchAPI(function () use ($request) {
-            return UserUnit::find($request['id'])->delete();
+            return UserUnit::find($request["id"])->delete();
         });
     }
 }

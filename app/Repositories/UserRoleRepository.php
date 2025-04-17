@@ -12,9 +12,10 @@ class UserRoleRepository extends BaseService
         return $this->catchAPI(function () use ($request) {
             $query = UserRole::orderByDesc("id");
 
-            if ($request['paginate'] == 1)
-                return $query->paginate($request['per_page']);
-            return $query->get();
+            $records = $query->get()->toArray();
+            if ($request["paginate"] == 1)
+                return $this->paginate($records, $request["per_page"], $request["page"]);
+            return $$records;
         });
     }
 
@@ -28,7 +29,7 @@ class UserRoleRepository extends BaseService
     public function update(array $request)
     {
         return $this->catchAPI(function () use ($request) {
-            $record = UserRole::find($request['id']);
+            $record = UserRole::find($request["id"]);
             $record->update($request);
             return $record;
         });
@@ -37,7 +38,7 @@ class UserRoleRepository extends BaseService
     public function delete(array $request)
     {
         return $this->catchAPI(function () use ($request) {
-            return UserRole::find($request['id'])->delete();
+            return UserRole::find($request["id"])->delete();
         });
     }
 }

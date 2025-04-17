@@ -20,8 +20,8 @@ class ListRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'per_page' => $this->per_page ?? config('paginate.per_page'),
-            'page' => $this->page ?? 1,
+            'per_page' => $this->per_page ?? null,
+            'page' => $this->page ?? null,
         ]);
     }
 
@@ -36,6 +36,8 @@ class ListRequest extends FormRequest
             'paginate' => 'required|in:0,1',
             'per_page' => 'nullable|integer|min:1',
             'page' => 'nullable|integer|min:1',
+            'id_unit' => 'nullable|integer|exists:user_units,id',
+            'id_role' => 'nullable|integer|exists:user_roles,id',
         ];
     }
 }
