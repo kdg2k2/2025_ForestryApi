@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserRoleController;
 use App\Http\Controllers\Api\UserUnitController;
 use Illuminate\Support\Facades\Route;
@@ -29,5 +30,13 @@ Route::prefix("user")->group(function () {
         Route::post("store", "store")->name("user.role.store");
         Route::patch("update", "update")->name("user.role.update");
         Route::delete("delete", "delete")->name("user.role.delete");
+    });
+
+    # người dùng
+    Route::controller(UserController::class)->group(function () {
+        Route::get("list", "list")->name("user.list");
+        Route::post("store", "store")->name("user.store");
+        Route::patch("update", "update")->name("user.update");
+        Route::delete("delete", "delete")->name("user.delete");
     });
 });

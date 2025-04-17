@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\UserUnit;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRequest extends FormRequest
+class DeleteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,9 +33,7 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|integer|exists:user_units,id',
-            'name' => 'required|string|max:255|unique:user_units,name,' . $this->id,
-            'abbreviation' => 'nullable|string|max:255|unique:user_units,abbreviation,' . $this->id,
+            'id' => 'required|integer|exists:users,id',
         ];
     }
 }

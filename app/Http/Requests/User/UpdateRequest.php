@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\UserUnit;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -33,9 +33,15 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|integer|exists:user_units,id',
-            'name' => 'required|string|max:255|unique:user_units,name,' . $this->id,
-            'abbreviation' => 'nullable|string|max:255|unique:user_units,abbreviation,' . $this->id,
+            'id' => 'required|integer|exists:users,id',
+            'name' => 'required|string|max:255',
+            'email' => "required|email|unique:users,email,$this->id|max:255",
+            'password' => 'nullable|string|max:255',
+            'address' => 'required|string|max:255',
+            'path' => 'nullable|mimes:png,jpeg,jpg|max:5120',
+            'id_unit' => 'required|integer|exists:user_units,id',
+            'id_role' => 'required|integer|exists:user_roles,id',
+            'role_expires_in' => 'nullable|date_format:Y-m-d H:i',
         ];
     }
 }

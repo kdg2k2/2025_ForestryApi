@@ -34,8 +34,8 @@ class UpdateRequest extends FormRequest
     {
         return [
             'id' => 'required|integer|exists:user_roles,id',
-            'name_en' => 'required|string|unique:user_roles,name_en,' . $this->id,
-            'name_vn' => 'required|string|unique:user_roles,name_vn,' . $this->id,
+            'name_en' => 'required|string|max:255|unique:user_roles,name_en,' . $this->id,
+            'name_vn' => 'required|string|max:255|unique:user_roles,name_vn,' . $this->id,
         ];
     }
 }

@@ -33,8 +33,8 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|unique:user_units,name',
-            'abbreviation' => 'nullable|string|unique:user_units,abbreviation',
+            'name' => 'required|string|max:255|unique:user_units,name',
+            'abbreviation' => 'nullable|string|max:255|unique:user_units,abbreviation',
         ];
     }
 }
