@@ -15,28 +15,28 @@ class UserRoleService extends BaseService
 
     public function list(array $request)
     {
-        return $this->catchAPI(function () use ($request) {
+        return $this->tryThrow(function () use ($request) {
             return $this->userRoleRepository->list($request);
         });
     }
 
     public function store(array $request)
     {
-        return $this->catchAPI(function () use ($request) {
+        return $this->tryThrow(function () use ($request) {
             return $this->userRoleRepository->store($request);
         });
     }
 
     public function update(array $request)
     {
-        return $this->catchAPI(function () use ($request) {
+        return $this->tryThrow(function () use ($request) {
             return $this->userRoleRepository->update($request);
         });
     }
 
     public function delete(array $request)
     {
-        return $this->catchAPI(function () use ($request) {
+        return $this->tryThrow(function () use ($request) {
             return $this->userRoleRepository->delete($request);
         });
     }

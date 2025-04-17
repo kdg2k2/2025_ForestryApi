@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DocumentTypeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserRoleController;
 use App\Http\Controllers\Api\UserUnitController;
+use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix("auth")->controller(AuthController::class)->group(function () {
@@ -38,5 +40,24 @@ Route::prefix("user")->group(function () {
         Route::post("store", "store")->name("user.store");
         Route::patch("update", "update")->name("user.update");
         Route::delete("delete", "delete")->name("user.delete");
+    });
+});
+
+Route::prefix("document")->group(function () {
+    # loại tài liệu
+    Route::prefix("type")->controller(DocumentTypeController::class)->group(function () {
+        Route::get("list", "list")->name("document.type.list");
+        Route::post("store", "store")->name("document.type.store");
+        Route::patch("update", "update")->name("document.type.update");
+        Route::delete("delete", "delete")->name("document.type.delete");
+    });
+
+    # tài liệu
+    Route::controller(DocumentController::class)->group(function () {
+        Route::get("list", "list")->name("document.list");
+        Route::post("store", "store")->name("document.store");
+        Route::patch("update", "update")->name("document.update");
+        Route::delete("delete", "delete")->name("document.delete");
+        Route::post("show", "show")->name("document.show");
     });
 });

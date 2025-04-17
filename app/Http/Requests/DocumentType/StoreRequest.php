@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\UserUnit;
+namespace App\Http\Requests\DocumentType;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -21,7 +21,6 @@ class StoreRequest extends FormRequest
     {
         $this->merge([
             'name' => ucwords($this->name),
-            'abbreviation' => $this->abbreviation ? ucwords($this->abbreviation) : null,
         ]);
     }
 
@@ -33,8 +32,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:user_units,name',
-            'abbreviation' => 'nullable|string|max:255|unique:user_units,abbreviation',
+            'name' => 'required|string|max:255|unique:document_types,name',
         ];
     }
 }

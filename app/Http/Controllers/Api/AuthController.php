@@ -33,7 +33,7 @@ class AuthController extends Controller
         return $this->catchAPI(function () {
             $this->authService->logout();
             return response()->json([
-                'success' => 'User successfully signed out'
+                'message' => 'User successfully signed out'
             ], 200);
         });
     }

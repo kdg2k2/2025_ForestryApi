@@ -2,42 +2,41 @@
 
 namespace App\Services;
 
-use App\Repositories\UserUnitRepository;
-use App\Services\BaseService;
+use App\Repositories\DocumentTypeRepository;
 
-class UserUnitService extends BaseService
+class DocumentTypeService extends BaseService
 {
-    protected $userUnitRepository;
+    protected $documentTypeRepository;
     public function __construct()
     {
-        $this->userUnitRepository = app(UserUnitRepository::class);
+        $this->documentTypeRepository = app(DocumentTypeRepository::class);
     }
 
     public function list(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userUnitRepository->list($request);
+            return $this->documentTypeRepository->list($request);
         });
     }
 
     public function store(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userUnitRepository->store($request);
+            return $this->documentTypeRepository->store($request);
         });
     }
 
     public function update(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userUnitRepository->update($request);
+            return $this->documentTypeRepository->update($request);
         });
     }
 
     public function delete(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userUnitRepository->delete($request);
+            return $this->documentTypeRepository->delete($request);
         });
     }
 }

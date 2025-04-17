@@ -20,8 +20,8 @@ class UpdateRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            // Thêm các giá trị mặc định ở đây
-            // 'field' => $this->field ?? 'default_value',
+            'name_en' => ucwords($this->name_en),
+            'name_vn' => ucwords($this->name_vn),
         ]);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\UserUnit;
+namespace App\Http\Requests\Document;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -20,8 +20,8 @@ class StoreRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'name' => ucwords($this->name),
-            'abbreviation' => $this->abbreviation ? ucwords($this->abbreviation) : null,
+            // Thêm các giá trị mặc định ở đây
+            // 'field' => $this->field ?? 'default_value',
         ]);
     }
 
@@ -33,8 +33,14 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:user_units,name',
-            'abbreviation' => 'nullable|string|max:255|unique:user_units,abbreviation',
+            'id_document_type' => 'required|integer|exists:document_types,id',
+            'name' => 'required|string|unique:documents,name',
+            'issued_date' => 'nullable|date_format:Y-m-d',
+            'author' => 'nullable|string',
+            'path' => 'required|mimes:pdf',
+            'allow_download' => 'nullable|in:0,1',
+            'id_uploader' => 'required|integer|exists:users,id',
+            'id_share' => 'nullable|integer|exists:document_shares,id',
         ];
     }
 }

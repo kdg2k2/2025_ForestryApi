@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\UserUnit;
+namespace App\Http\Requests\Document;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRequest extends FormRequest
+class ShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,8 +20,8 @@ class StoreRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'name' => ucwords($this->name),
-            'abbreviation' => $this->abbreviation ? ucwords($this->abbreviation) : null,
+            // Thêm các giá trị mặc định ở đây
+            // 'field' => $this->field ?? 'default_value',
         ]);
     }
 
@@ -33,8 +33,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:user_units,name',
-            'abbreviation' => 'nullable|string|max:255|unique:user_units,abbreviation',
+            //
         ];
     }
 }

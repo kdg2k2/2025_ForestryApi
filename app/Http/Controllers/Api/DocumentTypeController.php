@@ -3,25 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserUnit\DeleteRequest;
-use App\Http\Requests\UserUnit\ListRequest;
-use App\Http\Requests\UserUnit\StoreRequest;
-use App\Http\Requests\UserUnit\UpdateRequest;
-use App\Services\UserUnitService;
+use App\Http\Requests\DocumentType\DeleteRequest;
+use App\Http\Requests\DocumentType\ListRequest;
+use App\Http\Requests\DocumentType\StoreRequest;
+use App\Http\Requests\DocumentType\UpdateRequest;
+use App\Services\DocumentTypeService;
 
-class UserUnitController extends Controller
+class DocumentTypeController extends Controller
 {
-    protected $userUnitService;
+    protected $documentTypeService;
     public function __construct()
     {
-        $this->userUnitService = app(UserUnitService::class);
+        $this->documentTypeService = app(DocumentTypeService::class);
     }
 
     public function list(ListRequest $request)
     {
         return $this->catchAPI(function () use ($request) {
             return response()->json([
-                'data' => $this->userUnitService->list($request->validated()),
+                'data' => $this->documentTypeService->list($request->validated()),
             ], 200);
         });
     }
@@ -30,7 +30,7 @@ class UserUnitController extends Controller
     {
         return $this->catchAPI(function () use ($request) {
             return response()->json([
-                'data' => $this->userUnitService->store($request->validated()),
+                'data' => $this->documentTypeService->store($request->validated()),
                 'message' => 'Thêm mới thành công',
             ], 200);
         });
@@ -40,7 +40,7 @@ class UserUnitController extends Controller
     {
         return $this->catchAPI(function () use ($request) {
             return response()->json([
-                'data' => $this->userUnitService->update($request->validated()),
+                'data' => $this->documentTypeService->update($request->validated()),
                 'message' => 'Cập nhật thành công',
             ], 200);
         });
@@ -49,7 +49,7 @@ class UserUnitController extends Controller
     public function delete(DeleteRequest $request)
     {
         return $this->catchAPI(function () use ($request) {
-            $this->userUnitService->delete($request->validated());
+            $this->documentTypeService->delete($request->validated());
             return response()->json([
                 'message' => 'Xóa thành công',
             ], 200);

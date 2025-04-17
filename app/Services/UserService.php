@@ -15,14 +15,14 @@ class UserService extends BaseService
 
     public function list(array $request)
     {
-        return $this->catchAPI(function () use ($request) {
+        return $this->tryThrow(function () use ($request) {
             return $this->userRepository->list($request);
         });
     }
 
     public function store(array $request)
     {
-        return $this->catchAPI(function () use ($request) {
+        return $this->tryThrow(function () use ($request) {
             $request["password"] = bcrypt($request["password"]);
             $request["path"] = $this->imageUpload($request["path"]);
             return $this->userRepository->store($request);
@@ -31,25 +31,28 @@ class UserService extends BaseService
 
     public function update(array $request)
     {
-        return $this->catchAPI(function () use ($request) {
+        return $this->tryThrow(function () use ($request) {
             if (!empty($request["password"]))
                 $request["password"] = bcrypt($request["password"]);
 
-            if (!empty($request["path"]))
+            $removeOldPath = false;
+            if (!empty($request["path"])) {
+                $removeOldPath = true;
                 $request["path"] = $this->imageUpload($request["path"]);
-            return $this->userRepository->update($request);
+            }
+            return $this->userRepository->update($request, $removeOldPath);
         });
     }
 
     public function delete(array $request)
     {
-        return $this->catchAPI(function () use ($request) {
+        return $this->tryThrow(function () use ($request) {
             return $this->userRepository->delete($request);
         });
     }
 
     protected function imageUpload($path)
     {
-        return (new ImageUploadService())->store($path, "images");
+        return (new FileUploadService())->storeImage($path);
     }
 }

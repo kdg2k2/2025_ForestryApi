@@ -10,6 +10,9 @@ class Document extends Model
     use SoftDeletes;
     protected $table = "documents";
     protected $guarded = [];
+    protected $hidden = [
+        'path',
+    ];
 
     public function type()
     {

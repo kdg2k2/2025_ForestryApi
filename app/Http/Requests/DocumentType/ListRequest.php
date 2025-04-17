@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\UserUnit;
+namespace App\Http\Requests\DocumentType;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRequest extends FormRequest
+class ListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,8 +20,8 @@ class StoreRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'name' => ucwords($this->name),
-            'abbreviation' => $this->abbreviation ? ucwords($this->abbreviation) : null,
+            'per_page' => $this->per_page ?? null,
+            'page' => $this->page ?? null,
         ]);
     }
 
@@ -33,8 +33,9 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:user_units,name',
-            'abbreviation' => 'nullable|string|max:255|unique:user_units,abbreviation',
+            'paginate' => 'required|in:0,1',
+            'per_page' => 'nullable|integer|min:1',
+            'page' => 'nullable|integer|min:1',
         ];
     }
 }
