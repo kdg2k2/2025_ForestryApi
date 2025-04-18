@@ -8,7 +8,11 @@ class DocumentRepository extends BaseRepository
 {
     public function list(array $request)
     {
-        $query = Document::orderByDesc("id");
+        $query = Document::orderByDesc("id")->with([
+            'type',
+            'uploader',
+            'share',
+        ]);
 
         // lọc theo cho phép tải
         if (!empty($request["allow_download"]))

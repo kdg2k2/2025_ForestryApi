@@ -17,7 +17,7 @@ class StoreRequest extends FormRequest
     /**
      * Prepare the data for validation.
      */
-    protected function prepareForValidation()
+    public function prepareForValidation()
     {
         $this->merge([
             'name' => ucwords($this->name),

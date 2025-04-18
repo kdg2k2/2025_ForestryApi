@@ -20,8 +20,7 @@ class StoreRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            // Thêm các giá trị mặc định ở đây
-            // 'field' => $this->field ?? 'default_value',
+            'id_uploader' => auth('api')->id(),
         ]);
     }
 
@@ -32,7 +31,7 @@ class StoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'id_document_type' => 'required|integer|exists:document_types,id',
             'name' => 'required|string|unique:documents,name',
             'issued_date' => 'nullable|date_format:Y-m-d',
@@ -42,5 +41,18 @@ class StoreRequest extends FormRequest
             'id_uploader' => 'required|integer|exists:users,id',
             'id_share' => 'nullable|integer|exists:document_shares,id',
         ];
+
+        switch ($this->id_document_type) {
+            case config('documents.types.khac'):
+                $rules = array_merge($rules, [
+                    'new_document_type' => 'required|array',
+                    'new_document_type.name' => 'required',
+                ]);
+                break;
+            default:
+                break;
+        }
+
+        return $rules;
     }
 }

@@ -40,14 +40,16 @@ trait TryCatchTraits
             $mess = "Invalid refresh token";
             $code = $this->getErrorCode($e);
         } catch (ValidationException $e) {
-            $mess = implode(", ",  Arr::flatten($e->errors()));
+            $mess = $e->errors();
             $code = $e->status;
         } catch (Exception $e) {
             $mess = $e->getMessage();
             $code = $this->getErrorCode($e);
         }
 
-        return response()->json(["err" => $mess], $code);
+        return response()->json([
+            "message" => $mess
+        ], $code);
     }
 
     protected function getErrorCode($e)
