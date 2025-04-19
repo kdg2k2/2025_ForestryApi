@@ -32,7 +32,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|unique:document_biodiversities,name',
+            'name' => 'required|string|unique:document_biodiversity_types,name',
         ];
     }
 }

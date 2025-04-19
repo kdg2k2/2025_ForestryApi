@@ -13,7 +13,7 @@ class DocumentBiodiversityTypeRepository
 
     public function store(array $request)
     {
-        return DocumentBiodiversityType::create($request)->load('type');
+        return DocumentBiodiversityType::create($request);
     }
 
     public function update(array $request)

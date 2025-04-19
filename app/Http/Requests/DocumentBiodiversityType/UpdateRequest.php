@@ -32,8 +32,8 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|string|exists:document_biodiversities,id',
-            'name' => 'required|string|unique:document_biodiversities,name,' . $this->id,
+            'id' => 'required|string|exists:document_biodiversity_types,id',
+            'name' => 'required|string|unique:document_biodiversity_types,name,' . $this->id,
         ];
     }
 }
