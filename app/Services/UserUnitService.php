@@ -16,7 +16,10 @@ class UserUnitService extends BaseService
     public function list(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userUnitRepository->list($request);
+            $records = $this->userUnitRepository->list($request);
+            if ($request["paginate"] == 1)
+                $records = $this->paginate($records, $request["per_page"], $request["page"]);
+            return $records;
         });
     }
 

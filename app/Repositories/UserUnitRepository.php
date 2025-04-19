@@ -4,15 +4,11 @@ namespace App\Repositories;
 
 use App\Models\UserUnit;
 
-class UserUnitRepository extends BaseRepository
+class UserUnitRepository
 {
     public function list(array $request)
     {
-        $records = UserUnit::orderByDesc("id")->get()->toArray();
-
-        if ($request["paginate"] == 1)
-            return $this->paginate($records, $request["per_page"], $request["page"]);
-        return $$records;
+        return UserUnit::orderByDesc("id")->get()->toArray();
     }
 
     public function store(array $request)

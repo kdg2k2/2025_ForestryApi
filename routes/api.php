@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DocumentBiodiversityTypeController;
+use App\Http\Controllers\Api\DocumentLegalTypeController;
+use App\Http\Controllers\Api\DocumentScientificPublicationTypeController;
 use App\Http\Controllers\Api\DocumentTypeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserRoleController;
@@ -22,45 +25,69 @@ Route::middleware("api")->group(function () {
         Route::prefix("user")->group(function () {
             # đơn vị
             Route::prefix("unit")->controller(UserUnitController::class)->group(function () {
-                Route::get("list", "list")->name("user.unit.list");
-                Route::post("store", "store")->name("user.unit.store");
-                Route::patch("update", "update")->name("user.unit.update");
-                Route::delete("delete", "delete")->name("user.unit.delete");
+                Route::get("list", "list");
+                Route::post("store", "store");
+                Route::patch("update", "update");
+                Route::delete("delete", "delete");
             });
 
             # phân quyền
             Route::prefix("role")->controller(UserRoleController::class)->group(function () {
-                Route::get("list", "list")->name("user.role.list");
-                Route::post("store", "store")->name("user.role.store");
-                Route::patch("update", "update")->name("user.role.update");
-                Route::delete("delete", "delete")->name("user.role.delete");
+                Route::get("list", "list");
+                Route::post("store", "store");
+                Route::patch("update", "update");
+                Route::delete("delete", "delete");
             });
 
             # người dùng
             Route::controller(UserController::class)->group(function () {
-                Route::get("list", "list")->name("user.list");
-                Route::post("store", "store")->name("user.store");
-                Route::patch("update", "update")->name("user.update");
-                Route::delete("delete", "delete")->name("user.delete");
+                Route::get("list", "list");
+                Route::post("store", "store");
+                Route::patch("update", "update");
+                Route::delete("delete", "delete");
             });
         });
 
         Route::prefix("document")->group(function () {
             # loại tài liệu
             Route::prefix("type")->controller(DocumentTypeController::class)->group(function () {
-                Route::get("list", "list")->name("document.type.list");
-                Route::post("store", "store")->name("document.type.store");
-                Route::patch("update", "update")->name("document.type.update");
-                Route::delete("delete", "delete")->name("document.type.delete");
+                Route::get("list", "list");
+                Route::post("store", "store");
+                Route::patch("update", "update");
+                Route::delete("delete", "delete");
+
+                # loại tài liệu của văn bản pháp luật
+                Route::prefix("legal")->controller(DocumentLegalTypeController::class)->group(function () {
+                    Route::get("list", "list");
+                    Route::post("store", "store");
+                    Route::patch("update", "update");
+                    Route::delete("delete", "delete");
+                });
+
+                # loại tài liệu của ấn phẩm khoa học
+                Route::prefix("scientific_publication")->controller(DocumentScientificPublicationTypeController::class)->group(function () {
+                    Route::get("list", "list");
+                    Route::post("store", "store");
+                    Route::patch("update", "update");
+                    Route::delete("delete", "delete");
+                });
+
+                # loại tài liệu của đa dạng sinh học
+                Route::prefix("biodiversity")->controller(DocumentBiodiversityTypeController::class)->group(function () {
+                    Route::get("list", "list");
+                    Route::post("store", "store");
+                    Route::patch("update", "update");
+                    Route::delete("delete", "delete");
+                });
             });
 
             # tài liệu
             Route::controller(DocumentController::class)->group(function () {
-                Route::get("list", "list")->name("document.list");
-                Route::post("store", "store")->name("document.store");
-                Route::patch("update", "update")->name("document.update");
-                Route::delete("delete", "delete")->name("document.delete");
-                Route::post("show", "show")->name("document.show");
+                Route::get("list", "list");
+                Route::post("store", "store");
+                Route::patch("update", "update");
+                Route::delete("delete", "delete");
+                Route::post("show", "show");
             });
         });
     });

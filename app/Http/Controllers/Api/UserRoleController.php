@@ -31,7 +31,7 @@ class UserRoleController extends Controller
         return $this->catchAPI(function () use ($request) {
             return response()->json([
                 'data' => $this->userRoleService->store($request->validated()),
-                'message' => 'Thêm mới thành công',
+                'message' => config('messages.success.store'),
             ], 200);
         });
     }
@@ -41,7 +41,7 @@ class UserRoleController extends Controller
         return $this->catchAPI(function () use ($request) {
             return response()->json([
                 'data' => $this->userRoleService->update($request->validated()),
-                'message' => 'Cập nhật thành công',
+                'message' => config('messages.success.update'),
             ], 200);
         });
     }
@@ -51,7 +51,7 @@ class UserRoleController extends Controller
         return $this->catchAPI(function () use ($request) {
             $this->userRoleService->delete($request->validated());
             return response()->json([
-                'message' => 'Xóa thành công',
+                'message' => config('messages.success.delete'),
             ], 200);
         });
     }

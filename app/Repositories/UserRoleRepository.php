@@ -4,15 +4,11 @@ namespace App\Repositories;
 
 use App\Models\UserRole;
 
-class UserRoleRepository extends BaseRepository
+class UserRoleRepository
 {
     public function list(array $request)
     {
-        $records = UserRole::orderByDesc("id")->get()->toArray();
-
-        if ($request["paginate"] == 1)
-            return $this->paginate($records, $request["per_page"], $request["page"]);
-        return $$records;
+        return UserRole::orderByDesc("id")->get()->toArray();
     }
 
     public function store(array $request)

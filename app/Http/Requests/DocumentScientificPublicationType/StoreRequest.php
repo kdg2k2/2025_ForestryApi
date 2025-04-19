@@ -1,10 +1,10 @@
 <?php
 
-namespace {{ namespace }};
+namespace App\Http\Requests\DocumentScientificPublicationType;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class {{ class }} extends FormRequest
+class StoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,11 +17,10 @@ class {{ class }} extends FormRequest
     /**
      * Prepare the data for validation.
      */
-    protected function prepareForValidation()
+    public function prepareForValidation()
     {
         $this->merge([
-            // 'per_page' => $this->per_page ?? null,
-            // 'page' => $this->page ?? null,
+            'name' => ucwords($this->name),
         ]);
     }
 
@@ -33,9 +32,7 @@ class {{ class }} extends FormRequest
     public function rules(): array
     {
         return [
-            // 'paginate' => 'required|in:0,1',
-            // 'per_page' => 'nullable|integer|min:1',
-            // 'page' => 'nullable|integer|min:1',
+            'name' => 'required|string|unique:document_scientific_publications,name',
         ];
     }
 }

@@ -21,6 +21,7 @@ class DocumentController extends Controller
     {
         return $this->catchAPI(function () use ($request) {
             return response()->json([
+                'filter' => $this->documentService->getNeededDataFilter(),
                 'data' => $this->documentService->list($request->validated()),
             ]);
         });
@@ -31,7 +32,7 @@ class DocumentController extends Controller
         return $this->catchAPI(function () use ($request) {
             return response()->json([
                 'data' => $this->documentService->store($request->validated()),
-                'message' => 'Thêm mới thành công',
+                'message' => config('messages.success.store'),
             ]);
         });
     }
@@ -41,7 +42,7 @@ class DocumentController extends Controller
         return $this->catchAPI(function () use ($request) {
             return response()->json([
                 'data' => $this->documentService->update($request->validated()),
-                'message' => 'Cập nhật thành công',
+                'message' => config('messages.success.update'),
             ]);
         });
     }
@@ -51,7 +52,7 @@ class DocumentController extends Controller
         return $this->catchAPI(function () use ($request) {
             $this->documentService->delete($request->validated());
             return response()->json([
-                'message' => 'Xóa thành công',
+                'message' => config('messages.success.delete'),
             ]);
         });
     }

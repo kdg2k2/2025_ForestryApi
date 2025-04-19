@@ -31,7 +31,7 @@ class UserUnitController extends Controller
         return $this->catchAPI(function () use ($request) {
             return response()->json([
                 'data' => $this->userUnitService->store($request->validated()),
-                'message' => 'Thêm mới thành công',
+                'message' => config('messages.success.store'),
             ], 200);
         });
     }
@@ -41,7 +41,7 @@ class UserUnitController extends Controller
         return $this->catchAPI(function () use ($request) {
             return response()->json([
                 'data' => $this->userUnitService->update($request->validated()),
-                'message' => 'Cập nhật thành công',
+                'message' => config('messages.success.update'),
             ], 200);
         });
     }
@@ -51,7 +51,7 @@ class UserUnitController extends Controller
         return $this->catchAPI(function () use ($request) {
             $this->userUnitService->delete($request->validated());
             return response()->json([
-                'message' => 'Xóa thành công',
+                'message' => config('messages.success.delete'),
             ], 200);
         });
     }

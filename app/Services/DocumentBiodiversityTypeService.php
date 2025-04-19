@@ -2,21 +2,20 @@
 
 namespace App\Services;
 
-use App\Repositories\UserRoleRepository;
-use App\Services\BaseService;
+use App\Repositories\DocumentBiodiversityTypeRepository;
 
-class UserRoleService extends BaseService
+class DocumentBiodiversityTypeService extends BaseService
 {
-    protected $userRoleRepository;
+    protected $documentBiodiversityTypeRepository;
     public function __construct()
     {
-        $this->userRoleRepository = app(UserRoleRepository::class);
+        $this->documentBiodiversityTypeRepository = app(DocumentBiodiversityTypeRepository::class);
     }
 
     public function list(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $records = $this->userRoleRepository->list($request);
+            $records = $this->documentBiodiversityTypeRepository->list($request);
             if ($request["paginate"] == 1)
                 $records = $this->paginate($records, $request["per_page"], $request["page"]);
             return $records;
@@ -26,21 +25,21 @@ class UserRoleService extends BaseService
     public function store(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRoleRepository->store($request);
+            return $this->documentBiodiversityTypeRepository->store($request);
         });
     }
 
     public function update(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRoleRepository->update($request);
+            return $this->documentBiodiversityTypeRepository->update($request);
         });
     }
 
     public function delete(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRoleRepository->delete($request);
+            return $this->documentBiodiversityTypeRepository->delete($request);
         });
     }
 }

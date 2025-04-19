@@ -18,6 +18,6 @@ class DocumentBiodiversity extends Model
 
     public function documents()
     {
-        return $this->hasMany(Document::class, "id_document");
+        return $this->belongsTo(Document::class, "id_document");
     }
 }

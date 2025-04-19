@@ -2,21 +2,21 @@
 
 namespace App\Services;
 
-use App\Repositories\UserRoleRepository;
-use App\Services\BaseService;
+use App\Repositories\DocumentScientificPublicationRepository;
+use App\Repositories\DocumentScientificPublicationTypeRepository;
 
-class UserRoleService extends BaseService
+class DocumentScientificPublicationTypeService extends BaseService
 {
-    protected $userRoleRepository;
+    protected $documentScientificPublicationTypeRepository;
     public function __construct()
     {
-        $this->userRoleRepository = app(UserRoleRepository::class);
+        $this->documentScientificPublicationTypeRepository = app(DocumentScientificPublicationTypeRepository::class);
     }
 
     public function list(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $records = $this->userRoleRepository->list($request);
+            $records = $this->documentScientificPublicationTypeRepository->list($request);
             if ($request["paginate"] == 1)
                 $records = $this->paginate($records, $request["per_page"], $request["page"]);
             return $records;
@@ -26,21 +26,21 @@ class UserRoleService extends BaseService
     public function store(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRoleRepository->store($request);
+            return $this->documentScientificPublicationTypeRepository->store($request);
         });
     }
 
     public function update(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRoleRepository->update($request);
+            return $this->documentScientificPublicationTypeRepository->update($request);
         });
     }
 
     public function delete(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRoleRepository->delete($request);
+            return $this->documentScientificPublicationTypeRepository->delete($request);
         });
     }
 }

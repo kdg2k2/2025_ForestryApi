@@ -16,7 +16,11 @@ class UserService extends BaseService
     public function list(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRepository->list($request);
+            $records = $this->userRepository->list($request);
+            $records = $this->transformRecords($records);
+            if ($request["paginate"] == 1)
+                $records = $this->paginate($records, $request["per_page"], $request["page"]);
+            return $records;
         });
     }
 
@@ -25,7 +29,9 @@ class UserService extends BaseService
         return $this->tryThrow(function () use ($request) {
             $request["password"] = bcrypt($request["password"]);
             $request["path"] = $this->imageUpload($request["path"]);
-            return $this->userRepository->store($request);
+            $record = $this->userRepository->store($request);
+            $record = $this->transformRecord($record);
+            return $record;
         });
     }
 
@@ -40,7 +46,9 @@ class UserService extends BaseService
                 $removeOldPath = true;
                 $request["path"] = $this->imageUpload($request["path"]);
             }
-            return $this->userRepository->update($request, $removeOldPath);
+            $record = $this->userRepository->update($request, $removeOldPath);
+            $record = $this->transformRecord($record);
+            return $record;
         });
     }
 
@@ -54,5 +62,16 @@ class UserService extends BaseService
     protected function imageUpload($path)
     {
         return (new FileUploadService())->storeImage($path);
+    }
+
+    protected function transformRecords($records)
+    {
+        return array_map([$this, 'transformRecord'], $records);
+    }
+
+    protected function transformRecord($record)
+    {
+        $record['path'] = $this->getAssetImage($record['path']);
+        return $record;
     }
 }

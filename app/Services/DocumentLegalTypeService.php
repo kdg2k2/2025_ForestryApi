@@ -2,21 +2,20 @@
 
 namespace App\Services;
 
-use App\Repositories\UserRoleRepository;
-use App\Services\BaseService;
+use App\Repositories\DocumentLegalTypeRepository;
 
-class UserRoleService extends BaseService
+class DocumentLegalTypeService extends BaseService
 {
-    protected $userRoleRepository;
+    protected $documentLegalTypeRepository;
     public function __construct()
     {
-        $this->userRoleRepository = app(UserRoleRepository::class);
+        $this->documentLegalTypeRepository = new DocumentLegalTypeRepository();
     }
 
     public function list(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $records = $this->userRoleRepository->list($request);
+            $records = $this->documentLegalTypeRepository->list($request);
             if ($request["paginate"] == 1)
                 $records = $this->paginate($records, $request["per_page"], $request["page"]);
             return $records;
@@ -26,21 +25,21 @@ class UserRoleService extends BaseService
     public function store(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRoleRepository->store($request);
+            return $this->documentLegalTypeRepository->store($request);
         });
     }
 
     public function update(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRoleRepository->update($request);
+            return $this->documentLegalTypeRepository->update($request);
         });
     }
 
     public function delete(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->userRoleRepository->delete($request);
+            return $this->documentLegalTypeRepository->delete($request);
         });
     }
 }

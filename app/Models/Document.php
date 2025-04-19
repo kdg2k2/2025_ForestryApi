@@ -16,7 +16,7 @@ class Document extends Model
 
     public function type()
     {
-        return $this->belongsTo(DocumentType::class, "id_type");
+        return $this->belongsTo(DocumentType::class, "id_document_type");
     }
 
     public function uploader()
@@ -27,5 +27,20 @@ class Document extends Model
     public function share()
     {
         return $this->belongsTo(DocumentShare::class, "id_share");
+    }
+
+    public function legal()
+    {
+        return $this->hasOne(DocumentLegal::class, "id_document");
+    }
+
+    public function scientificPublication()
+    {
+        return $this->hasOne(DocumentScientificPublication::class, "id_document");
+    }
+
+    public function biodiversity()
+    {
+        return $this->hasOne(DocumentBiodiversity::class, "id_document");
     }
 }

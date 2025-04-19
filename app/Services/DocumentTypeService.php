@@ -15,7 +15,10 @@ class DocumentTypeService extends BaseService
     public function list(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->documentTypeRepository->list($request);
+            $records = $this->documentTypeRepository->list($request);
+            if ($request["paginate"] == 1)
+                $records = $this->paginate($records, $request["per_page"], $request["page"]);
+            return $records;
         });
     }
 

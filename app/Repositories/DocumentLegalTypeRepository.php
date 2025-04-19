@@ -2,29 +2,29 @@
 
 namespace App\Repositories;
 
-use App\Models\DocumentType;
+use App\Models\DocumentLegalType;
 
-class DocumentTypeRepository
+class DocumentLegalTypeRepository
 {
     public function list(array $request)
     {
-        return DocumentType::orderByDesc("id")->get()->toArray();
+        return DocumentLegalType::orderByDesc("id")->get()->toArray();
     }
 
     public function store(array $request)
     {
-        return DocumentType::create($request);
+        return DocumentLegalType::create($request);
     }
 
     public function update(array $request)
     {
-        $record = DocumentType::find($request["id"]);
+        $record = DocumentLegalType::find($request["id"]);
         $record->update($request);
         return $record;
     }
 
     public function delete(array $request)
     {
-        return DocumentType::find($request["id"])->delete();
+        return DocumentLegalType::find($request["id"])->delete();
     }
 }
