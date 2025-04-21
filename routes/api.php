@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BioNationalParkTypeController as bnptc;
 use App\Http\Controllers\Api\DocumentBiodiversityTypeController;
 use App\Http\Controllers\Api\DocumentLegalTypeController;
 use App\Http\Controllers\Api\DocumentScientificPublicationTypeController;
@@ -88,6 +89,16 @@ Route::middleware("api")->group(function () {
                 Route::patch("update", "update");
                 Route::delete("delete", "delete");
                 Route::post("show", "show");
+            });
+        });
+
+        Route::prefix("bio-national-park-type")->group(function () {
+            Route::controller(bnptc::class)->group(function () {
+                Route::get("", "list")->name("bio-national-park-type.list");
+                Route::post("", "store")->name("bio-national-park-type.store");
+                Route::patch("{id}", "update")->name("bio-national-park-type.update");
+                Route::delete("{id}", "deleteSoft")->name("bio-national-park-type.delete");
+                Route::patch("restore/{id}", "restore")->name("bio-national-park-type.restore");
             });
         });
     });
