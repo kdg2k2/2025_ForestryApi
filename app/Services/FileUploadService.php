@@ -17,10 +17,11 @@ class FileUploadService extends BaseService
         return "$folder/$name";
     }
 
-    public function storeImage($image)
+    public function storeImage($image, bool $isFullUrl = true)
     {
-        return $this->tryThrow(function () use ($image) {
-            return $this->store($image, "images");
+        return $this->tryThrow(function () use ($image, $isFullUrl) {
+            $imagePath = $this->store($image, "images");
+            return $isFullUrl ? url($imagePath) : $imagePath;
         });
     }
 

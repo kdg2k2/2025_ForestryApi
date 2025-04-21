@@ -35,4 +35,10 @@ class BioNationalParkTypeRepository
     {
         return BioNationalParkType::all();
     }
+
+    public function findById(int $id, $delete = false)
+    {
+        if (!$delete) return BioNationalParkType::find($id);
+        return BioNationalParkType::withTrashed()->find($id);
+    }
 }

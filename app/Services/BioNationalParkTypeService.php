@@ -37,6 +37,12 @@ class BioNationalParkTypeService extends BaseService
     public function update(array $request, int $id)
     {
         try {
+            $type = $this->BioNationalParkTypeRepository->findById($id);
+            if (!$type) {
+                return response()->json([
+                    'message' => 'Không tìm thấy loại công viên sinh học',
+                ], 404);
+            }
             $this->BioNationalParkTypeRepository->update($request, $id);
             return response()->json([
                 'message' => 'Cập nhật thành công',
@@ -55,6 +61,12 @@ class BioNationalParkTypeService extends BaseService
 
     public function deleteSoft(int $id)
     {
+        $type = $this->BioNationalParkTypeRepository->findById($id);
+        if (!$type) {
+            return response()->json([
+                'message' => 'Không tìm thấy loại công viên sinh học',
+            ], 404);
+        }
         $this->BioNationalParkTypeRepository->deleteSoft($id);
         return response()->json([
             'message' => 'Xóa thành công',
@@ -63,6 +75,12 @@ class BioNationalParkTypeService extends BaseService
 
     public function restore(int $id)
     {
+        $type = $this->BioNationalParkTypeRepository->findById($id, true);
+        if (!$type) {
+            return response()->json([
+                'message' => 'Không tìm thấy loại công viên sinh học',
+            ], 404);
+        }
         $this->BioNationalParkTypeRepository->restore($id);
         return response()->json([
             'message' => 'Khôi phục thành công',
