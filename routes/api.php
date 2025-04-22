@@ -112,15 +112,5 @@ Route::middleware("api")->group(function () {
                 Route::patch("restore/{id}", "restore")->name("bio-national-park-type.restore");
             });
         });
-
-        Route::prefix("bio-national-park")->group(function () {
-            Route::controller(bnpc::class)->group(function () {
-                Route::post("", "store")->name("bio-national-park.store");
-                // Route::get("", "list")->name("bio-national-park.list");
-                // Route::post("{id}", "update")->name("bio-national-park.update");
-                // Route::delete("{id}", "deleteSoft")->name("bio-national-park-type.delete");
-                // Route::patch("restore/{id}", "restore")->name("bio-national-park-type.restore");
-            });
-        });
     });
 });

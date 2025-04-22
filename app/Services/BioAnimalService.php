@@ -29,23 +29,6 @@ class BioAnimalService extends BaseService
                     $request['nganhlatin'] = $phylums->nganhlatin;
                 }
             }
-
-            // } else if (isset($request['nganhtv'])) {
-            //     $phylums = $this->bioAnimalRepository->getPhylum($request['manganh'], 'nganhtv');
-            //     if ($phylums) {
-            //         $request['manganh'] = $phylums->manganh;
-            //         $request['nganhtv'] = $phylums->nganhtv;
-            //         $request['nganhlatin'] = $phylums->nganhlatin;
-            //     }
-            // }
-            // if (isset($request['nganhlatin'])) {
-            //     $phylums = $this->bioAnimalRepository->getPhylum($request['manganh'], 'nganhlatin');
-            //     if ($phylums) {
-            //         $request['manganh'] = $phylums->manganh;
-            //         $request['nganhtv'] = $phylums->nganhtv;
-            //         $request['nganhlatin'] = $phylums->nganhlatin;
-            //     }
-            // $record = $this->bioAnimalRepository->store($request);
         });
     }
 }
