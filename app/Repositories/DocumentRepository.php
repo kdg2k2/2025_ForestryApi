@@ -6,6 +6,17 @@ use App\Models\Document;
 
 class DocumentRepository
 {
+    public function findById(int $id)
+    {
+        return Document::find($id)->load([
+            'type',
+            'uploader',
+            'share',
+            'legal.type',
+            'scientificPublication.type',
+            'biodiversity.type',
+        ]);
+    }
     public function list(array $request)
     {
         $query = Document::orderByDesc("id")->with([
@@ -61,14 +72,7 @@ class DocumentRepository
 
     public function store(array $request)
     {
-        return Document::create($request)->load([
-            'type',
-            'uploader',
-            'share',
-            'legal.type',
-            'scientificPublication.type',
-            'biodiversity.type',
-        ]);
+        return Document::create($request);
     }
 
     public function update(array $request, bool $removeOld)
