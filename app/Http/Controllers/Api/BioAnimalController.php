@@ -14,10 +14,10 @@ class BioAnimalController extends Controller
         $this->bioAnimalService = app(BioAnimalService::class);
     }
 
-    public function store(Request $req)
-    {
-        return $this->catchAPI(fn() => $this->bioAnimalService->store($req->validated()));
-    }
+    // public function store(Request $req)
+    // {
+    //     return $this->catchAPI(fn() => $this->bioAnimalService->store($req->validated()));
+    // }
 
     // public function list(Request $req)
     // {
