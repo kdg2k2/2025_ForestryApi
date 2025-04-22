@@ -13,28 +13,7 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $arr = [
-            [
-                "name_en" => "Admin",
-                "name_vn" => "Quản Trị Viên",
-            ],
-            [
-                "name_en" => "Forester Command",
-                "name_vn" => "Chỉ Huy Chiến Lược Lâm Nghiệp",
-            ],
-            [
-                "name_en" => "Forester Insight",
-                "name_vn" => "Thấu Hiểu Dữ Liệu Lâm Nghiệp",
-            ],
-            [
-                "name_en" => "Forester Connect",
-                "name_vn" => "Kết Nối Thông Tin Lâm Nghiệp",
-            ],
-            [
-                "name_en" => "Forester Start",
-                "name_vn" => "Miễn Phí",
-            ],
-        ];
+        $arr = config('user-roles');
 
         $arr = array_map(function ($item) {
             return [

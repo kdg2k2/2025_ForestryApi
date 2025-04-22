@@ -21,6 +21,13 @@ Route::middleware("api")->group(function () {
         Route::post("refresh", "refresh")->middleware("throttle:5,1");
         # logout
         Route::post("logout", "logout")->middleware("api");
+        # google
+        Route::prefix("google")->group(function () {
+            # redirect to Google's OAuth page
+            Route::get('redirect', 'authGoogleRedirect')->name('auth.google.redirect');
+            # handle the callback from Google
+            Route::get('callback', 'authGoogleCallback')->name('auth.google.callback');
+        });
     });
 
     Route::middleware("auth:api")->group(function () {

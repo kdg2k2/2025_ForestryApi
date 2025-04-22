@@ -38,4 +38,18 @@ class AuthController extends Controller
             ], 200);
         });
     }
+
+    public function authGoogleRedirect()
+    {
+        return $this->catchAPI(function () {
+            return response()->json($this->authService->authGoogleRedirect(), 200);
+        });
+    }
+
+    public function authGoogleCallback()
+    {
+        return $this->catchAPI(function () {
+            return response()->json($this->authService->authGoogleCallback(), 200);
+        });
+    }
 }

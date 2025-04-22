@@ -3,18 +3,15 @@
 namespace App\Services;
 
 use App\Repositories\DocumentRepository;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use ReflectionClass;
 
 class DocumentService extends BaseService
 {
     protected $documentRepository;
+    protected $customValidateService;
     public function __construct()
     {
         $this->documentRepository = app(DocumentRepository::class);
+        $this->customValidateService = app(CustomValidateRequestService::class);
     }
 
     public function list(array $request)
@@ -193,7 +190,7 @@ class DocumentService extends BaseService
 
     protected function newDocumentLegal(array $request)
     {
-        $validated = $this->customValidateRequest(
+        $validated = $this->customValidateService->validate(
             $request,
             new \App\Http\Requests\DocumentLegal\StoreRequest
         );
@@ -203,7 +200,7 @@ class DocumentService extends BaseService
 
     protected function newDocumentScientificPublication(array $request)
     {
-        $validated = $this->customValidateRequest(
+        $validated = $this->customValidateService->validate(
             $request,
             new \App\Http\Requests\DocumentScientificPublication\StoreRequest
         );
@@ -213,7 +210,7 @@ class DocumentService extends BaseService
 
     protected function newDocumentBiodiversity(array $request)
     {
-        $validated = $this->customValidateRequest(
+        $validated = $this->customValidateService->validate(
             $request,
             new \App\Http\Requests\DocumentBiodiversity\StoreRequest
         );
@@ -223,7 +220,7 @@ class DocumentService extends BaseService
 
     protected function newDocumentType(array $request)
     {
-        $validated = $this->customValidateRequest(
+        $validated = $this->customValidateService->validate(
             $request,
             new \App\Http\Requests\DocumentType\StoreRequest
         );
@@ -233,7 +230,7 @@ class DocumentService extends BaseService
 
     protected function newDocumentLegalType(array $request)
     {
-        $validated = $this->customValidateRequest(
+        $validated = $this->customValidateService->validate(
             $request,
             new \App\Http\Requests\DocumentLegalType\StoreRequest
         );
@@ -243,7 +240,7 @@ class DocumentService extends BaseService
 
     protected function newDocumentScientificPublicationType(array $request)
     {
-        $validated = $this->customValidateRequest(
+        $validated = $this->customValidateService->validate(
             $request,
             new \App\Http\Requests\DocumentScientificPublicationType\StoreRequest
         );
@@ -253,48 +250,12 @@ class DocumentService extends BaseService
 
     protected function newDocumentBiodiversityType(array $request)
     {
-        $validated = $this->customValidateRequest(
+        $validated = $this->customValidateService->validate(
             $request,
             new \App\Http\Requests\DocumentBiodiversityType\StoreRequest
         );
 
         return app(DocumentBiodiversityTypeService::class)->store($validated)->id;
-    }
-
-    protected function createCustomRequest(array $request, $customRequest): mixed
-    {
-        $base = new Request($request);
-        return $customRequest->createFrom($base);
-    }
-
-    protected function customValidateRequest(array $request, $customRequest)
-    {
-        $custom = $this->createCustomRequest($request, $customRequest);
-
-        $custom->setContainer(app())->setRedirector(app(Redirector::class));
-        $custom->prepareForValidation();
-
-        $validator = Validator::make(
-            $custom->all(),
-            $custom->rules(),
-            $custom->messages(),
-            $custom->attributes()
-        );
-
-        if ($validator->fails()) {
-            $reflection = new ReflectionClass($validator);
-            $property = $reflection->getProperty('failedRules');
-            $property->setAccessible(true);
-            $failedRules = $property->getValue($validator);
-
-            throw ValidationException::withMessages([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-                'failed_rules' => $failedRules
-            ]);
-        }
-
-        return $validator->validated();
     }
 
     public function getNeededDataFilter()

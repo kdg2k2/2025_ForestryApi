@@ -41,4 +41,14 @@ class UserRepository
     {
         return User::find($request["id"])->delete();
     }
+    
+    public function findById(int $id)
+    {
+        return User::find($id);
+    }
+
+    public function findByEmail(string $email)
+    {
+        return User::where("email", $email)->first();
+    }
 }
