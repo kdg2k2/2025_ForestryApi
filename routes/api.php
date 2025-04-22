@@ -97,7 +97,7 @@ Route::middleware("api")->group(function () {
             Route::controller(bnptc::class)->group(function () {
                 Route::get("", "list")->name("bio-national-park-type.list");
                 Route::post("", "store")->name("bio-national-park-type.store");
-                Route::patch("{id}", "update")->name("bio-national-park-type.update");
+                Route::patch("", "update")->name("bio-national-park-type.update");
                 Route::delete("{id}", "deleteSoft")->name("bio-national-park-type.delete");
                 Route::patch("restore/{id}", "restore")->name("bio-national-park-type.restore");
             });
@@ -107,7 +107,7 @@ Route::middleware("api")->group(function () {
             Route::controller(bnpc::class)->group(function () {
                 Route::post("", "store")->name("bio-national-park.store");
                 Route::get("", "list")->name("bio-national-park.list");
-                Route::post("{id}", "update")->name("bio-national-park.update");
+                Route::patch("", "update")->name("bio-national-park.update");
                 Route::delete("{id}", "deleteSoft")->name("bio-national-park-type.delete");
                 Route::patch("restore/{id}", "restore")->name("bio-national-park-type.restore");
             });

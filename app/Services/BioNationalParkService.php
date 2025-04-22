@@ -26,11 +26,7 @@ class BioNationalParkService extends BaseService
         }
         // generate slug
         $request['slug'] = $this->generateSlug($request['name']);
-        $park = $this->BioNationalParkRepository->store($request);
-        return response()->json([
-            'message' => 'Tạo mới thành công',
-            'data' => $park,
-        ], 201);
+        return $this->BioNationalParkRepository->store($request);
     }
 
     private function generateSlug(string $name)
@@ -41,18 +37,15 @@ class BioNationalParkService extends BaseService
     public function list(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            return $this->BioNationalParkRepository->list($request);
+            $records = $this->BioNationalParkRepository->list($request);
+            if (isset($request["paginate"]) && $request["paginate"] == 1)
+                $records = $this->paginate($records, $request["per_page"], $request["page"]);
+            return $records;
         });
     }
 
-    public function update(array $request, int $id)
+    public function update(array $request)
     {
-        $park = $this->BioNationalParkRepository->findById($id);
-            if (!$park) {
-                return response()->json([
-                    'message' => 'Không tìm thấy công viên sinh học',
-                ], 404);
-            }
         if (isset($request['logo'])) {
             $request['logo'] = $this->fileUploadService->storeImage($request['logo']);
         }
@@ -63,11 +56,7 @@ class BioNationalParkService extends BaseService
         if (isset($request['name'])) {
             $request['slug'] = $this->generateSlug($request['name']);
         }
-        $park = $this->BioNationalParkRepository->update($request, $id);
-        return response()->json([
-            'message' => 'Cập nhật thành công',
-            'data' => $park,
-        ], 200);
+        return $this->BioNationalParkRepository->update($request, $request['id']);
     }
 
     public function deleteSoft(int $id)
@@ -75,14 +64,9 @@ class BioNationalParkService extends BaseService
         return $this->tryThrow(function () use ($id) {
             $park = $this->BioNationalParkRepository->findById($id);
             if (!$park) {
-                return response()->json([
-                    'message' => 'Không tìm thấy công viên sinh học',
-                ], 404);
+                throw new \Exception('Không tìm thấy vườn quốc gia', 404);
             }
-            $this->BioNationalParkRepository->deleteSoft($id);
-            return response()->json([
-                'message' => 'Xóa thành công',
-            ], 200);
+            return $this->BioNationalParkRepository->deleteSoft($id);
         });
     }
 
@@ -91,14 +75,9 @@ class BioNationalParkService extends BaseService
         return $this->tryThrow(function () use ($id) {
             $park = $this->BioNationalParkRepository->findById($id, true);
             if (!$park) {
-                return response()->json([
-                    'message' => 'Không tìm thấy công viên sinh học',
-                ], 404);
+                throw new \Exception('Không tìm thấy vườn quốc gia', 404);
             }
-            $this->BioNationalParkRepository->restore($id);
-            return response()->json([
-                'message' => 'Khôi phục thành công',
-            ], 200);
+            return $this->BioNationalParkRepository->restore($id);
         });
     }
 }
