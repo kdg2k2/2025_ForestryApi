@@ -17,82 +17,35 @@ class BioNationalParkTypeService extends BaseService
 
     public function store(array $request)
     {
-        try {
-            $this->BioNationalParkTypeRepository->store($request);
-            return response()->json([
-                'message' => 'Tạo mới thành công',
-            ], 201);
-        } catch (\Throwable $th) {
-            if ($th instanceof QueryException && $th->getCode() == Constant::CodeSQL['DUPLICATE']) {
-                $name = 'Tên loại công viên đã tồn tại';
-                return response()->json([
-                    'message' => $name,
-                    "errors" => ["name" => [$name]],
-                ], status: 422);
-            }
-            throw $th;
-        }
+        return $this->BioNationalParkTypeRepository->store($request);
     }
 
-    public function update(array $request, int $id)
+    public function update(array $request)
     {
-        try {
-            $type = $this->BioNationalParkTypeRepository->findById($id);
-            if (!$type) {
-                return response()->json([
-                    'message' => 'Không tìm thấy loại công viên sinh học',
-                ], 404);
-            }
-            $this->BioNationalParkTypeRepository->update($request, $id);
-            return response()->json([
-                'message' => 'Cập nhật thành công',
-            ], 200);
-        } catch (\Throwable $th) {
-            if ($th instanceof QueryException && $th->getCode() == Constant::CodeSQL['DUPLICATE']) {
-                $name = 'Tên loại công viên đã tồn tại';
-                return response()->json([
-                    'message' => $name,
-                    "errors" => ["name" => [$name]],
-                ], status: 422);
-            }
-            throw $th;
-        }
+        return $this->BioNationalParkTypeRepository->update($request, $request['id']);
     }
 
     public function deleteSoft(int $id)
     {
         $type = $this->BioNationalParkTypeRepository->findById($id);
-        if (!$type) {
-            return response()->json([
-                'message' => 'Không tìm thấy loại công viên sinh học',
-            ], 404);
-        }
-        $this->BioNationalParkTypeRepository->deleteSoft($id);
-        return response()->json([
-            'message' => 'Xóa thành công',
-        ], 200);
+        if (!$type)
+            throw new \Exception('Không tìm thấy loại vườn quốc gia', 404);
+        return $this->BioNationalParkTypeRepository->deleteSoft($id);
     }
 
     public function restore(int $id)
     {
         $type = $this->BioNationalParkTypeRepository->findById($id, true);
-        if (!$type) {
-            return response()->json([
-                'message' => 'Không tìm thấy loại công viên sinh học',
-            ], 404);
-        }
-        $this->BioNationalParkTypeRepository->restore($id);
-        return response()->json([
-            'message' => 'Khôi phục thành công',
-        ], 200);
+        if (!$type)
+            throw new \Exception('Không tìm thấy loại vườn quốc gia', 404);
+        return $this->BioNationalParkTypeRepository->restore($id);
     }
 
-    public function list()
+    public function list(array $request)
     {
-        $data = $this->BioNationalParkTypeRepository->list();
-        return response()->json([
-            'message' => 'Lấy danh sách thành công',
-            'data' => $data,
-        ], 200);
+        $records = $this->BioNationalParkTypeRepository->list();
+        if (isset($request["paginate"]) && $request["paginate"] == 1)
+            $records = $this->paginate($records, $request["per_page"], $request["page"]);
+        return $records;
     }
 }

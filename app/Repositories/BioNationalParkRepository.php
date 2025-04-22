@@ -13,7 +13,9 @@ class BioNationalParkRepository
 
     public function update(array $request, int $id)
     {
-        return BioNationalPark::where('id', $id)->update($request);
+        $park = BioNationalPark::find($id);
+        $park->update($request);
+        return $park;
     }
 
     public function deleteSoft(int $id)
@@ -33,17 +35,8 @@ class BioNationalParkRepository
 
     public function list(array $request)
     {
-        $query = BioNationalPark::query();
-
-        if (isset($request['name'])) {
-            $query->where('name', 'like', '%' . $request['name'] . '%');
-        }
-
-        if (isset($request['paginate']) && $request['paginate'] == 1) {
-            return $query->paginate($request['per_page']);
-        }
-
-        return $query->get();
+        $records = BioNationalPark::all();
+        return $records;
     }
 
     public function findById(int $id, $delete = false)

@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\BioNationalPark;
 
+use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CreateRequest extends FormRequest
 {
+    use FailedValidation;
     public function authorize(): bool
     {
         return true;
@@ -56,13 +56,5 @@ class CreateRequest extends FormRequest
             'intro_img.mimes' => 'Ảnh giới thiệu phải có định dạng: jpg, jpeg, png, hoặc webp.',
             'intro_img.max' => 'Ảnh giới thiệu không được vượt quá 2MB.',
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'message' => 'Dữ liệu không chính xác',
-            'errors' => $validator->errors(),
-        ], 422));
     }
 }

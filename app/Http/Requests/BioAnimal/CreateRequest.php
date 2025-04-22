@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\BioAnimal;
 
+use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateRequest extends FormRequest
 {
+    use FailedValidation;
     public function authorize(): bool
     {
         return true; // Cho phép mọi user thực hiện request này

@@ -13,7 +13,9 @@ class BioNationalParkTypeRepository
 
     public function update(array $request, int $id)
     {
-        return BioNationalParkType::where('id', $id)->update($request);
+        $record = BioNationalParkType::find($id);
+        $record->update($request);
+        return $record;
     }
 
     public function deleteSoft(int $id)
