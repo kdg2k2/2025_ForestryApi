@@ -11,7 +11,7 @@ class DocumentScientificPublicationTypeRepository{
 
     public function store(array $request)
     {
-        return DocumentScientificPublicationType::create($request)->load('type');
+        return DocumentScientificPublicationType::create($request);
     }
 
     public function update(array $request)

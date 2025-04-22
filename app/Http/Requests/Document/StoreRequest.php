@@ -43,54 +43,54 @@ class StoreRequest extends FormRequest
         ];
 
         switch ($this->id_document_type) {
-            case config('documents.types.khac'):
+            case config('documents.types.other'):
                 $rules = array_merge($rules, [
                     'new_document_type' => 'required|array',
                     'new_document_type.name' => 'required',
                 ]);
                 break;
-            case config('documents.types.van-ban-phap-ly.id'):
+            case config('documents.types.legal.id'):
                 $rules = array_merge($rules, [
                     'new_document_legal' => 'required|array',
-                    // 'new_document_legal.id_document' => 'required',
                     'new_document_legal.id_type' => 'required',
                     'new_document_legal.doc_number' => 'required',
                     'new_document_legal.validity' => 'required',
                 ]);
+
+                if (isset($this->new_document_legal['id_type']))
+                    if ($this->new_document_legal['id_type'] == config('documents.types.legal.other'))
+                        $rules = array_merge($rules, [
+                            'new_document_legal_type' => 'required|array',
+                            'new_document_legal_type.name' => 'required',
+                        ]);
                 break;
-            case config('documents.types.an-pham-khoa-hoc.id'):
+            case config('documents.types.scientific_publication.id'):
                 $rules = array_merge($rules, [
                     'new_document_scientific_publication' => 'required|array',
-                    // 'new_document_scientific_publication.id_document' => 'required',
                     'new_document_scientific_publication.id_type' => 'required',
                     'new_document_scientific_publication.year' => 'required',
                 ]);
+
+                if (isset($this->new_document_scientific_publication['id_type']))
+                    if ($this->new_document_scientific_publication['id_type'] == config('documents.types.scientific_publication.other'))
+                        $rules = array_merge($rules, [
+                            'new_document_scientific_publication_type' => 'required|array',
+                            'new_document_scientific_publication_type.name' => 'required',
+                        ]);
                 break;
-            case config('documents.types.da-dang-sinh-hoc.id'):
+            case config('documents.types.biodiversity.id'):
                 $rules = array_merge($rules, [
                     'new_document_biodiversitie' => 'required|array',
-                    // 'new_document_biodiversitie.id_document' => 'required',
                     'new_document_biodiversitie.id_type' => 'required',
                 ]);
+
+                if (isset($this->new_document_biodiversitie['id_type']))
+                    if ($this->new_document_biodiversitie['id_type'] == config('documents.types.biodiversity.other'))
+                        $rules = array_merge($rules, [
+                            'new_document_biodiversitie_type' => 'required|array',
+                            'new_document_biodiversitie_type.name' => 'required',
+                        ]);
                 break;
-            // case config('documents.types.van-ban-phap-ly.khac'):
-            //     $rules = array_merge($rules, [
-            //         'new_document_legal_type' => 'required|array',
-            //         'new_document_legal_type.name' => 'required',
-            //     ]);
-            //     break;
-            // case config('documents.types.an-pham-khoa-hoc.khac'):
-            //     $rules = array_merge($rules, [
-            //         'new_document_scientific_publication_type' => 'required|array',
-            //         'new_document_scientific_publication_type.name' => 'required',
-            //     ]);
-            //     break;
-            // case config('documents.types.da-dang-sinh-hoc.khac'):
-            //     $rules = array_merge($rules, [
-            //         'new_document_biodiversity_type' => 'required|array',
-            //         'new_document_biodiversity_type.name' => 'required',
-            //     ]);
-            //     break;
             default:
                 break;
         }

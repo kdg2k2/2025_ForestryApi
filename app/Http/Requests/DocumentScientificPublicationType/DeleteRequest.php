@@ -33,7 +33,7 @@ class DeleteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|string|exists:document_scientific_publications,id',
+            'id' => 'required|string|exists:document_scientific_publication_types,id',
         ];
     }
 }

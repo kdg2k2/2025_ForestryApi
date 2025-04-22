@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Repositories\DocumentScientificPublicationRepository;
 use App\Repositories\DocumentScientificPublicationTypeRepository;
 
 class DocumentScientificPublicationTypeService extends BaseService

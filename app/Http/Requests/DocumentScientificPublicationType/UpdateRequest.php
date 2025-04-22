@@ -32,8 +32,8 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|string|exists:document_scientific_publications,id',
-            'name' => 'required|string|unique:document_scientific_publications,name,' . $this->id,
+            'id' => 'required|string|exists:document_scientific_publication_types,id',
+            'name' => 'required|string|unique:document_scientific_publication_types,name,' . $this->id,
         ];
     }
 }

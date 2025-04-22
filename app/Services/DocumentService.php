@@ -33,10 +33,10 @@ class DocumentService extends BaseService
         return $this->tryThrow(function () use ($request) {
             $request = $this->prepareData($request)['request'];
 
-            $check = $this->separateNewArrays($request);
+            $check = $this->checkContrainTextInArray($request);
 
             $record = $this->documentRepository->store($check['main']);
-            $relationship = $this->checkSpecialDocumentType($check['nested'], $record);
+            $relationship = $this->checkSpecialDocumentType($request, $record);
             $record = array_merge($record->toArray(), $relationship);
 
             $record = $this->transformRecord($record);
@@ -90,7 +90,7 @@ class DocumentService extends BaseService
     protected function prepareData(array $request)
     {
         // nếu là loại văn bản khác thì tự thêm record loại văn bản mới
-        if ($request['id_document_type'] == config('documents.types.khac')) {
+        if ($request['id_document_type'] == config('documents.types.other')) {
             $request['id_document_type'] = $this->newDocumentType($request['new_document_type']);
             unset($request['new_document_type']);
         }
@@ -107,47 +107,68 @@ class DocumentService extends BaseService
         ];
     }
 
-    protected function separateNewArrays(array $input)
+    protected function checkContrainTextInArray(array $input)
     {
-        $main = $nested = [];
+        $main = $start = $end = [];
+        $startWith = 'new_';
+        $endWith = '_type';
 
+        $main = $input;
         foreach ($input as $key => $value) {
-            (is_array($value) && str_starts_with($key, 'new_'))
-                ? $nested[$key] = $value
-                : $main[$key] = $value;
+            if (
+                is_array($value) &&
+                str_starts_with($key, needle: $startWith) &&
+                !str_ends_with($key, $endWith)
+            ) {
+                $start[$key] = $value;
+                unset($main[$key]);
+            }
+
+            if (
+                is_array($value) &&
+                str_ends_with($key, $endWith)
+            ) {
+                $end[$key] = $value;
+                unset($main[$key]);
+            }
         }
 
-        return ['main' => $main, 'nested' => $nested];
+        return [
+            'origin' => $input,
+            'main' => $main,
+            'start' => $start,
+            'end' => $end,
+        ];
     }
 
     protected function checkSpecialDocumentType(array $request, $record)
     {
         $new = [];
         switch ($record->id_document_type) {
-            case config('documents.types.van-ban-phap-ly.id'):
+            case config('documents.types.legal.id'):
+                // nếu là loại tài liệu văn bản pháp luật khác thì thêm mới loại này
+                if ($request['new_document_legal']['id_type'] == config('documents.types.legal.other'))
+                    $request['new_document_legal']['id_type'] = $this->newDocumentLegalType($request['new_document_legal_type']);
+
                 $request['new_document_legal']['id_document'] = $record->id;
                 $new['legal'] = $this->newDocumentLegal($request['new_document_legal']);
                 break;
-            case config('documents.types.an-pham-khoa-hoc.id'):
+            case config('documents.types.scientific_publication.id'):
+                // nếu là loại tài liệu ấn phẩm khoa học khác thì thêm mới loại này
+                if ($request['new_document_scientific_publication']['id_type'] == config('documents.types.scientific_publication.other'))
+                    $request['new_document_scientific_publication']['id_type'] = $this->newDocumentScientificPublicationType($request['new_document_scientific_publication_type']);
+
                 $request['new_document_scientific_publication']['id_document'] = $record->id;
                 $new['document_scientific_publication'] = $this->newDocumentScientificPublication($request['new_document_scientific_publication']);
                 break;
-            case config('documents.types.da-dang-sinh-hoc.id'):
+            case config('documents.types.biodiversity.id'):
+                // nếu là loại tài liệu đa dạng sinh học khác thì thêm mới loại này
+                if ($request['new_document_biodiversitie']['id_type'] == config('documents.types.biodiversity.other'))
+                    $request['new_document_biodiversitie']['id_type'] = $this->newDocumentBiodiversityType($request['new_document_biodiversitie_type']);
+
                 $request['new_document_biodiversitie']['id_document'] = $record->id;
                 $new['document_biodiversitie'] = $this->newDocumentBiodiversity($request['new_document_biodiversitie']);
                 break;
-            // case config('documents.types.van-ban-phap-ly.khac'):
-            //     $request['id_document_type'] = $this->newDocumentLegalType($request['new_document_legal_type']);
-            //     unset($request['new_document_legal_type']);
-            //     break;
-            // case config('documents.types.an-pham-khoa-hoc.khac'):
-            //     $request['id_document_type'] = $this->newDocumentScientificPublicationType($request['new_document_scientific_publication_type']);
-            //     unset($request['new_document_scientific_publication_type']);
-            //     break;
-            // case config('documents.types.da-dang-sinh-hoc.khac'):
-            //     $request['id_document_type'] = $this->newDocumentBiodiversityType($request['new_document_biodiversity_type']);
-            //     unset($request['new_document_biodiversity_type']);
-            //     break;
             default:
                 break;
         }
@@ -224,7 +245,7 @@ class DocumentService extends BaseService
         return app(DocumentBiodiversityTypeService::class)->store($validated)->id;
     }
 
-    protected function createCustomRequest(array $request, $customRequest)
+    protected function createCustomRequest(array $request, $customRequest): mixed
     {
         $base = new Request($request);
         return $customRequest->createFrom($base);

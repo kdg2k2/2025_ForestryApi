@@ -20,8 +20,10 @@ class StoreRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            // Thêm các giá trị mặc định ở đây
-            // 'field' => $this->field ?? 'default_value',
+            'co_author' => $this->co_author ?? null,
+            'edition' => $this->edition ?? null,
+            'accompanying_documents' => $this->accompanying_documents ?? null,
+            'linkyoutube' => $this->linkyoutube ?? null,
         ]);
     }
 
