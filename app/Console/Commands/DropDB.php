@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use PDO;
+use PDOException;
 
 class DropDB extends Command
 {
@@ -12,25 +13,27 @@ class DropDB extends Command
 
     public function handle()
     {
-        $databaseName = config('database.connections.pgsql.database');
-        $host = config('database.connections.pgsql.host');
-        $port = config('database.connections.pgsql.port');
-        $username = config('database.connections.pgsql.username');
-        $password = config('database.connections.pgsql.password');
+        $databaseName = config('database.connections.mysql.database');
+        $host = config('database.connections.mysql.host');
+        $port = config('database.connections.mysql.port');
+        $username = config('database.connections.mysql.username');
+        $password = config('database.connections.mysql.password');
 
         try {
-            $connection = new PDO("pgsql:host=$host;port=$port;dbname=postgres", $username, $password);
+            // Kết nối đến MySQL mà không chọn database
+            $connection = new PDO("mysql:host=$host;port=$port", $username, $password);
             $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $stmt = $connection->prepare("SELECT 1 FROM pg_catalog.pg_database WHERE datname = :dbname");
+            // Kiểm tra xem database có tồn tại không
+            $stmt = $connection->prepare("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = :dbname");
             $stmt->execute(['dbname' => $databaseName]);
 
             if ($stmt->rowCount() > 0) {
-                $connection->exec("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$databaseName'");
-                $connection->exec("DROP DATABASE \"$databaseName\"");
-                $this->info("Database $databaseName dropped successfully");
+                // Nếu tồn tại, thực hiện DROP
+                $connection->exec("DROP DATABASE `$databaseName`");
+                $this->info("Database `$databaseName` dropped successfully");
             } else {
-                $this->error("Database $databaseName does not exist");
+                $this->warn("Database `$databaseName` does not exist");
             }
         } catch (PDOException $e) {
             $this->error("Database dropping error: " . $e->getMessage());
