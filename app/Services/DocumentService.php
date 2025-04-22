@@ -36,8 +36,9 @@ class DocumentService extends BaseService
             $check = $this->checkContrainTextInArray($request);
 
             $record = $this->documentRepository->store($check['main']);
-            $relationship = $this->checkSpecialDocumentType($request, $record);
-            $record = array_merge($record->toArray(), $relationship);
+
+            $this->checkSpecialDocumentType($request, $record);
+            $record = $this->documentRepository->findById($record->id);
 
             $record = $this->transformRecord($record);
             return $record;
@@ -48,9 +49,16 @@ class DocumentService extends BaseService
     {
         return $this->tryThrow(function () use ($request) {
             $prepare = $this->prepareData($request);
-            $request = $prepare['request'];
-            $removeOld = $prepare['removeOld'];
-            $record = $this->documentRepository->update($request, $removeOld);
+
+            $check = $this->checkContrainTextInArray($prepare['request']);
+
+            $record = $this->documentRepository->update($check['main'], $prepare['removeOld']);
+
+            $this->deleteRelationship($record);
+
+            $this->checkSpecialDocumentType($prepare['request'], $record);
+            $record = $this->documentRepository->findById($record->id);
+
             $record = $this->transformRecord($record);
             return $record;
         });
@@ -68,6 +76,13 @@ class DocumentService extends BaseService
         return $this->tryThrow(function () use ($request) {
             return $this->documentRepository->show($request);
         });
+    }
+
+    protected function deleteRelationship($record)
+    {
+        if ($record->legal) $record->legal->delete();
+        if ($record->scientificPublication) $record->scientificPublication->delete();
+        if ($record->biodiversity) $record->biodiversity->delete();
     }
 
     protected function transformRecord($record)
@@ -143,36 +158,37 @@ class DocumentService extends BaseService
 
     protected function checkSpecialDocumentType(array $request, $record)
     {
-        $new = [];
         switch ($record->id_document_type) {
             case config('documents.types.legal.id'):
                 // nếu là loại tài liệu văn bản pháp luật khác thì thêm mới loại này
                 if ($request['new_document_legal']['id_type'] == config('documents.types.legal.other'))
                     $request['new_document_legal']['id_type'] = $this->newDocumentLegalType($request['new_document_legal_type']);
 
+                // thêm mới văn bản pháp luật
                 $request['new_document_legal']['id_document'] = $record->id;
-                $new['legal'] = $this->newDocumentLegal($request['new_document_legal']);
+                $this->newDocumentLegal($request['new_document_legal']);
                 break;
             case config('documents.types.scientific_publication.id'):
                 // nếu là loại tài liệu ấn phẩm khoa học khác thì thêm mới loại này
                 if ($request['new_document_scientific_publication']['id_type'] == config('documents.types.scientific_publication.other'))
                     $request['new_document_scientific_publication']['id_type'] = $this->newDocumentScientificPublicationType($request['new_document_scientific_publication_type']);
 
+                // thêm mới ấn phẩm khoa học
                 $request['new_document_scientific_publication']['id_document'] = $record->id;
-                $new['document_scientific_publication'] = $this->newDocumentScientificPublication($request['new_document_scientific_publication']);
+                $this->newDocumentScientificPublication($request['new_document_scientific_publication']);
                 break;
             case config('documents.types.biodiversity.id'):
                 // nếu là loại tài liệu đa dạng sinh học khác thì thêm mới loại này
                 if ($request['new_document_biodiversitie']['id_type'] == config('documents.types.biodiversity.other'))
                     $request['new_document_biodiversitie']['id_type'] = $this->newDocumentBiodiversityType($request['new_document_biodiversitie_type']);
 
+                // thêm mới tài liệu đa dạng sinh học
                 $request['new_document_biodiversitie']['id_document'] = $record->id;
-                $new['document_biodiversitie'] = $this->newDocumentBiodiversity($request['new_document_biodiversitie']);
+                $this->newDocumentBiodiversity($request['new_document_biodiversitie']);
                 break;
             default:
                 break;
         }
-        return $new;
     }
 
     protected function newDocumentLegal(array $request)
