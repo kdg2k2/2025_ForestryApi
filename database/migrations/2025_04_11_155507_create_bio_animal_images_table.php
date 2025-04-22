@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
+            $table->boolean("is_main")->default(false);
             $table->foreignId("id_img")->constrained("bio_animal_album_images")->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId("id_animal")->constrained("bio_animals")->cascadeOnDelete()->cascadeOnUpdate();
         });

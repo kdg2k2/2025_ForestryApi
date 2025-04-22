@@ -1,11 +1,11 @@
 <?php
 
-namespace {{ namespace }};
+namespace App\Http\Requests\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Traits\FailedValidation;
+use Illuminate\Foundation\Http\FormRequest;
 
-class {{ class }} extends FormRequest
+class LoginRequest extends FormRequest
 {
     use FailedValidation;
     /**
@@ -35,9 +35,8 @@ class {{ class }} extends FormRequest
     public function rules(): array
     {
         return [
-            // 'paginate' => 'required|in:0,1',
-            // 'per_page' => 'nullable|integer|min:1',
-            // 'page' => 'nullable|integer|min:1',
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string',
         ];
     }
 }

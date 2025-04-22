@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RefreshRequest;
 use App\Services\AuthService;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -14,17 +15,17 @@ class AuthController extends Controller
         $this->authService = app(AuthService::class);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         return $this->catchAPI(function () use ($request) {
-            return $this->authService->login($request->all());
+            return response()->json($this->authService->login($request->validated()), 200);
         });
     }
 
-    public function refresh(Request $request)
+    public function refresh(RefreshRequest $request)
     {
         return $this->catchAPI(function () use ($request) {
-            return $this->authService->refresh($request->all());
+            return response()->json($this->authService->refresh($request->validated()), 200);
         });
     }
 

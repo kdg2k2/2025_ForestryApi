@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Document\DeleteRequest;
 use App\Http\Requests\Document\ListRequest;
 use App\Http\Requests\Document\ShowRequest;
@@ -9,7 +10,7 @@ use App\Http\Requests\Document\StoreRequest;
 use App\Http\Requests\Document\UpdateRequest;
 use App\Services\DocumentService;
 
-class DocumentController extends Controller
+class DocumentControllser extends Controller
 {
     protected $documentService;
     public function __construct()
