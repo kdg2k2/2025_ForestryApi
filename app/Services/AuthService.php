@@ -14,14 +14,7 @@ class AuthService extends BaseService
     public function login(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $v = Validator::make($request, [
-                'email' => 'required|email|exists:users,email',
-                'password' => 'required|string',
-            ]);
-            if ($v->fails())
-                throw new ValidationException($v);
-
-            if (!$token = auth('api')->attempt($v->validated()))
+            if (!$token = auth('api')->attempt($request))
                 throw new Exception('Unauthorized', 401);
 
             return $this->createNewToken($token, $this->createRefreshToken());
@@ -31,12 +24,6 @@ class AuthService extends BaseService
     public function refresh(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $v = Validator::make($request, [
-                "refresh_token" => "required|string",
-            ]);
-            if ($v->fails())
-                throw new ValidationException($v);
-
             $refreshToken = $request['refresh_token'];
             if (!$refreshToken)
                 throw new Exception('Missing refresh token', 401);
@@ -83,13 +70,13 @@ class AuthService extends BaseService
 
         $refreshPayload = JWTAuth::setToken($refreshToken)->getPayload();
 
-        return response()->json([
+        return [
             'token_type' => 'bearer',
             'access_token' => $token,
             'access_token_expires_in' => 3600,
             'refresh_token' => $refreshToken,
             'refresh_token_expires_in' => max($refreshPayload['exp'] - Carbon::now()->timestamp, 0),
             'user' => $user,
-        ], 200);
+        ];
     }
 }

@@ -4,13 +4,13 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BioNationalParkTypeController as bnptc;
 use App\Http\Controllers\Api\BioNationalParkController as bnpc;
 use App\Http\Controllers\Api\DocumentBiodiversityTypeController;
+use App\Http\Controllers\Api\DocumentControllser;
 use App\Http\Controllers\Api\DocumentLegalTypeController;
 use App\Http\Controllers\Api\DocumentScientificPublicationTypeController;
 use App\Http\Controllers\Api\DocumentTypeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserRoleController;
 use App\Http\Controllers\Api\UserUnitController;
-use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware("api")->group(function () {
@@ -84,7 +84,7 @@ Route::middleware("api")->group(function () {
             });
 
             # tài liệu
-            Route::controller(DocumentController::class)->group(function () {
+            Route::controller(DocumentControllser::class)->group(function () {
                 Route::get("list", "list");
                 Route::post("store", "store");
                 Route::patch("update", "update");
