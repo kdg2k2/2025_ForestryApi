@@ -28,7 +28,8 @@ class UserService extends BaseService
     {
         return $this->tryThrow(function () use ($request) {
             $request["password"] = bcrypt($request["password"]);
-            $request["path"] = $this->imageUpload($request["path"]);
+            if (!empty($request["path"]))
+                $request["path"] = $this->imageUpload($request["path"]);
             $record = $this->userRepository->store($request);
             $record = $this->transformRecord($record);
             return $record;
@@ -73,5 +74,19 @@ class UserService extends BaseService
     {
         $record['path'] = $this->getAssetImage($record['path']);
         return $record;
+    }
+
+    public function findById(int $id)
+    {
+        return $this->tryThrow(function () use ($id) {
+            return $this->userRepository->findById($id);
+        });
+    }
+
+    public function findByEmail(string $email)
+    {
+        return $this->tryThrow(function () use ($email) {
+            return $this->userRepository->findByEmail($email);
+        });
     }
 }

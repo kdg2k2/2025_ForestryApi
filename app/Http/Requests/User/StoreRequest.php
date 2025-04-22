@@ -17,11 +17,14 @@ class StoreRequest extends FormRequest
     /**
      * Prepare the data for validation.
      */
-    protected function prepareForValidation()
+    public function prepareForValidation()
     {
         $this->merge([
-            // Thêm các giá trị mặc định ở đây
-            // 'field' => $this->field ?? 'default_value',
+            'id_unit' => $this->id_unit ?? config('user-units.UNDEFINED.id'),
+            'id_role' => $this->id_role ?? config('user-roles.FORESTER_START.id'),
+            'address' => $this->address ?? null,
+            'path' => $this->path ?? null,
+            'role_expires_in' => $this->role_expires_in ?? null,
         ]);
     }
 
@@ -36,8 +39,8 @@ class StoreRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
             'password' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'path' => 'required|mimes:png,jpeg,jpg|max:5120',
+            'address' => 'nullable|string|max:255',
+            'path' => 'nullable|mimes:png,jpeg,jpg|max:5120',
             'id_unit' => 'required|integer|exists:user_units,id',
             'id_role' => 'required|integer|exists:user_roles,id',
             'role_expires_in' => 'nullable|date_format:Y-m-d H:i',
