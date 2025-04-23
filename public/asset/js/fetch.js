@@ -33,13 +33,13 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
 
         if (method === "post") {
             // handle file upload vs JSON
-            if (params.file instanceof File || params.file instanceof Blob) {
-                const formData = new FormData();
-                Object.keys(params).forEach((key) =>
-                    formData.append(key, params[key])
-                );
-                formData.append("_token", csrfToken);
-                fetchOptions.body = formData;
+            if (params instanceof FormData) {
+                params.append("_token", csrfToken);
+                fetchOptions.headers = {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRF-Token": csrfToken,
+                };
+                fetchOptions.body = params;
             } else {
                 const body = { ...params, _token: csrfToken };
                 fetchOptions.headers = { "Content-Type": "application/json" };
@@ -151,3 +151,37 @@ const apiRequest = async (method, url, params = {}, csrfToken = "") => {
         throw err;
     }
 };
+
+class HttpIntant {
+    async get(url, data, csrfToken) {
+        return apiRequest("GET", url, data, csrfToken);
+    }
+    async post(url, data, csrfToken) {
+        return apiRequest("POST", url, data, csrfToken);
+    }
+    async put(url, data, csrfToken) {
+        if (data instanceof FormData) {
+            data.append("_method", "PUT");
+        } else {
+            data = { ...data, _method: "PUT" };
+        }
+        return apiRequest("POST", url, data, csrfToken);
+    }
+    async delete(url, data, csrfToken) {
+        if (data instanceof FormData) {
+            data.append("_method", "DELETE");
+        } else {
+            data = { ...data, _method: "DELETE" };
+        }
+        return apiRequest("POST", url, data, csrfToken);
+    }
+    async patch(url, data, csrfToken) {
+        if (data instanceof FormData) {
+            data.append("_method", "PATCH");
+        } else {
+            data = { ...data, _method: "PATCH" };
+        }
+        return apiRequest("POST", url, data, csrfToken);
+    }
+}
+const http = new HttpIntant();

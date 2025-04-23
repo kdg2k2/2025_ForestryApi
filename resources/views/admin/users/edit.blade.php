@@ -123,6 +123,5 @@
 @endsection
 
 @section('script')
-    <script src="\template-admin\admin\js\http.js"></script>
     <script src="\template-admin\admin\js\user\update.js"></script>
 @endsection

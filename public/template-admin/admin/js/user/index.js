@@ -1,5 +1,5 @@
 const getUsers = () => {
-    return http.get("user/list", {
+    return http.get("api/user/list", {
         paginate: 0,
     });
 };
@@ -23,6 +23,7 @@ const loadTable = async () => {
                 render: function (data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 },
+                width: "1%",
             },
             {
                 title: "Thông tin",
@@ -53,14 +54,16 @@ const loadTable = async () => {
                 data: null,
                 render: function (data, type, row) {
                     return /*html*/ `
-                        <a href="/admin/users/${row.id}" class="btn btn-warning btn-sm">
+                        <a title="Sửa" href="/admin/users/${row.id}" class="btn btn-warning btn-sm">
                             <span class="icon-pencil"></span>
                         </a>
-                        <a data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#confirm-lock" class="btn btn-danger btn-sm" type="button">
+                        <a title="Xóa" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#confirm-lock" class="btn btn-danger btn-sm" type="button">
                             <span class="icon-trash"></span>
                         </a>
                     `;
                 },
+                width: "5%",
+                class: "text-center",
             },
             // thêm cột nếu cần
         ],
@@ -73,12 +76,12 @@ $(document).ready(async function () {
 
 const deleteUser = async (id) => {
     try {
-        const { message } = await http.delete(`user/delete?id=${id}`);
-        notify(message, "#1cc88a");
+        const { message } = await http.delete(`api/user/delete`, {id});
+        alertSuccess(message);
         loadTable();
     } catch (error) {
         const { message } = error.responseJSON;
-        notify(message, "#e74a3b");
+        alertErr(message);
     }
 };
 
