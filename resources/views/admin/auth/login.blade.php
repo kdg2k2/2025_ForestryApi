@@ -11,7 +11,7 @@
                     </a>
                 </div>
                 <div class="login-main">
-                    <form action="dang-nhap" method="post" class="theme-form">
+                    <form method="post" class="theme-form">
                         <h2 class="text-center mb-3">ĐĂNG NHẬP</h2>
                         @csrf
                         <div class="form-group">
@@ -51,29 +51,46 @@
     <script src="template-admin/admin/js/password.js"></script>
 
     <script>
-        // biến toàn cục chứa access token
-        window.APP_ACCESS_TOKEN = null;
+        const loginApiUrl = @json(route('auth.login'));
+        const dashboardUrl = @json(route('dashboard'));
+
+        const redirect = () => {
+            window.location.href = dashboardUrl;
+        }
+
+        const loginForm = document.querySelector('form.theme-form');
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.email.value;
+            const password = this.password.value;
+            const csrf = this._token.value;
+
+            makeHttpRequest('post', loginApiUrl, {
+                    email,
+                    password
+                }, csrf)
+                .then(data => {
+                    redirect();
+                })
+                .catch(err => {
+                    console.error('Login failed', err);
+                });
+        });
+
+        window.addEventListener('message', function(evt) {
+            if (evt.origin !== window.location.origin) return;
+            if (evt.data.access_token) {
+                redirect();
+            }
+        }, false);
 
         document.getElementById('btnGoogleLogin').addEventListener('click', function() {
-            const url = "{{ route('auth.google.redirect') }}";
+            const url = @json(route('auth.google.redirect'));
             const w = 500,
                 h = 600;
-            const left = (screen.width - w) / 2;
-            const top = (screen.height - h) / 2;
-            // mở popup
-            const popup = window.open(url, 'GoogleLogin', `width=${w},height=${h},top=${top},left=${left}`);
-
-            // lắng nghe message từ popup
-            window.addEventListener('message', function(evt) {
-                if (evt.origin !== window.location.origin) return;
-                const data = evt.data;
-                if (data.access_token) {
-                    window.APP_ACCESS_TOKEN = data.access_token;
-                    console.log('Access token nhận được:', window.APP_ACCESS_TOKEN);
-                    // sau đây có thể gọi API, ví dụ lưu vào local biến, header mặc định…
-                    // axios.defaults.headers.common['Authorization'] = 'Bearer ' + window.APP_ACCESS_TOKEN;
-                }
-            }, false);
+            const left = (screen.width - w) / 2,
+                top = (screen.height - h) / 2;
+            window.open(url, 'GoogleLogin', `width=${w},height=${h},top=${top},left=${left}`);
         });
     </script>
 @endsection

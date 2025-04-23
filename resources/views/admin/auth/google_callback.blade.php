@@ -2,17 +2,24 @@
 <html>
 
 <head>
-    <title>Google Login</title>
+    <title>Callback</title>
 </head>
 
 <body>
     <script>
-        // gửi access token về cửa sổ chính
-        window.opener.postMessage({
-            access_token: '{{ $access }}'
-        }, window.location.origin);
-        // tự đóng popup
-        window.close();
+        const payload = {
+            access_token: @json($access),
+            refresh_token: @json($refresh)
+        };
+        const callbackUrl = @json('auth.google.callback');
+
+        if (window.opener) {
+            window.opener.postMessage(payload, window.location.origin);
+            setTimeout(() => window.close(), 300);
+        } else {
+            const qs = new URLSearchParams(payload).toString();
+            window.location.href = callbackUrl + qs;
+        }
     </script>
 </body>
 
