@@ -15,7 +15,6 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
             return reject(new Error("Method chỉ hỗ trợ GET hoặc POST"));
         }
 
-        // create new AbortController for this request
         controller = new AbortController();
         const { signal } = controller;
 
@@ -62,6 +61,7 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
                         message: "Không có quyền truy cập!",
                     };
                 }
+
                 if (response.status >= 500) {
                     throw {
                         status: response.status,
@@ -80,9 +80,7 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
                 if (!response.ok) {
                     var msg = data.message || data;
                     if (data.errors)
-                        msg = Object.values(data.errors)
-                            .flat()
-                            .join(" - ");
+                        msg = Object.values(data.errors).flat().join(" - ");
                     alertErr(msg);
                     throw { status: response.status, data };
                 }
@@ -90,16 +88,15 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
                 return data;
             })
             .then((data) => {
-                // if refresh_token present in payload, set JS cookie
                 if (data.refresh_token) {
                     const rt = data.refresh_token;
-                    const maxAge = data.refresh_token_expires_in; // seconds
+                    const maxAge = data.refresh_token_expires_in;
                     document.cookie = `refresh_token=${rt}; max-age=${maxAge}; path=/;`;
                 }
 
                 if (data.access_token) {
                     const rt = data.access_token;
-                    const maxAge = data.access_token_expires_in; // seconds
+                    const maxAge = data.access_token_expires_in;
                     document.cookie = `access_token=${rt}; max-age=${maxAge}; path=/;`;
                 }
                 hideLoading();
@@ -115,4 +112,40 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
                 reject(err);
             });
     });
+};
+
+const getCookie = (name) => {
+    const match = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith(name + "="));
+    return match ? match.split("=")[1] : null;
+};
+
+const apiRequest = async (method, url, params = {}, csrfToken = "") => {
+    try {
+        return await makeHttpRequest(method, url, params, csrfToken);
+    } catch (err) {
+        if (err.status === 401) {
+            console.log("Access token expired, attempting refresh");
+            const refreshToken = getCookie("refresh_token");
+            if (!refreshToken) throw err;
+
+            const refreshUrl = "/api/auth/refresh";
+            try {
+                const refreshData = await makeHttpRequest(
+                    "post",
+                    refreshUrl,
+                    { refresh_token: refreshToken },
+                    csrfToken
+                );
+                console.log("Refresh succeeded, new access token set");
+                // original request retry
+                return await makeHttpRequest(method, url, params, csrfToken);
+            } catch (refreshErr) {
+                console.error("Refresh failed", refreshErr);
+                throw refreshErr;
+            }
+        }
+        throw err;
+    }
 };
