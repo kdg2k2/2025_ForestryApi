@@ -22,6 +22,7 @@ class UpdateRequest extends FormRequest
         $this->merge([
             // Thêm các giá trị mặc định ở đây
             // 'field' => $this->field ?? 'default_value',
+            "role_expires_in" => $this->role_expires_in ? date("Y-m-d H:i", strtotime($this->role_expires_in)) : null,
         ]);
     }
 

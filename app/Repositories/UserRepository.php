@@ -8,14 +8,13 @@ class UserRepository
 {
     public function list(array $request)
     {
-        $query = User::orderByDesc("id");
+        $query = User::orderByDesc("id")->with("role", "unit");
 
         if (!empty($request["id_unit"]))
             $query->where("id_unit", $request["id_unit"]);
 
         if (!empty($request["id_role"]))
             $query->where("id_role", $request["id_role"]);
-
         return $query->get()->toArray();
     }
 
@@ -29,7 +28,7 @@ class UserRepository
     {
         $record = User::find($request["id"]);
 
-        if ($removeOldPath == true)
+        if ($removeOldPath == true && !empty($record->path))
             if (file_exists(public_path($record->path)))
                 unlink(public_path($record->path));
 
@@ -41,7 +40,7 @@ class UserRepository
     {
         return User::find($request["id"])->delete();
     }
-    
+
     public function findById(int $id)
     {
         return User::find($id);

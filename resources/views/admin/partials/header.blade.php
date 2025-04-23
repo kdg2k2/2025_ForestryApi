@@ -1,7 +1,6 @@
 <header class="page-header row" id="top_header">
     <div class="logo-wrapper d-flex align-items-center col-auto"><a href="/">
-            <img style="height: 40px" class="light-logo img-fluid" src="assets/img/logo/logo_white.png" alt="logo"/>
-            <img style="height: 40px" class="dark-logo img-fluid" src="assets/img/logo/logo_white.png" alt="logo"/></a><a
+            <img style="height: 40px; border-radius: 50%;" class="img-fluid" src="asset/images/F4.jpg" alt="logo"/><a
             class="close-btn toggle-sidebar" href="javascript:void(0)">
             <svg class="svg-color">
                 <use href="template-admin/admin/svg/iconly-sprite.svg#Category"></use>

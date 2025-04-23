@@ -18,10 +18,6 @@ Route::get('/', function () {
     echo ('welcome');
 });
 
-Route::get("admin/index", function () {
-    return view("admin/home/index");
-});
-
 # login
 Route::get("login", [AuthController::class, "login"])->name("login");
 # register

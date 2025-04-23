@@ -126,8 +126,8 @@
                     <i class="iconly-Arrow-Right-2 icli"> </i>
                 </a>
                 <ul class="sidebar-submenu">
-                    <li><a href="template-admin/admin/users/online">Đang hoạt động</a></li>
-                    <li><a href="template-admin/admin/users/locked">Đã khóa</a></li>
+                    <li><a href="admin/users/add">Thêm mới</a></li>
+                    <li><a href="admin/users">Danh sách</a></li>
                 </ul>
             </li>
 
