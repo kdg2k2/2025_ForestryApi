@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware("api")->group(function () {
     Route::prefix("auth")->controller(AuthController::class)->group(function () {
         # login
-        Route::post("login", "login")->middleware("throttle:5,1");
+        Route::post("login", "login")->middleware("throttle:5,1")->name("auth.login");
         # refresh access token
-        Route::post("refresh", "refresh")->middleware("throttle:5,1");
+        Route::post("refresh", "refresh")->middleware("throttle:5,1")->name("auth.refresh");
         # logout
-        Route::post("logout", "logout")->middleware("api");
+        Route::post("logout", "logout")->middleware("auth:api")->name("auth.logout");
         # google
         Route::prefix("google")->group(function () {
             # redirect to Google's OAuth page

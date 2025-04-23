@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,3 +21,12 @@ Route::get('/', function () {
 Route::get("admin/index", function () {
     return view("admin/home/index");
 });
+
+# login
+Route::get("login", [AuthController::class, "login"])->name("login");
+# register
+Route::get("register", [AuthController::class, "register"])->name("register");
+# verify account
+Route::get("verify", [AuthController::class, "verify"])->name("verify");
+# forget password
+Route::get("forget-password", [AuthController::class, "forgetPassword"])->name("forget-password");

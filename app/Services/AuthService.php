@@ -96,15 +96,13 @@ class AuthService extends BaseService
     public function authGoogleRedirect()
     {
         return $this->tryThrow(function () {
-            $url = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
+            return 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
                 'client_id' => env('GOOGLE_CLIENT_ID'),
                 'redirect_uri' => env('GOOGLE_REDIRECT_URL'),
                 'response_type' => 'code',
                 'scope' => 'email profile',
                 'state' => Str::random(40),
             ]);
-
-            return redirect($url);
         });
     }
 
