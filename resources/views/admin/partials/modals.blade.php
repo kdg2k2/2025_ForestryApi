@@ -55,38 +55,19 @@
     </div>
 </div>
 
-<div class="modal fade" id="confirm-approve" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="confirm-logout" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title fs-5">Xác nhận phê duyệt đánh giá</h3>
+                <h3 class="modal-title fs-5">Xác nhận đăng xuất</h3>
                 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h5>Xác nhận phê duyệt đánh giá này, đánh giá sẽ được hiển thị ở trang chủ. Xác nhận xóa chọn "Xác
-                    nhận", để hủy chọn "Hủy bỏ"</h5>
+                <h5>Chắc chắn đãng xuất không?</h5>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light text-dark" type="button" data-bs-dismiss="modal">Hủy</button>
-                <a href="#" class="btn btn-danger btn-approve" type="button">Xác nhận</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="delete-product" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title fs-5">Xác nhận xoá sản phẩm</h3>
-                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <h5>Sản phẩm bị xoá sẽ không thể khôi phục. Xác nhận xóa chọn "Xác nhận", để hủy chọn "Hủy bỏ"</h5>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-light text-dark" type="button" data-bs-dismiss="modal">Hủy</button>
-                <a href="#" class="btn btn-danger btn-product" type="button">Xác nhận</a>
+                <a href="#" class="btn btn-danger btn-logout" type="button" id="btn-confirm-logout">Xác nhận</a>
             </div>
         </div>
     </div>
@@ -105,11 +86,19 @@
         $(this).find('.btn-unlock').attr('href', $(e.relatedTarget).data('href'));
     });
 
-    $('#confirm-approve').on('show.bs.modal', function(e) {
-        $(this).find('.btn-approve').attr('href', $(e.relatedTarget).data('href'));
-    });
+    $('#confirm-logout').on('show.bs.modal', function(e) {
+        $('#btn-confirm-logout').one('click', function(evt) {
+            evt.preventDefault();
 
-    $('#delete-product').on('show.bs.modal', function(e) {
-        $(this).find('.btn-product').attr('href', $(e.relatedTarget).data('href'));
+            const csrf = $("meta[name='csrf_token']").attr('content');
+
+            apiRequest('post', $(e.relatedTarget).data('href'), {}, csrf)
+                .then(data => {
+                    window.location.href = '/';
+                })
+                .catch(err => {
+                    console.error('Logout failed', err);
+                });
+        });
     });
 </script>

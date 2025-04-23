@@ -65,7 +65,7 @@
             const password = this.password.value;
             const csrf = this._token.value;
 
-            makeHttpRequest('post', loginApiUrl, {
+            apiRequest('post', loginApiUrl, {
                     email,
                     password
                 }, csrf)
