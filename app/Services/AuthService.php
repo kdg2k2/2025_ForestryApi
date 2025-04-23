@@ -131,7 +131,7 @@ class AuthService extends BaseService
                 $userInfo = [
                     'name' => $googleUser['name'],
                     'email' => $googleUser['email'],
-                    'password' => bcrypt(time() . $googleUser['email']),
+                    'password' => bcrypt(time() + rand(0, 1000)),
                 ];
                 $existingUser = $this->newUserGoogle($userInfo);
                 $existingUser = $this->userService->findById($existingUser['id']);
