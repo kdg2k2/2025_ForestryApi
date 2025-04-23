@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Web\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,8 +27,4 @@ Route::controller(AuthController::class)->group(function () {
     Route::get("verify", "verify")->name("verify");
     # forget password
     Route::get("forget-password", "forgetPassword")->name("forget-password");
-});
-
-Route::prefix("admin")->group(function () {
-    Route::get("dashboard", [DashboardController::class, 'index'])->name('dashboard');
 });
