@@ -42,7 +42,7 @@ class AuthController extends Controller
     public function authGoogleRedirect()
     {
         return $this->catchAPI(function () {
-            return response()->json($this->authService->authGoogleRedirect(), 200);
+            return redirect($this->authService->authGoogleRedirect());
         });
     }
 
