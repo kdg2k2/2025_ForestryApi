@@ -29,12 +29,12 @@
         $(document).ready(function() {
             @if (session('success'))
                 var success = @json(session('success'));
-                notify(success, "#1cc88a");
+                alertSuccess(success);
             @endif
 
             @if (session('err'))
                 var fail = @json(session('err'));
-                notify(fail, "#dc3545");
+                alertErr(fail);
             @endif
         });
     </script>

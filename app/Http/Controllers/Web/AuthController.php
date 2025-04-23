@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Services\AuthService;
-use Exception;
 
 class AuthController extends Controller
 {
     public function login()
     {
+        if (auth('api')->user())
+            return redirect(route('dashboard'));
         return view("admin.auth.login");
     }
 
