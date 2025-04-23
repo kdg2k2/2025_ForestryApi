@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Web\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,11 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    echo ('welcome');
-});
-
-Route::get("admin/index", function () {
-    return view("admin/home/index");
+    return redirect(route('login'));
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -31,4 +28,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::get("verify", "verify")->name("verify");
     # forget password
     Route::get("forget-password", "forgetPassword")->name("forget-password");
+});
+
+Route::prefix("admin")->group(function () {
+    Route::get("dashboard", [DashboardController::class, 'index'])->name('dashboard');
 });

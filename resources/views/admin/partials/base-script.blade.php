@@ -6,3 +6,5 @@
 <script src="template-admin/js/notify.js"></script>
 <script src="template-admin/js/prettify.js"></script>
 <script src="template-admin/js/use-notify.js"></script>
+<script src="asset/js/fetch.js"></script>
+<script src="asset/js/loading.js"></script>

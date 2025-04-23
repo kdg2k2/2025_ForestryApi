@@ -55,14 +55,10 @@ class AuthController extends Controller
             if ($request->expectsJson())
                 return response()->json($data, 200);
 
-            $access  = $data['access_token'];
-            $refresh = $data['refresh_token'];
-            $minutes = $data['refresh_token_expires_in'] / 60;
-
             return response()->view('admin.auth.google_callback', [
-                'access' => $access,
-                'refresh' => $refresh,
-            ])->cookie('refresh_token', $refresh, $minutes, '/', null, true, true);
+                'access' => $data['access_token'],
+                'refresh' => $data['refresh_token'],
+            ]);
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors($e->getMessage());
         }

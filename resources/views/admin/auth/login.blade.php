@@ -11,7 +11,7 @@
                     </a>
                 </div>
                 <div class="login-main">
-                    <form action="dang-nhap" method="post" class="theme-form">
+                    <form method="post" class="theme-form">
                         <h2 class="text-center mb-3">ĐĂNG NHẬP</h2>
                         @csrf
                         <div class="form-group">
@@ -51,16 +51,44 @@
     <script src="template-admin/admin/js/password.js"></script>
 
     <script>
-        window.APP_ACCESS_TOKEN = null;
+        const loginApiUrl = @json(route('auth.login'));
+        const dashboardUrl = @json(route('dashboard'));
+
+        const setCookieAccesstoken = (data) => {
+            const at = data.access_token;
+            const maxAge = data.access_token_expires_in;
+            document.cookie = `access_token=${at}; max-age=${maxAge}; path=/;`;
+
+            window.location.href = dashboardUrl;
+        }
+
+        const loginForm = document.querySelector('form.theme-form');
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.email.value;
+            const password = this.password.value;
+            const csrf = this._token.value;
+
+            makeHttpRequest('post', loginApiUrl, {
+                    email,
+                    password
+                }, csrf)
+                .then(data => {
+                    if (!data.access_token) {
+                        alertErr('Access token does not in response');
+                        return;
+                    }
+                    setCookieAccesstoken(data);
+                })
+                .catch(err => {
+                    console.error('Login failed', err);
+                });
+        });
 
         window.addEventListener('message', function(evt) {
-            if (evt.origin !== window.location.origin)
-                return;
-
-            const data = evt.data;
-            if (data.access_token) {
-                window.APP_ACCESS_TOKEN = data.access_token;
-                window.location.href = '/admin/index';
+            if (evt.origin !== window.location.origin) return;
+            if (evt.data.access_token) {
+                setCookieAccesstoken(evt.data)
             }
         }, false);
 
@@ -68,8 +96,8 @@
             const url = @json(route('auth.google.redirect'));
             const w = 500,
                 h = 600;
-            const left = (screen.width - w) / 2;
-            const top = (screen.height - h) / 2;
+            const left = (screen.width - w) / 2,
+                top = (screen.height - h) / 2;
             window.open(url, 'GoogleLogin', `width=${w},height=${h},top=${top},left=${left}`);
         });
     </script>
