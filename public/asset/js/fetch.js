@@ -1,9 +1,11 @@
 let controller = null;
+let isRefreshing = false;
+let refreshPromise = null;
+let requestQueue = [];
 
 const unloadHandler = () => {
     if (controller) {
         controller.abort();
-        console.log("Fetch aborted on unload");
     }
 };
 window.addEventListener("unload", unloadHandler);
@@ -54,8 +56,6 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
                     response.type === "opaqueredirect" ||
                     response.status === 302
                 ) {
-                    hideLoading();
-                    alertErr("Không có quyền truy cập!");
                     throw {
                         status: response.status,
                         message: "Không có quyền truy cập!",
@@ -70,15 +70,13 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
                 }
 
                 const contentType = response.headers.get("content-type") || "";
-                let data;
-                if (contentType.includes("application/json")) {
-                    data = await response.json();
-                } else {
-                    data = await response.text();
-                }
+                const isJson = contentType.includes("application/json");
+                const data = isJson
+                    ? await response.json()
+                    : await response.text();
 
                 if (!response.ok) {
-                    var msg = data.message || data;
+                    const msg = data.message || data;
                     if (data.errors)
                         msg = Object.values(data.errors).flat().join(" - ");
                     alertErr(msg);
@@ -88,37 +86,18 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
                 return data;
             })
             .then((data) => {
-                if (data.refresh_token) {
-                    const rt = data.refresh_token;
-                    const maxAge = data.refresh_token_expires_in;
-                    document.cookie = `refresh_token=${rt}; max-age=${maxAge}; path=/;`;
-                }
-
-                if (data.access_token) {
-                    const rt = data.access_token;
-                    const maxAge = data.access_token_expires_in;
-                    document.cookie = `access_token=${rt}; max-age=${maxAge}; path=/;`;
-                }
-                hideLoading();
                 resolve(data);
             })
             .catch((err) => {
-                hideLoading();
                 if (err.name === "AbortError") {
                     console.warn("Request aborted");
                     return;
                 }
                 console.error("Fetch error:", err);
                 reject(err);
-            });
+            })
+            .finally(hideLoading);
     });
-};
-
-const getCookie = (name) => {
-    const match = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith(name + "="));
-    return match ? match.split("=")[1] : null;
 };
 
 const apiRequest = async (method, url, params = {}, csrfToken = "") => {
@@ -126,26 +105,49 @@ const apiRequest = async (method, url, params = {}, csrfToken = "") => {
         return await makeHttpRequest(method, url, params, csrfToken);
     } catch (err) {
         if (err.status === 401) {
-            console.log("Access token expired, attempting refresh");
-            const refreshToken = getCookie("refresh_token");
-            if (!refreshToken) throw err;
-
-            const refreshUrl = "/api/auth/refresh";
-            try {
-                const refreshData = await makeHttpRequest(
+            if (!isRefreshing) {
+                isRefreshing = true;
+                refreshPromise = makeHttpRequest(
                     "post",
-                    refreshUrl,
-                    { refresh_token: refreshToken },
+                    "/api/auth/refresh",
+                    {},
                     csrfToken
-                );
-                console.log("Refresh succeeded, new access token set");
-                // original request retry
-                return await makeHttpRequest(method, url, params, csrfToken);
-            } catch (refreshErr) {
-                console.error("Refresh failed", refreshErr);
-                throw refreshErr;
+                )
+                    .then(() => {
+                        isRefreshing = false;
+                        // Retry all queued requests
+                        requestQueue.forEach((cb) => cb.resolve());
+                        requestQueue = [];
+                    })
+                    .catch((refreshErr) => {
+                        isRefreshing = false;
+                        requestQueue.forEach((cb) => cb.reject(refreshErr));
+                        requestQueue = [];
+                        window.location.href = "/login";
+                        throw refreshErr;
+                    });
             }
+
+            return new Promise((resolve, reject) => {
+                requestQueue.push({
+                    resolve: async () => {
+                        try {
+                            const data = await makeHttpRequest(
+                                method,
+                                url,
+                                params,
+                                csrfToken
+                            );
+                            resolve(data);
+                        } catch (retryErr) {
+                            reject(retryErr);
+                        }
+                    },
+                    reject,
+                });
+            });
         }
+
         throw err;
     }
 };

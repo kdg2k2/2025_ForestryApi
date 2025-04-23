@@ -9,7 +9,6 @@
     <script>
         const payload = {
             access_token: @json($access),
-            refresh_token: @json($refresh)
         };
         const callbackUrl = @json('auth.google.callback');
 
