@@ -96,6 +96,12 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
                     const maxAge = data.refresh_token_expires_in; // seconds
                     document.cookie = `refresh_token=${rt}; max-age=${maxAge}; path=/;`;
                 }
+
+                if (data.access_token) {
+                    const rt = data.access_token;
+                    const maxAge = data.access_token_expires_in; // seconds
+                    document.cookie = `access_token=${rt}; max-age=${maxAge}; path=/;`;
+                }
                 hideLoading();
                 resolve(data);
             })

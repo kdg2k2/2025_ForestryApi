@@ -54,11 +54,7 @@
         const loginApiUrl = @json(route('auth.login'));
         const dashboardUrl = @json(route('dashboard'));
 
-        const setCookieAccesstoken = (data) => {
-            const at = data.access_token;
-            const maxAge = data.access_token_expires_in;
-            document.cookie = `access_token=${at}; max-age=${maxAge}; path=/;`;
-
+        const redirect = () => {
             window.location.href = dashboardUrl;
         }
 
@@ -74,11 +70,7 @@
                     password
                 }, csrf)
                 .then(data => {
-                    if (!data.access_token) {
-                        alertErr('Access token does not in response');
-                        return;
-                    }
-                    setCookieAccesstoken(data);
+                    redirect();
                 })
                 .catch(err => {
                     console.error('Login failed', err);
@@ -88,7 +80,7 @@
         window.addEventListener('message', function(evt) {
             if (evt.origin !== window.location.origin) return;
             if (evt.data.access_token) {
-                setCookieAccesstoken(evt.data)
+                redirect();
             }
         }, false);
 

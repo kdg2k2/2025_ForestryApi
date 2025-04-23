@@ -8,10 +8,8 @@ class AuthController extends Controller
 {
     public function login()
     {
-        if (auth('api')->user()) {
-            dd(auth('api')->user());
-            return redirect(route('admin.dashboard.index'));
-        }
+        if (auth('api')->user())
+            return redirect(route('dashboard'));
         return view("admin.auth.login");
     }
 
