@@ -48,8 +48,7 @@ class AuthService extends BaseService
             if (!$user)
                 throw new Exception('User not found', 404);
 
-            $token = $this->createTokenWithUser($user);
-            return $this->createNewToken($token, $this->createRefreshToken());
+            return $this->createTokenWithUserRecord($user);
         });
     }
 
@@ -88,9 +87,10 @@ class AuthService extends BaseService
         ];
     }
 
-    protected function createTokenWithUser($user)
+    protected function createTokenWithUserRecord($user)
     {
-        return auth('api')->login($user);
+        $token =  auth('api')->login($user);
+        return $this->createNewToken($token, $this->createRefreshToken());
     }
 
     public function authGoogleRedirect()
@@ -137,8 +137,7 @@ class AuthService extends BaseService
                 $existingUser = $this->userService->findById($existingUser['id']);
             }
 
-            $token = $this->createTokenWithUser($existingUser);
-            return $this->createNewToken($token, $this->createRefreshToken());
+            return $this->createTokenWithUserRecord($existingUser);
         });
     }
 

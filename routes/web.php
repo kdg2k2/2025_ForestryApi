@@ -22,11 +22,13 @@ Route::get("admin/index", function () {
     return view("admin/home/index");
 });
 
-# login
-Route::get("login", [AuthController::class, "login"])->name("login");
-# register
-Route::get("register", [AuthController::class, "register"])->name("register");
-# verify account
-Route::get("verify", [AuthController::class, "verify"])->name("verify");
-# forget password
-Route::get("forget-password", [AuthController::class, "forgetPassword"])->name("forget-password");
+Route::controller(AuthController::class)->group(function () {
+    # login
+    Route::get("login", "login")->name("login");
+    # register
+    Route::get("register", "register")->name("register");
+    # verify account
+    Route::get("verify", "verify")->name("verify");
+    # forget password
+    Route::get("forget-password", "forgetPassword")->name("forget-password");
+});

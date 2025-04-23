@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RefreshRequest;
 use App\Services\AuthService;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -41,15 +42,29 @@ class AuthController extends Controller
 
     public function authGoogleRedirect()
     {
-        return $this->catchAPI(function () {
-            return redirect($this->authService->authGoogleRedirect());
-        });
+        $url = (new AuthService())->authGoogleRedirect();
+        return redirect()->away($url);
     }
 
-    public function authGoogleCallback()
+    public function authGoogleCallback(Request $request)
     {
-        return $this->catchAPI(function () {
-            return response()->json($this->authService->authGoogleCallback(), 200);
-        });
+        try {
+            $data = (new AuthService())->authGoogleCallback();
+
+            // nếu client gửi Accept: application/json
+            if ($request->expectsJson())
+                return response()->json($data, 200);
+
+            $access  = $data['access_token'];
+            $refresh = $data['refresh_token'];
+            $minutes = $data['refresh_token_expires_in'] / 60;
+
+            return response()->view('admin.auth.google_callback', [
+                'access' => $access,
+                'refresh' => $refresh,
+            ])->cookie('refresh_token', $refresh, $minutes, '/', null, true, true);
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors($e->getMessage());
+        }
     }
 }
