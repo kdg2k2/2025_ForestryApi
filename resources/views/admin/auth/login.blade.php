@@ -51,29 +51,26 @@
     <script src="template-admin/admin/js/password.js"></script>
 
     <script>
-        // biến toàn cục chứa access token
         window.APP_ACCESS_TOKEN = null;
 
+        window.addEventListener('message', function(evt) {
+            if (evt.origin !== window.location.origin)
+                return;
+
+            const data = evt.data;
+            if (data.access_token) {
+                window.APP_ACCESS_TOKEN = data.access_token;
+                window.location.href = '/admin/index';
+            }
+        }, false);
+
         document.getElementById('btnGoogleLogin').addEventListener('click', function() {
-            const url = "{{ route('auth.google.redirect') }}";
+            const url = @json(route('auth.google.redirect'));
             const w = 500,
                 h = 600;
             const left = (screen.width - w) / 2;
             const top = (screen.height - h) / 2;
-            // mở popup
-            const popup = window.open(url, 'GoogleLogin', `width=${w},height=${h},top=${top},left=${left}`);
-
-            // lắng nghe message từ popup
-            window.addEventListener('message', function(evt) {
-                if (evt.origin !== window.location.origin) return;
-                const data = evt.data;
-                if (data.access_token) {
-                    window.APP_ACCESS_TOKEN = data.access_token;
-                    console.log('Access token nhận được:', window.APP_ACCESS_TOKEN);
-                    // sau đây có thể gọi API, ví dụ lưu vào local biến, header mặc định…
-                    // axios.defaults.headers.common['Authorization'] = 'Bearer ' + window.APP_ACCESS_TOKEN;
-                }
-            }, false);
+            window.open(url, 'GoogleLogin', `width=${w},height=${h},top=${top},left=${left}`);
         });
     </script>
 @endsection
