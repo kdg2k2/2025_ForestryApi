@@ -21,16 +21,16 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title fs-5">Xác nhận khoá tài khoản</h3>
+                <h3 class="modal-title fs-5">Xác nhận xóa tài khoản</h3>
                 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h5>Xác nhận khoá tài khoản này, tài khoản bị khoá sẽ không được truy cập hệ thống quản trị. Xác
+                <h5>Xác nhận xóa tài khoản này, tài khoản bị xóa sẽ không được truy cập hệ thống quản trị. Xác
                     nhận xóa chọn "Xác nhận", để hủy chọn "Hủy bỏ"</h5>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light text-dark" type="button" data-bs-dismiss="modal">Hủy</button>
-                <a href="#" class="btn btn-danger btn-lock" type="button">Xác nhận</a>
+                <button class="btn btn-danger btn-ok" type="button">Xác nhận</button>
             </div>
         </div>
     </div>
