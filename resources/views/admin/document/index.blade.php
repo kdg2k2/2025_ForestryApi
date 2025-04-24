@@ -16,7 +16,7 @@
                         <div class="card-header pb-0 card-no-border d-flex justify-content-between align-items-center">
                             <h3>Danh sách</h3>
                             <div>
-                                <a href="admin/users/add" class="btn btn-primary">Thêm mới</a>
+                                <a href="admin/document/add" class="btn btn-primary">Thêm mới</a>
                             </div>
                         </div>
                         <div class="card-body">
@@ -42,5 +42,5 @@
     </div>
 @endsection
 @section('script')
-    <script src="\template-admin\admin\js\user\index.js"></script>
+    <script src="\template-admin\admin\js\document\index.js"></script>
 @endsection

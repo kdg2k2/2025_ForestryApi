@@ -23,7 +23,8 @@ const loadTable = async () => {
                 render: function (data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 },
-                width: "1%",
+                width: "100px",
+                class: "text-center",
             },
             {
                 title: "Thông tin",
@@ -62,7 +63,7 @@ const loadTable = async () => {
                         </a>
                     `;
                 },
-                width: "5%",
+                width: "120px",
                 class: "text-center",
             },
             // thêm cột nếu cần
