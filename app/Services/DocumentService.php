@@ -68,10 +68,13 @@ class DocumentService extends BaseService
         });
     }
 
-    public function show(array $request)
+    public function show(int $id, array $request = [])
     {
-        return $this->tryThrow(function () use ($request) {
-            return $this->documentRepository->show($request);
+        return $this->tryThrow(function () use ($request, $id) {
+            return $this->documentRepository->show([
+                'id' => $id,
+                ...$request
+            ]);
         });
     }
 
@@ -102,7 +105,7 @@ class DocumentService extends BaseService
     protected function prepareData(array $request)
     {
         // nếu là loại văn bản khác thì tự thêm record loại văn bản mới
-        if ($request['id_document_type'] == config('documents.types.other')) {
+        if ($request['id_document_type'] == config('documents.types.other.id')) {
             $request['id_document_type'] = $this->newDocumentType($request['new_document_type']);
             unset($request['new_document_type']);
         }

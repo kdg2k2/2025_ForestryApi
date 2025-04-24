@@ -21,7 +21,7 @@ abstract class BaseDocumentRequest extends FormRequest
         ];
 
         switch ($this->id_document_type) {
-            case config('documents.types.other'):
+            case config('documents.types.other.id'):
                 $rules += [
                     'new_document_type' => 'required|array',
                     'new_document_type.name' => 'required',

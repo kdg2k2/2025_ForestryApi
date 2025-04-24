@@ -1,14 +1,6 @@
 @extends('admin.layout.index')
 @section('header')
     <link rel="stylesheet" type="text/css" href="/template-admin/admin/css/vendors/datatables.css">
-    <style>
-        th,
-        td {
-            min-width: 150px !important;
-            max-width: 300px !important;
-            vertical-align: middle;
-        }
-    </style>
 @endsection
 @section('content')
     <div class="page-body">
@@ -50,6 +42,5 @@
     </div>
 @endsection
 @section('script')
-    <script src="\template-admin\admin\js\http.js"></script>
     <script src="\template-admin\admin\js\user\index.js"></script>
 @endsection

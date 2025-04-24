@@ -16,5 +16,5 @@ Route::prefix("users")->group(function () {
 Route::prefix("documents")->controller(DocumentController::class)->group(function () {
     Route::get("/", "index")->name("admin.document.index");
     Route::get("create", "create")->name("admin.document.create");
-    Route::get("edit", "edit")->name("admin.document.edit");
+    Route::get("{id}", "edit")->name("admin.document.edit");
 });
