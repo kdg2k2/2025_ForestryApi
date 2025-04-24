@@ -43,4 +43,9 @@ class Document extends Model
     {
         return $this->hasOne(DocumentBiodiversity::class, "id_document");
     }
+
+    public function orderDocument()
+    {
+        return $this->hasMany(OrderDocument::class);
+    }
 }

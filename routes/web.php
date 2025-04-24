@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('web.payment.index');
+    return redirect(route('login'));
 });
 
 Route::controller(AuthController::class)->group(function () {

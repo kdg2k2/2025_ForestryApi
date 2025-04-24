@@ -31,10 +31,8 @@ class VnPayController extends Controller
     public function vnpayReturn(Request $request)
     {
         $res = $this->vnPayService->vnpayReturn($request->all());
-        if (!empty($res['data']))
-            return view($res['view'], [
-                'inputData' => $res['data']
-            ]);
-        return view($res['view']);
+        return empty($res['data'])
+            ? view($res['view'])
+            : view($res['view'], ['inputData' => $res['data']]);
     }
 }

@@ -6,22 +6,46 @@ use Illuminate\Support\Facades\Http;
 
 class VnpayService extends BaseService
 {
-    public function createPaymentUrl(array $order)
+    protected $orderService;
+    protected $paymentService;
+    protected $paymentLogService;
+    public function __construct()
     {
-        return $this->tryThrow(function () use ($order) {
+        $this->paymentLogService = app(PaymentLogService::class);
+        $this->paymentService = app(PaymentService::class);
+        $this->orderService = app(OrderService::class);
+    }
+
+    public function createPaymentUrl(array $request)
+    {
+        return $this->tryThrow(function () use ($request) {
+            $order = $this->orderService->store([
+                'id_user' => auth('api')->id(),
+                'order_code' => $request['code'],
+                'total_amount' => $request['total'],
+                'status' => 'pending',
+            ]);
+
+            $payment = $this->paymentService->store([
+                'order_id' => $order->id,
+                'vnp_TxnRef' => $request['code'],
+                'vnp_Amount' => $request['total'],
+                'status' => 'pending',
+            ]);
+
             $data = [
-                'vnp_Version'    => '2.1.0',
-                'vnp_TmnCode'    => config('vnpay.vnp_TmnCode'),
-                'vnp_Amount'     => $order['total'] * 100,
-                'vnp_Command'    => 'pay',
+                'vnp_Version' => '2.1.0',
+                'vnp_TmnCode' => config('vnpay.vnp_TmnCode'),
+                'vnp_Amount' => $payment->vnp_Amount,
+                'vnp_Command' => 'pay',
                 'vnp_CreateDate' => now()->format('YmdHis'),
-                'vnp_CurrCode'   => 'VND',
-                'vnp_IpAddr'     => Http::get('https://api64.ipify.org?format=json')->json()['ip'],
-                'vnp_Locale'     => 'vn',
-                'vnp_OrderInfo'  => $order['info'],
-                'vnp_OrderType'  => $order['type'],
-                'vnp_ReturnUrl'  => route('vnpay.return'),
-                'vnp_TxnRef'     => $order['code'],
+                'vnp_CurrCode' => 'VND',
+                'vnp_IpAddr' => Http::get('https://api64.ipify.org?format=json')->json()['ip'],
+                'vnp_Locale' => 'vn',
+                'vnp_OrderInfo' => $request['info'],
+                'vnp_OrderType' => $request['type'],
+                'vnp_ReturnUrl' => route('vnpay.return'),
+                'vnp_TxnRef' => $payment->vnp_TxnRef,
             ];
 
             ksort($data);
@@ -37,8 +61,7 @@ class VnpayService extends BaseService
     public function vnpayReturn(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $vnp_SecureHash = $request['vnp_SecureHash'];
-
+            $vnp_SecureHash = $request['vnp_SecureHash'] ?? null;
             unset($request['vnp_SecureHash']);
             ksort($request);
 
@@ -53,14 +76,31 @@ class VnpayService extends BaseService
                     'status' => 400,
                 ];
 
-            if ($request['vnp_ResponseCode'] == '00')
-                $view = 'web.payment.payment_success';
+            $payment = $this->paymentService->findByVnpTxnRef($request['vnp_TxnRef']);
 
-            return [
-                'view' => $view,
-                'data' => $request,
-                'status' => 200,
-            ];
+            $newStatus = $request['vnp_ResponseCode'] === '00' ? 'success' : 'failed';
+            $oldStatus = $payment->status;
+
+            $this->paymentService->update([
+                'id' => $payment->id,
+                'status' => $newStatus,
+                'vnp_ResponseCode' => $request['vnp_ResponseCode'],
+                'vnp_TransactionNo' => $request['vnp_TransactionNo'] ?? null,
+                'vnp_BankCode' => $request['vnp_BankCode'] ?? null,
+            ]);
+
+            $this->paymentLogService->store([
+                'id_payment' => $payment->id,
+                'old_status' => $oldStatus,
+                'new_status' => $newStatus,
+                'note' => json_encode($request),
+            ]);
+
+            if ($newStatus == 'success')
+                $payment->order->update(['status' => 'paid']);
+
+            $view = $newStatus == 'success' ? 'web.payment.payment_success' : 'web.payment.payment_failed';
+            return ['view' => $view, 'data' => $request, 'status' => 200];
         });
     }
 }
