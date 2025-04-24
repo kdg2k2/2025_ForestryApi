@@ -100,5 +100,6 @@
 @endsection
 
 @section('script')
+    <script src="\template-admin\admin\js\document\common.js"></script>
     <script src="\template-admin\admin\js\document\add.js"></script>
 @endsection
