@@ -13,7 +13,8 @@ Route::prefix("users")->group(function () {
     Route::get("/{id}", [UserController::class, 'edit'])->name("admin.users.edit");
 });
 
-Route::prefix("document")->group(function () {
-    Route::get("/", [DocumentController::class, 'index'])->name("admin.document.index");
-    Route::get("/add", [DocumentController::class, 'add'])->name("admin.document.add");
+Route::prefix("documents")->controller(DocumentController::class)->group(function () {
+    Route::get("/", "index")->name("admin.document.index");
+    Route::get("create", "create")->name("admin.document.create");
+    Route::get("edit", "edit")->name("admin.document.edit");
 });

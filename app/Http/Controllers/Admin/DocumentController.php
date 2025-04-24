@@ -18,7 +18,7 @@ class DocumentController extends Controller
     }
     public function index()
     {
-        return view('admin.document.index');
+         return view("admin.pages.document.index");
     }
 
     public function add()

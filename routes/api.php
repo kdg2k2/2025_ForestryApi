@@ -92,11 +92,11 @@ Route::middleware("api")->group(function () {
 
             # tài liệu
             Route::controller(DocumentControllser::class)->group(function () {
-                Route::get("list", "list");
-                Route::post("store", "store");
-                Route::patch("update", "update");
-                Route::delete("delete", "delete");
-                Route::post("show", "show");
+                Route::get("list", "list")->name("api.document.list");
+                Route::post("store", "store")->name("api.document.store");
+                Route::patch("update", "update")->name("api.document.update");
+                Route::delete("delete", "delete")->name("api.document.delete");
+                Route::post("show", "show")->name("api.document.show");
             });
         });
 
