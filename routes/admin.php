@@ -16,5 +16,7 @@ Route::prefix("users")->group(function () {
 Route::prefix("documents")->controller(DocumentController::class)->group(function () {
     Route::get("/", "index")->name("admin.document.index");
     Route::get("create", "create")->name("admin.document.create");
+    Route::get("payment", "payment")->name("admin.document.payment");
+    Route::get("vnpay-return", "vnpayReturn")->name("admin.document.vnpay-return");
     Route::get("{id}", "edit")->name("admin.document.edit");
 });

@@ -12,16 +12,16 @@ class Order extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id_user');
     }
 
     public function orderDocument()
     {
-        return $this->hasMany(OrderDocument::class);
+        return $this->hasMany(OrderDocument::class, 'id_order');
     }
 
     public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 'id_order');
     }
 }

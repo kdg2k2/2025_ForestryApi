@@ -56,6 +56,7 @@
         const updateUrl = @json(route('api.document.update'));
         const deleteUrl = @json(route('api.document.delete'));
         const showUrl = @json(route('api.document.show'));
+        const paymentUrl = @json(route('admin.document.payment'));
 
         const getDocuments = () => {
             destroyDataTable(datatable);
@@ -96,7 +97,12 @@
                 uploader: item.uploader?.name ?? '',
                 actions: `
                     <div class="text-center">
-                        <a href="${showUrl}?${item.id}" title="Xem"
+                        <a href="${paymentUrl}?id=${item.id}" title="Mua tài liệu"
+                            class="btn btn-sm btn-outline-success rounded-pill" data-bs-toggle="tooltip"
+                            data-placement="top">
+                            <i class="fal fa-money-bill-alt"></i>
+                        </a>
+                        <a href="${showUrl}/${item.id}" title="Xem"
                             class="btn btn-sm btn-outline-info rounded-pill" data-bs-toggle="tooltip"
                             data-placement="top">
                             <i class="fal fa-book-reader"></i>
@@ -106,7 +112,7 @@
                             data-placement="top">
                             <i class="fal fa-edit"></i>
                         </a>
-                        <a href="${deleteUrl}?${item.id}" title="Xóa"
+                        <a href="${deleteUrl}?id=${item.id}" title="Xóa"
                             class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="tooltip"
                             data-placement="top">
                             <i class="fal fa-trash-alt"></i>

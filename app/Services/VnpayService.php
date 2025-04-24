@@ -19,16 +19,19 @@ class VnpayService extends BaseService
     public function createPaymentUrl(array $request)
     {
         return $this->tryThrow(function () use ($request) {
+            $maxOrderID = $this->orderService->maxId();
+            $orderCode = "ORDER" . ($maxOrderID + 1);
+
             $order = $this->orderService->store([
                 'id_user' => auth('api')->id(),
-                'order_code' => $request['code'],
+                'order_code' => $orderCode,
                 'total_amount' => $request['total'],
                 'status' => 'pending',
             ]);
 
             $payment = $this->paymentService->store([
-                'order_id' => $order->id,
-                'vnp_TxnRef' => $request['code'],
+                'id_order' => $order->id,
+                'vnp_TxnRef' => $orderCode,
                 'vnp_Amount' => $request['total'],
                 'status' => 'pending',
             ]);
@@ -36,7 +39,7 @@ class VnpayService extends BaseService
             $data = [
                 'vnp_Version' => '2.1.0',
                 'vnp_TmnCode' => config('vnpay.vnp_TmnCode'),
-                'vnp_Amount' => $payment->vnp_Amount,
+                'vnp_Amount' => $payment->vnp_Amount * 100,
                 'vnp_Command' => 'pay',
                 'vnp_CreateDate' => now()->format('YmdHis'),
                 'vnp_CurrCode' => 'VND',
@@ -44,7 +47,7 @@ class VnpayService extends BaseService
                 'vnp_Locale' => 'vn',
                 'vnp_OrderInfo' => $request['info'],
                 'vnp_OrderType' => $request['type'],
-                'vnp_ReturnUrl' => route('vnpay.return'),
+                'vnp_ReturnUrl' => $request['return_url'] ?? route('vnpay.return'),
                 'vnp_TxnRef' => $payment->vnp_TxnRef,
             ];
 
@@ -54,7 +57,11 @@ class VnpayService extends BaseService
 
             $secureHash = hash_hmac('sha512', $query, config('vnpay.vnp_HashSecret'));
 
-            return config('vnpay.vnp_Url') . '?' . $query . '&vnp_SecureHash=' . $secureHash;
+            return [
+                'order' => $order,
+                'payment' => $payment,
+                'url' => config('vnpay.vnp_Url') . '?' . $query . '&vnp_SecureHash=' . $secureHash,
+            ];
         });
     }
 
@@ -74,6 +81,7 @@ class VnpayService extends BaseService
                     'view' => $view,
                     'data' => null,
                     'status' => 400,
+                    'message' => 'Giao dịch không hợp lệ',
                 ];
 
             $payment = $this->paymentService->findByVnpTxnRef($request['vnp_TxnRef']);
@@ -96,11 +104,26 @@ class VnpayService extends BaseService
                 'note' => json_encode($request),
             ]);
 
-            if ($newStatus == 'success')
-                $payment->order->update(['status' => 'paid']);
+            if ($newStatus == 'success') {
+                $this->orderService->update([
+                    'id' => $payment->order->id,
+                    'status' => 'paid',
+                ]);
 
-            $view = $newStatus == 'success' ? 'web.payment.payment_success' : 'web.payment.payment_failed';
-            return ['view' => $view, 'data' => $request, 'status' => 200];
+                $view = 'web.payment.payment_success';
+                $message = 'Giao dịch thành công';
+                $status = 200;
+            } else {
+                $view = 'web.payment.payment_failed';
+                $message = 'Giao dịch không thành công';
+                $status = 201;
+            }
+            return [
+                'view' => $view,
+                'data' => $request,
+                'status' => $status,
+                'message' => $message,
+            ];
         });
     }
 }

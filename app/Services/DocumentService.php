@@ -8,10 +8,12 @@ class DocumentService extends BaseService
 {
     protected $documentRepository;
     protected $customValidateService;
+    protected $orderService;
     public function __construct()
     {
         $this->documentRepository = app(DocumentRepository::class);
         $this->customValidateService = app(CustomValidateRequestService::class);
+        $this->orderService = app(OrderService::class);
     }
 
     public function list(array $request)
@@ -286,5 +288,51 @@ class DocumentService extends BaseService
             ],
             'issued_year' => $this->documentRepository->getIssuedYears(),
         ];
+    }
+
+    public function payment(int $id)
+    {
+        $document = $this->documentRepository->findById($id);
+
+        $res = (new VnpayService())->createPaymentUrl([
+            'total' => $document->price,
+            'type' => 'billpayment',
+            'info' => 'Thanh toán đơn hàng mua tài liệu ' . $document->name,
+            'return_url' => route('admin.document.vnpay-return'),
+        ]);
+
+        $orderDocument = (new OrderDocumentService())->store([
+            'id_order' => $res['order']['id'],
+            'id_document' => $document->id,
+            'price' => $document->price,
+            'quantity' => 1,
+        ]);
+
+        return $res['url'];
+    }
+
+    public function vnpayReturn(array $request)
+    {
+        if (in_array($request['status'], [400, 201]))
+            return redirect(route('admin.document.index'))->with('err', $request['message']);
+
+        $order = $this->orderService->findByOrderCode($request['data']['vnp_TxnRef']);
+        $user = $order->user;
+        $paths = array_filter($order->orderDocument->map(function ($item) {
+            $path = public_path($item->document->path);
+            if (file_exists($path))
+                return $path;
+            return null;
+        })->toArray(), fn($item) => !empty($item));
+
+        (new EmailService())->sendMail(
+            'emails.payment',
+            $request['data']['vnp_OrderInfo'],
+            [$user->email],
+            [],
+            $paths,
+        );
+        
+        return redirect(route('admin.document.index'))->with('success', $request['message']);
     }
 }

@@ -12,11 +12,11 @@ class Payment extends Model
 
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'id_order');
     }
 
     public function paymentLogs()
     {
-        return $this->hasMany(PaymentLog::class);
+        return $this->hasMany(PaymentLog::class, 'id_payment');
     }
 }

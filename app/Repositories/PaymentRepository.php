@@ -18,6 +18,8 @@ class PaymentRepository
 
     public function update(array $request)
     {
-        return Payment::find($request['id'])->update($request);
+        $record = Payment::find($request['id']);
+        $record->update($request);
+        return $record;
     }
 }

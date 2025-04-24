@@ -17,15 +17,13 @@ class VnPayController extends Controller
     public function createPayment()
     {
         $order = [
-            'code' => 'ORDER' . random_int(100000, 999999),
             'total' => 100000,
-            'bankCode' => 'NCB',
             'type' => 'billpayment',
             'info' => 'Thanh toán đơn hàng',
         ];
 
-        $url = $this->vnPayService->createPaymentUrl($order);
-        return redirect($url);
+        $res = $this->vnPayService->createPaymentUrl($order);
+        return redirect($res['url']);
     }
 
     public function vnpayReturn(Request $request)

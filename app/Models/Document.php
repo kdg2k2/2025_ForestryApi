@@ -46,6 +46,6 @@ class Document extends Model
 
     public function orderDocument()
     {
-        return $this->hasMany(OrderDocument::class);
+        return $this->hasMany(OrderDocument::class, 'id_document');
     }
 }
