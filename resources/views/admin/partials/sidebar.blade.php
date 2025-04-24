@@ -24,27 +24,27 @@
 
             <li class="sidebar-main-title">
                 <div>
-                    <h5 class="f-w-700 sidebar-title pt-3">THÔNG TIN CHUNG</h5>
+                    <h5 class="f-w-700 sidebar-title pt-3">Tài liệu</h5>
                 </div>
             </li>
 
             <li class="sidebar-list">
                 <i class="fa-solid fa-thumbtack"></i>
-                <a class="sidebar-link" href="template-admin/admin/general">
+                <a class="sidebar-link" href="#">
                     <svg class="stroke-icon">
                         <use href="../template-admin/admin/svg/iconly-sprite.svg#Edit-line"></use>
                     </svg>
-                    <h6 class="f-w-600">Cấu hình hệ thống</h6>
+                    <h6 class="f-w-600">Loại tài liệu</h6>
                 </a>
             </li>
 
             <li class="sidebar-list">
                 <i class="fa-solid fa-thumbtack"></i>
-                <a class="sidebar-link" href="template-admin/admin/about">
+                <a class="sidebar-link" href="{{ route('admin.document.index') }}">
                     <svg class="stroke-icon">
-                        <use href="../template-admin/admin/svg/iconly-sprite.svg#Chat"></use>
+                        <use href="../template-admin/admin/svg/iconly-sprite.svg#Document"></use>
                     </svg>
-                    <h6 class="f-w-600">Cập nhật giới thiệu</h6>
+                    <h6 class="f-w-600">Tài liệu</h6>
                 </a>
             </li>
 

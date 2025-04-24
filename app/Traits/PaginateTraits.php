@@ -12,7 +12,7 @@ trait PaginateTraits
         $page = $page ?? 1;
 
         return new LengthAwarePaginator(
-            collect($data)->values()->forPage($page, $perPage),
+            collect($data)->forPage($page, $perPage)->values(),
             count($data),
             $perPage,
             $page,

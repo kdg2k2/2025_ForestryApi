@@ -1,14 +1,13 @@
 <header class="page-header row" id="top_header">
     <div class="logo-wrapper d-flex align-items-center col-auto">
-      <a href="/">
-        <img style="height: 40px; border-radius: 50%;" class="img-fluid" src="asset/images/F4.jpg" alt="logo"/>
-          <a
-            class="close-btn toggle-sidebar" href="javascript:void(0)">
-            <svg class="svg-color">
-                <use href="template-admin/admin/svg/iconly-sprite.svg#Category"></use>
-            </svg>
-          </a>
-      </a>
+        <a href="/">
+            <img style="height: 40px; border-radius: 50%;" class="img-fluid" src="asset/images/F4.jpg" alt="logo" />
+            <a class="close-btn toggle-sidebar" href="javascript:void(0)">
+                <svg class="svg-color">
+                    <use href="template-admin/admin/svg/iconly-sprite.svg#Category"></use>
+                </svg>
+            </a>
+        </a>
     </div>
     <div class="page-main-header col">
         <div class="header-left">
