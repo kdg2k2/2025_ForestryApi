@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\DocumentTypeRepository;
+use Illuminate\Support\Facades\Log;
 
 class DocumentTypeService extends BaseService
 {

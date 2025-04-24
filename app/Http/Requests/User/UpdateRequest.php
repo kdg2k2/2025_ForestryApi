@@ -38,7 +38,7 @@ class UpdateRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => "required|email|unique:users,email,$this->id|max:255",
             'password' => 'nullable|string|max:255',
-            'address' => 'required|string|max:255',
+            'address' => 'nullable|string|max:255',
             'path' => 'nullable|mimes:png,jpeg,jpg|max:5120',
             'id_unit' => 'required|integer|exists:user_units,id',
             'id_role' => 'required|integer|exists:user_roles,id',

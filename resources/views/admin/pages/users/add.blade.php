@@ -99,6 +99,5 @@
 @endsection
 
 @section('script')
-    <script src="\template-admin\admin\js\http.js"></script>
     <script src="\template-admin\admin\js\user\add.js"></script>
 @endsection

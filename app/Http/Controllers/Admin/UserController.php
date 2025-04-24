@@ -23,16 +23,16 @@ class UserController extends Controller
     }
     public function index(Request $request)
     {
-        return view('admin.users.online');
+        return view('admin.pages.users.online');
     }
     public function edit(Request $request)
     {
         $user = $this->userService->findById(intval($request->id));
         if (empty($user))
-            return redirect()->route('admin.users.index')->with('err', 'Không tìm thấy người dùng');
+            return redirect()->route('admin.pages.users.index')->with('err', 'Không tìm thấy người dùng');
         $roles = $this->roleService->list(["paginate" => 0]);
         $units = $this->unitService->list(["paginate" => 0]);
-        return view('admin.users.edit', [
+        return view('admin.pages.users.edit', [
             'data' => $user,
             'roles' => $roles,
             'units' => $units,
@@ -43,7 +43,7 @@ class UserController extends Controller
     {
         $roles = $this->roleService->list(["paginate" => 0]);
         $units = $this->unitService->list(["paginate" => 0]);
-        return view('admin.users.add', [
+        return view('admin.pages.users.add', [
             'roles' => $roles,
             'units' => $units,
         ]);
