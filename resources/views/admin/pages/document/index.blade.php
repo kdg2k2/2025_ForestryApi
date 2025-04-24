@@ -53,7 +53,6 @@
         const datatable = $('#datatable');
         const listUrl = @json(route('api.document.list'));
         const storeUrl = @json(route('api.document.store'));
-        const editUrl = @json(route('admin.document.edit'));
         const updateUrl = @json(route('api.document.update'));
         const deleteUrl = @json(route('api.document.delete'));
         const showUrl = @json(route('api.document.show'));
@@ -102,7 +101,7 @@
                             data-placement="top">
                             <i class="fal fa-book-reader"></i>
                         </a>
-                        <a href="${editUrl}?${item.id}" title="Cập nhật"
+                        <a href="/admin/documents/${item.id}" title="Cập nhật"
                             class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="tooltip"
                             data-placement="top">
                             <i class="fal fa-edit"></i>

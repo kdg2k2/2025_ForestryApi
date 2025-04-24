@@ -1,6 +1,6 @@
 @extends('admin.layout.index')
 @section('content')
-    <div class="page-body">
+    <div class="page-body" id="main-content">
         <div class="container-fluid">
             <div class="page-title">
             </div>
@@ -11,108 +11,85 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header pb-0 card-no-border d-flex justify-content-between align-items-center">
-                                <h3>Chỉnh sửa tài khoản</h3>
+                                <h3>Chỉnh sửa tài liệu</h3>
                                 <div>
                                     <a href="admin/users" class="btn btn-primary">Danh sách</a>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="row">
-                                    <form class="col-md-6" id="form-update-user">
-                                        <input type="hidden" value="{{$data->id}}" name="id">
-                                        <div class="row">
-                                            <div class="mb-3">
-                                                <label class="form-label">
-                                                    Họ tên
-                                                    <span class="text-danger">*</span>
-                                                </label>
-                                                <input class="form-control" name="name" required placeholder=""
-                                                    value="{{$data->name}}">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Email</label>
-                                                <input type="email" class="form-control" name="email" required
-                                                    placeholder="" value="{{$data->email}}">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Vai trò</label>
-                                                <select class="form-select" name="id_role">
-                                                    @foreach ($roles as $role)
-                                                        <option value="{{ $role['id'] }}" {{ $data->id_role == $role['id'] ? 'selected' : '' }}>
-                                                            {{ $role['name_vn'] }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Thời hạn vai trò</label>
-                                                <input type="datetime-local" class="form-control" name="role_expires_in"
-                                                    value="{{$data->role_expires_in}}">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Đơn vị</label>
-                                                <select class="form-select" name="id_unit">
-                                                    @foreach ($units as $u)
-                                                        <option value="{{ $u['id'] }}" {{ $data->id_unit == $u['id'] ? 'selected' : '' }}>
-                                                            {{ $u['name'] }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Địa chỉ</label>
-                                                <input class="form-control" name="address" placeholder=""
-                                                    value="{{$data->address}}">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Hình ảnh (Chọn để thay đổi)</label>
-                                                <input type="file" class="form-control" name="path" placeholder="">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Mật khẩu (Nhập để thay đổi)</label>
-                                                <input type="password" class="form-control" name="password" value="">
-                                            </div>
+                                <form id="form-add-document">
+                                    @csrf
+                                    <div class="row">
+                                        {{-- name --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label for="name" class="form-label">
+                                                Tên tài liệu:
+                                            </label>
+                                            <input required type="text" class="form-control" name="name"
+                                                value="{{ $document->name }}">
                                         </div>
-                                        <div class="form-footer text-right">
-                                            <button type="submit" class="btn btn-primary btn-block">Thực hiện</button>
+
+                                        {{-- issued_date --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label for="issued_date" class="form-label">Ngày phát hành:</label>
+                                            <input required type="date" class="form-control" name="issued_date" value="{{ $document->issued_date }}">
                                         </div>
-                                    </form>
-                                    <div class="col-md-6 text-center">
-                                        <div class="py-4" style="border-radius: 8px; background: #f0f0f0;">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <img
-                                                    src="{{ $data->path }}"
-                                                    alt="{{$data->name }}"
-                                                    class="rounded-circle"
-                                                    style="border: 1px solid #fff; object-fit: cover; padding: 3px; background: var(--theme-secondary);"
-                                                    width="60px"
-                                                    height="60px"
-                                                    onerror="this.onerror=null;this.src='/template-admin/admin/images/profile.png';"
-                                                >
-                                            </div>
-                                            <p>
-                                                <span class="badge text-bg-primary">{{$data->role->name_vn}}</span>
-                                                <strong class="d-block text-center mt-2">{{$data->name}} ({{$data->unit->name}})</strong>
-                                                <span class="d-block text-center">{{$data->email}}</span>
-                                                @if ($data->role_expires_in)
-                                                    <span class="d-block text-center">
-                                                        Thời hạn gói: <span class="text-danger">{{ \Carbon\Carbon::parse($data->role_expires_in)->format('d/m/Y H:i') }}</span>
-                                                    </span>
-                                                @endif
-                                            </p>
+
+                                        {{-- author --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label for="author" class="form-label">Tác giả</label>
+                                            <input type="text" class="form-control" name="author" value="{{ $document->author }}">
                                         </div>
-                                        <div>
-                                            <p class="text-center mt-3">Chờ cập nhật...</p>
+
+                                        {{-- path (file upload) --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label for="path" class="form-label">File tải lên:</label>
+                                            <input type="file" class="form-control" name="path" accept=".pdf">
+                                        </div>
+
+                                        {{-- allow_download --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Cho phép tải xuống</label>
+                                            <select name="allow_download" class="form-select">
+                                                <option {{$document->allow_download == '0' ? 'selected' : ''}} value="0">Không cho phép</option>
+                                                <option {{$document->allow_download == '1' ? 'selected' : ''}} value="1">Cho phép</option>
+                                            </select>
+                                        </div>
+
+                                        {{-- id_share --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label for="id_share" class="form-label">Người chia sẻ</label>
+                                            <select class="form-select" name="id_share">
+                                                <option value="">---Không có người chia sẻ----</option>
+                                                @foreach($shares as $share)
+                                                    <option {{$document->id_share == $share->id ? "selected" : ''}} value="{{ $share->id }}">{{ $share->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        {{-- price --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label for="price" class="form-label">Giá tiền</label>
+                                            <input required type="number" class="form-control" name="price" min="0" value="{{ $document->price }}">
+                                        </div>
+                                        {{-- id_document_type --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label for="id_document_type" class="form-label">Loại tài liệu</label>
+                                            <select class="form-select" name="id_document_type" id="id_document_type">
+                                                @foreach($documentTypes as $type)
+                                                    <option {{$type['id'] == $document->id_document_type ? 'selected' : ''}} value="{{ $type['id'] }}">
+                                                        {{ $type['name'] }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="row" id=other>
+                                    </div>
+                                    <div class="form-footer text-right">
+                                        <button class="btn btn-primary btn-block">Thực hiện</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -123,6 +100,5 @@
 @endsection
 
 @section('script')
-    <script src="\template-admin\admin\js\http.js"></script>
-    <script src="\template-admin\admin\js\user\update.js"></script>
+    <script src="\template-admin\admin\js\document\add.js"></script>
 @endsection
