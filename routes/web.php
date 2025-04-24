@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Payment\VnPayController;
 use App\Http\Controllers\Web\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect(route('login'));
+    return view('web.payment.index');
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -27,4 +28,10 @@ Route::controller(AuthController::class)->group(function () {
     Route::get("verify", "verify")->name("verify");
     # forget password
     Route::get("forget-password", "forgetPassword")->name("forget-password");
+});
+
+# vnpay
+Route::prefix("vnpay")->controller(VnPayController::class)->group(function () {
+    Route::get('create-payment', 'createPayment')->name('vnpay.create-payment');
+    Route::get('return', 'vnpayReturn')->name('vnpay.return');
 });
