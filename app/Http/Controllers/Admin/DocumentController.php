@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\DocumentService;
 use App\Services\DocumentShareService;
 use App\Services\DocumentTypeService;
+use App\Services\VnpayService;
 use Illuminate\Http\Request;
 
 class DocumentController extends Controller
@@ -13,10 +14,12 @@ class DocumentController extends Controller
     protected $documentTypeService;
     protected $shareService;
     protected $documentService;
+    protected $vnpayService;
     public function __construct()
     {
         $this->documentTypeService = app(DocumentTypeService::class);
         $this->shareService = app(DocumentShareService::class);
+        $this->vnpayService = app(VnpayService::class);
         $this->documentService = app(DocumentService::class);
     }
     public function index()
@@ -44,6 +47,16 @@ class DocumentController extends Controller
             'shares',
             'document',
         ));
+    }
+
+    public function payment(Request $request)
+    {
+        return redirect($this->documentService->payment($request->id));
+    }
+
+    public function vnpayReturn(Request $request)
+    {
+        return $this->documentService->vnpayReturn($this->vnpayService->vnpayReturn($request->all()));
     }
 
     public function view($id)

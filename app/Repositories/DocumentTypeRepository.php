@@ -27,4 +27,9 @@ class DocumentTypeRepository
     {
         return DocumentType::find($request["id"])->delete();
     }
+
+    public function findById(int $id)
+    {
+        return DocumentType::find($id);
+    }
 }
