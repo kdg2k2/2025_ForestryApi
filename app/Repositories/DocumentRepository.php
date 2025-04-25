@@ -27,9 +27,8 @@ class DocumentRepository
             'scientificPublication',
             'biodiversity',
         ]);
-
         // lọc theo cho phép tải
-        if (!empty($request["allow_download"]))
+        if ($request["allow_download"] != null)
             $query->where("allow_download", $request["allow_download"]);
 
         // lọc xem các văn bản được chia sẻ và đã được duyệt

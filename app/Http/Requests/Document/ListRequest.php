@@ -19,10 +19,16 @@ class ListRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        $allow_download = null;
+        if ($this->allow_download == '1')
+            $allow_download = '1';
+        elseif ($this->allow_download == '0')
+            $allow_download = '0';
+
         $this->merge([
             'per_page' => $this->per_page ?? null,
             'page' => $this->page ?? null,
-            'allow_download' => $this->allow_download ?? null,
+            'allow_download' => $allow_download,
             'is_shared' => $this->is_shared ?? null,
             'id_document_type' => $this->id_document_type ?? null,
             'id_uploader' => $this->id_uploader ?? null,
