@@ -19,4 +19,5 @@ Route::prefix("documents")->controller(DocumentController::class)->group(functio
     Route::get("payment", "payment")->name("admin.document.payment");
     Route::get("vnpay-return", "vnpayReturn")->name("admin.document.vnpay-return");
     Route::get("{id}", "edit")->name("admin.document.edit");
+    Route::get("{id}/view", "view")->name("admin.document.view");
 });

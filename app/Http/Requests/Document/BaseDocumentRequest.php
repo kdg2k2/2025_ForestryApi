@@ -15,7 +15,7 @@ abstract class BaseDocumentRequest extends FormRequest
             'author' => 'nullable|string',
             'path' => request()->isMethod('post') ? 'required|mimes:pdf' : 'nullable|mimes:pdf',
             'allow_download' => 'nullable|in:0,1',
-            'id_uploader' => 'required|integer|exists:users,id',
+            'id_uploader' => 'nullable|integer|exists:users,id',
             'id_share' => 'nullable|integer|exists:document_shares,id',
             'price' => 'required|integer|min:0',
         ];

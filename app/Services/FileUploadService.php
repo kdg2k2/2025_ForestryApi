@@ -25,10 +25,11 @@ class FileUploadService extends BaseService
         });
     }
 
-    public function storeDocument($document)
+    public function storeDocument($document, bool $isFullUrl = true)
     {
-        return $this->tryThrow(function () use ($document) {
-            return $this->store($document, "documents");
+        return $this->tryThrow(function () use ($document, $isFullUrl) {
+            $documentPath = $this->store($document, "documents");
+            return $isFullUrl ? url($documentPath) : $documentPath;
         });
     }
 }

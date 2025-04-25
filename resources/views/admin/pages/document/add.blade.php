@@ -49,33 +49,21 @@
 
                                         {{-- allow_download --}}
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label">Cho phép tải xuống</label>
+                                            <label class="form-label">Cho phép tải xuống:</label>
                                             <select name="allow_download" class="form-select">
                                                 <option value="0">Không cho phép</option>
                                                 <option value="1">Cho phép</option>
                                             </select>
                                         </div>
-
-                                        {{-- id_share --}}
-                                        <div class="col-md-6 mb-3">
-                                            <label for="id_share" class="form-label">Người chia sẻ</label>
-                                            <select class="form-select" name="id_share">
-                                                <option value="">---Không có người chia sẻ----</option>
-                                                @foreach($shares as $share)
-                                                    <option value="{{ $share->id }}">{{ $share->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
                                         {{-- price --}}
                                         <div class="col-md-6 mb-3">
-                                            <label for="price" class="form-label">Giá tiền</label>
+                                            <label for="price" class="form-label">Giá tiền:</label>
                                             <input required type="number" class="form-control" name="price" min="0">
                                         </div>
                                         {{-- id_document_type --}}
                                         <div class="col-md-6 mb-3">
-                                            <label for="id_document_type" class="form-label">Loại tài liệu</label>
-                                            <select class="form-select" name="id_document_type" id="id_document_type">
+                                            <label for="id_document_type" class="form-label">Loại tài liệu:</label>
+                                            <select required class="form-select" name="id_document_type" id="id_document_type">
                                                 @foreach($documentTypes as $type)
                                                     <option value="{{ $type['id'] }}">
                                                         {{ $type['name'] }}

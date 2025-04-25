@@ -40,7 +40,6 @@ class DocumentController extends Controller
     public function edit($id)
     {
         $document = $this->documentService->show($id);
-        // return $document;
         $documentTypes = $this->documentTypeService->list(["paginate" => 0]);
         $shares = $this->shareService->list(["paginate" => 0]);
         return view('admin.pages.document.edit', compact(
@@ -58,5 +57,13 @@ class DocumentController extends Controller
     public function vnpayReturn(Request $request)
     {
         return $this->documentService->vnpayReturn($this->vnpayService->vnpayReturn($request->all()));
+    }
+
+    public function view($id)
+    {
+        $document = $this->documentService->show($id);
+        return view('admin.pages.document.view', compact(
+            'document',
+        ));
     }
 }
