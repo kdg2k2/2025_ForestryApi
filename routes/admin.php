@@ -17,4 +17,5 @@ Route::prefix("documents")->controller(DocumentController::class)->group(functio
     Route::get("/", "index")->name("admin.document.index");
     Route::get("create", "create")->name("admin.document.create");
     Route::get("{id}", "edit")->name("admin.document.edit");
+    Route::get("{id}/view", "view")->name("admin.document.view");
 });

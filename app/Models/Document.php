@@ -14,6 +14,13 @@ class Document extends Model
         'path',
     ];
 
+    const validity = [
+        'active' => "Có hiêu lực",
+        'expired' => "Hết hiệu lực",
+        'upcoming' => "Sắp hết hiệu lực",
+        'undefined' => "Chưa xác định",
+    ];
+
     public function type()
     {
         return $this->belongsTo(DocumentType::class, "id_document_type");
@@ -42,5 +49,10 @@ class Document extends Model
     public function biodiversity()
     {
         return $this->hasOne(DocumentBiodiversity::class, "id_document");
+    }
+
+    public function getValidity()
+    {
+        return Document::validity[$this->legal->validity] ?? null;
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\DocumentService;
 use App\Services\DocumentShareService;
 use App\Services\DocumentTypeService;
+use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {
@@ -36,12 +37,19 @@ class DocumentController extends Controller
     public function edit($id)
     {
         $document = $this->documentService->show($id);
-        // return $document;
         $documentTypes = $this->documentTypeService->list(["paginate" => 0]);
         $shares = $this->shareService->list(["paginate" => 0]);
         return view('admin.pages.document.edit', compact(
             'documentTypes',
             'shares',
+            'document',
+        ));
+    }
+
+    public function view($id)
+    {
+        $document = $this->documentService->show($id);
+        return view('admin.pages.document.view', compact(
             'document',
         ));
     }
