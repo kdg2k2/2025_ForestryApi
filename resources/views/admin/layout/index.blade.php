@@ -54,6 +54,6 @@
         refreshSumoSelect();
         showRequiredMark();
     </script>
-
+    <script src="\template-admin\admin\js\cart.js"></script>
     @yield('script')
 @endsection

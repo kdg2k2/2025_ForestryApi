@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\DocumentTypeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserRoleController;
 use App\Http\Controllers\Api\UserUnitController;
+use App\Http\Controllers\Api\CartController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware("api")->group(function () {
@@ -54,6 +55,14 @@ Route::middleware("api")->group(function () {
                 Route::post("store", "store");
                 Route::patch("update", "update");
                 Route::delete("delete", "delete");
+            });
+        });
+
+        Route::prefix("cart")->group(function () {
+            Route::controller(CartController::class)->group(function () {
+                Route::get("", "index");
+                Route::post("", "addItem");
+                Route::delete("", "deleteItem");
             });
         });
 

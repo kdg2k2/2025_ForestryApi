@@ -60,7 +60,7 @@
 
         const getDocuments = (param) => {
             destroyDataTable(datatable);
-            createDataTableServerSide(datatable, listUrl, [{
+            const dataTable = createDataTableServerSide(datatable, listUrl, [{
                 data: 'name',
                 title: 'Tên tài liệu',
             },
@@ -96,33 +96,43 @@
                 price: formatNumber(item.price) ?? '',
                 uploader: item.uploader?.name ?? '',
                 actions: `
-                    <div class="text-center">
-                        <a href="${paymentUrl}?id=${item.id}" title="Mua tài liệu"
-                            class="btn btn-sm btn-outline-success rounded-pill" data-bs-toggle="tooltip"
-                            data-placement="top">
-                            <i class="fal fa-money-bill-alt"></i>
-                        </a>
-                        <a href="/admin/documents/${item.id}/view" title="Xem"
-                            class="btn btn-sm btn-outline-info rounded-pill" data-bs-toggle="tooltip"
-                            data-placement="top">
-                            <i class="fal fa-book-reader"></i>
-                        </a>
-                        <a href="/admin/documents/${item.id}" title="Cập nhật"
-                            class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="tooltip"
-                            data-placement="top">
-                            <i class="fal fa-edit"></i>
-                        </a>
-                        <a title="Xóa" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#confirm-delete" title="Xóa" class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="tooltip" data-placement="top">
-                                <i class="fal fa-trash-alt"></i>
-                        </a>
-                    </div>
-                `
+                                    <div class="text-center">
+                                        <a href="${paymentUrl}?id=${item.id}" title="Mua tài liệu"
+                                            class="btn btn-sm btn-outline-success rounded-pill" data-bs-toggle="tooltip"
+                                            data-placement="top">
+                                            <i class="fal fa-money-bill-alt"></i>
+                                        </a>
+                                        <span data-id="${item.id}" title="Thêm vào giỏ hàng"
+                                            class="btn btn-sm btn-outline-primary rounded-pill btn-add-cart" data-bs-toggle="tooltip"
+                                            data-placement="top">
+                                            <i class="fal fa-cart-plus"></i>
+                                        </span>
+                                        <a href="/admin/documents/${item.id}/view" title="Xem"
+                                            class="btn btn-sm btn-outline-info rounded-pill" data-bs-toggle="tooltip"
+                                            data-placement="top">
+                                            <i class="fal fa-book-reader"></i>
+                                        </a>
+                                        <a href="/admin/documents/${item.id}" title="Cập nhật"
+                                            class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="tooltip"
+                                            data-placement="top">
+                                            <i class="fal fa-edit"></i>
+                                        </a>
+                                        <a title="Xóa" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#confirm-delete" title="Xóa" class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="tooltip" data-placement="top">
+                                                <i class="fal fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                `
             }), param);
         }
 
         const getDocumentTypes = () => http.get('api/document/type/list', { paginate: 0 });
         const main = () => {
             getDocuments({ paginate: 1 });
+            $(document).on('click', '.btn-add-cart', async function (e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+                cartModule.add(id);
+            })
         }
 
         const renderSelect = async () => {

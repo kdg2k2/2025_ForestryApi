@@ -2,15 +2,18 @@
 
 namespace App\Services;
 
+use App\Repositories\CartRepository;
 use App\Repositories\UserRepository;
 use App\Services\BaseService;
 
 class UserService extends BaseService
 {
     protected $userRepository;
+    protected $cartRepository;
     public function __construct()
     {
         $this->userRepository = app(UserRepository::class);
+        $this->cartRepository = app(CartRepository::class);
     }
 
     public function list(array $request)
@@ -31,6 +34,7 @@ class UserService extends BaseService
             if (!empty($request["path"]))
                 $request["path"] = $this->imageUpload($request["path"]);
             $record = $this->userRepository->store($request);
+            $this->cartRepository->store(["id_user" => $record["id"]]);
             $record = $this->transformRecord($record);
             return $record;
         });
