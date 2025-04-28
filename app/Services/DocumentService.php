@@ -11,7 +11,7 @@ class DocumentService extends BaseService
     protected $orderService;
     public function __construct()
     {
-        $this->documentRepository = app(DocumentRepository::class);
+        $this->documentRepository = app(abstract: DocumentRepository::class);
         $this->customValidateService = app(CustomValidateRequestService::class);
         $this->orderService = app(OrderService::class);
     }

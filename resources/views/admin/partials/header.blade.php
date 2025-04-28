@@ -10,9 +10,7 @@
         </a>
     </div>
     <div class="page-main-header col">
-        <div class="header-left">
-
-        </div>
+        <div class="header-left"></div>
         <div class="nav-right">
             <ul class="header-right">
                 <li></li>
@@ -35,13 +33,27 @@
                     <div id="cart">
                         <i class="fal fa-shopping-cart"></i>
                     </div>
-                    <span id="cart-count"
-                        style="font-size: 12px; position: absolute; top:-4px; left: calc(100% - 8px); line-height: 8px; border-radius: 12px;"
-                        class="p-1 bg-danger d-flex align-items-center justify-content-center">
+                    <span id="cart-count" class="p-1 bg-danger d-flex align-items-center justify-content-center">
                         0
                     </span>
                     <div class="body-cart">
-                        <div></div>
+                        <div class="cart-header">
+                            <h5 class="mb-0">Giỏ hàng</h5>
+                            <a class="text-info" href="/cart">Xem giỏ hàng</a>
+                        </div>
+                        <div class="body-cart__content"></div>
+                        <div>
+                            <div class="cart-footer">
+                                <div class="total-price">
+                                    <span>Tổng tiền:</span>
+                                    <span class="text-danger fw-bold">
+                                        <span id="total-price">0</span>
+                                        <sup>đ</sup>
+                                    </span>
+                                </div>
+                                <a href="/checkout" class="btn btn-primary text-light">Thanh toán</a>
+                            </div>
+                        </div>
                     </div>
                 </li>
                 <li class="profile-nav custom-dropdown">

@@ -1,0 +1,4 @@
+const checkout = {
+    init: function () {
+    }
+}

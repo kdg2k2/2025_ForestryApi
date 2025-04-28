@@ -1,6 +1,6 @@
 const cart = $(".cart-w #cart");
 
-cart.click(function (e) {
+cart.click(function () {
     $(".cart-w .body-cart").toggleClass("show");
 });
 
@@ -14,7 +14,8 @@ $(document).on("click", function (e) {
 const cartModule = {
     element: {
         cartCount: $("#cart-count"),
-        cartItems: $(".body-cart div"),
+        cartItems: $(".body-cart .body-cart__content"),
+        totalPrice: $(".body-cart #total-price"),
     },
     count: 0,
     items: [],
@@ -50,12 +51,13 @@ const cartModule = {
     update: function () {
         this.element.cartCount.text(this.count);
         let html = '<p class="text-center py-4">Giỏ hàng trống</p>';
+        let totalPrice = 0;
         if (this.count != 0) {
             html = this.items
                 .map((item) => {
                     const urlDocument = `/admin/documents/${item.document.id}/view`;
                     return /*html*/ `
-                        <div class="d-flex justify-content-between align-items-center py-2">
+                        <div class="d-flex justify-content-between align-items-center py-2 cart-item">
                         <div class="d-flex align-items-center">
                             <div class="px-3 text-success"><i class="fs-12 fa-regular fa-file"></i></div>
                             <div>
@@ -79,7 +81,11 @@ const cartModule = {
                     </div>`;
                 })
                 .join("");
+            totalPrice = this.items.reduce((total, item) => {
+                return total + item.document.price;
+            }, 0);
         }
+        this.element.totalPrice.html(formatNumber(totalPrice));
         this.element.cartItems.html(html);
     },
     init: function () {
