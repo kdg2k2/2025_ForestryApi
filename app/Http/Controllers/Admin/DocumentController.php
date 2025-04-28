@@ -61,9 +61,6 @@ class DocumentController extends Controller
 
     public function view($id)
     {
-        $document = $this->documentService->show($id);
-        return view('admin.pages.document.view', compact(
-            'document',
-        ));
+        return view('admin.pages.document.view', $this->documentService->show($id));
     }
 }

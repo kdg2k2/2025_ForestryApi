@@ -91,18 +91,6 @@ class DocumentRepository
         return Document::find($request["id"])->delete();
     }
 
-    public function show(array $request) {
-        $record = Document::find($request["id"])->load([
-            'type',
-            'uploader',
-            'share',
-            'legal.type',
-            'scientificPublication.type',
-            'biodiversity.type',
-        ]);
-        return $record;
-    }
-
     public function getIssuedYears()
     {
         return Document::pluck('issued_date')
