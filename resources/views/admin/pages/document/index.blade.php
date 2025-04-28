@@ -110,7 +110,7 @@
                                         <a href="/admin/documents/${item.id}/view" title="Xem"
                                             class="btn btn-sm btn-outline-info rounded-pill" data-bs-toggle="tooltip"
                                             data-placement="top">
-                                            <i class="fal fa-book-reader"></i>
+                                            <i class="fa-solid fa-eye"></i>
                                         </a>
                                         <a href="/admin/documents/${item.id}" title="Cập nhật"
                                             class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="tooltip"
