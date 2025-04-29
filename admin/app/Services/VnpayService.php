@@ -70,9 +70,9 @@ class VnpayService extends BaseService
     public function vnpayReturn(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $format = $this->formatVnPayRequest($request);
-            $vnpSecureHash = $format['vnpSecureHash'];
+            $format = $this->formatVnpayRequest($request);
             $request = $format['request'];
+            $vnpSecureHash = $format['vnpSecureHash'];
 
             $make = $this->makeHashHtttQuery($request);
             $secureHash = $make['secureHash'];
@@ -108,10 +108,10 @@ class VnpayService extends BaseService
         ];
     }
 
-    protected function formatVnPayRequest(array $request)
+    protected function formatVnpayRequest(array $request)
     {
         $vnpSecureHash = $request['vnp_SecureHash'] ?? null;
-        unset($request['vnp_SecureHash'], $request['vnp_SecureHashType']);
+        unset($request['vnp_SecureHash']);
         return [
             'vnpSecureHash' => $vnpSecureHash,
             'request' => $request,
@@ -123,9 +123,9 @@ class VnpayService extends BaseService
         return $this->tryThrow(function () use ($request) {
             Log::info('VNPAY IPN payload:', $request);
 
-            $format = $this->formatVnPayRequest($request);
-            $vnpSecureHash = $format['vnpSecureHash'];
+            $format = $this->formatVnpayRequest($request);
             $request = $format['request'];
+            $vnpSecureHash = $format['vnpSecureHash'];
 
             $make = $this->makeHashHtttQuery($request);
             $secureHash = $make['secureHash'];
@@ -149,6 +149,13 @@ class VnpayService extends BaseService
                     'RspCode' => '04',
                     'Message' => 'Invalid amount',
                 ];
+
+            if ($payment->status == 'success') {
+                return [
+                    'RspCode' => '02',
+                    'Message' => 'Order already confirmed',
+                ];
+            }
 
             if ($payment->status == 'pending') {
                 $newStatus = $request['vnp_ResponseCode'] == '00' ? 'success' : 'failed';
