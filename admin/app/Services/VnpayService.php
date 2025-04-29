@@ -52,7 +52,6 @@ class VnpayService extends BaseService
                 'vnp_OrderType' => $request['type'],
                 'vnp_ReturnUrl' => $request['return_url'] ?? route('vnpay.return'),
                 'vnp_TxnRef' => $payment->vnp_TxnRef,
-                'vnp_NotifyUrl' => route('vnpay.ipn'),
             ];
 
             $make = $this->makeHashHtttQuery($data, false);
