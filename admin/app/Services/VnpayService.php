@@ -53,14 +53,16 @@ class VnpayService extends BaseService
                 'vnp_TxnRef' => $payment->vnp_TxnRef,
             ];
 
-            $make = $this->makeHashHtttQuery($data, false);
+            $make = $this->makeHashHtttQuery($data);
             $query = $make['query'];
             $secureHash = $make['secureHash'];
+            $url = config('vnpay.vnp_Url') . '?' . $query . '&vnp_SecureHash=' . $secureHash;
+            Log::info('createPaymentUrl payload:', [$url]);
 
             return [
                 'order' => $order,
                 'payment' => $payment,
-                'url' => config('vnpay.vnp_Url') . '?' . $query . '&vnp_SecureHash=' . $secureHash,
+                'url' => $url,
             ];
         });
     }
@@ -68,8 +70,9 @@ class VnpayService extends BaseService
     public function vnpayReturn(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $vnpSecureHash = $request['vnp_SecureHash'] ?? null;
-            unset($request['vnp_SecureHash']);
+            $format = $this->formatVnPayRequest($request);
+            $vnpSecureHash = $format['vnpSecureHash'];
+            $request = $format['request'];
 
             $make = $this->makeHashHtttQuery($request);
             $secureHash = $make['secureHash'];
@@ -95,15 +98,23 @@ class VnpayService extends BaseService
         });
     }
 
-    protected function makeHashHtttQuery(array $data, bool $urldecode = true)
+    protected function makeHashHtttQuery(array $data)
     {
         ksort($data);
         $query = http_build_query($data);
-        if ($urldecode == true)
-            $query = urlencode($query);
         return [
             'query' => $query,
             'secureHash' => hash_hmac('sha512', $query, config('vnpay.vnp_HashSecret')),
+        ];
+    }
+
+    protected function formatVnPayRequest(array $request)
+    {
+        $vnpSecureHash = $request['vnp_SecureHash'] ?? null;
+        unset($request['vnp_SecureHash'], $request['vnp_SecureHashType']);
+        return [
+            'vnpSecureHash' => $vnpSecureHash,
+            'request' => $request,
         ];
     }
 
@@ -112,13 +123,14 @@ class VnpayService extends BaseService
         return $this->tryThrow(function () use ($request) {
             Log::info('VNPAY IPN payload:', $request);
 
-            $vnpSecureHash = $request['vnp_SecureHash'] ?? '';
-            unset($request['vnp_SecureHash'], $request['vnp_SecureHashType']);
+            $format = $this->formatVnPayRequest($request);
+            $vnpSecureHash = $format['vnpSecureHash'];
+            $request = $format['request'];
 
             $make = $this->makeHashHtttQuery($request);
             $secureHash = $make['secureHash'];
 
-            if ($secureHash !== $vnpSecureHash)
+            if ($secureHash != $vnpSecureHash)
                 return [
                     'RspCode' => '97',
                     'Message' => 'Invalid checksum',
