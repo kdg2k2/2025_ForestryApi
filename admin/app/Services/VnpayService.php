@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Str;
 
 class VnpayService extends BaseService
 {
@@ -49,13 +51,12 @@ class VnpayService extends BaseService
                 'vnp_OrderType' => $request['type'],
                 'vnp_ReturnUrl' => $request['return_url'] ?? route('vnpay.return'),
                 'vnp_TxnRef' => $payment->vnp_TxnRef,
+                'vnp_NotifyUrl' => route('vnpay.ipn'),
             ];
 
-            ksort($data);
-
-            $query = http_build_query($data);
-
-            $secureHash = hash_hmac('sha512', $query, config('vnpay.vnp_HashSecret'));
+            $make = $this->makeHashHtttQuery($data, false);
+            $query = $make['query'];
+            $secureHash = $make['secureHash'];
 
             return [
                 'order' => $order,
@@ -68,15 +69,15 @@ class VnpayService extends BaseService
     public function vnpayReturn(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $vnp_SecureHash = $request['vnp_SecureHash'] ?? null;
+            $vnpSecureHash = $request['vnp_SecureHash'] ?? null;
             unset($request['vnp_SecureHash']);
-            ksort($request);
 
-            $secureHash = hash_hmac('sha512', http_build_query($request), config('vnpay.vnp_HashSecret'));
+            $make = $this->makeHashHtttQuery($request);
+            $secureHash = $make['secureHash'];
 
             $view = 'web.payment.payment_failed';
 
-            if ($secureHash != $vnp_SecureHash)
+            if ($secureHash != $vnpSecureHash)
                 return [
                     'view' => $view,
                     'data' => null,
@@ -84,45 +85,87 @@ class VnpayService extends BaseService
                     'message' => 'Giao dịch không hợp lệ',
                 ];
 
-            $payment = $this->paymentService->findByVnpTxnRef($request['vnp_TxnRef']);
+            $success = $request['vnp_ResponseCode'] == '00';
 
-            $newStatus = $request['vnp_ResponseCode'] === '00' ? 'success' : 'failed';
-            $oldStatus = $payment->status;
-
-            $this->paymentService->update([
-                'id' => $payment->id,
-                'status' => $newStatus,
-                'vnp_ResponseCode' => $request['vnp_ResponseCode'],
-                'vnp_TransactionNo' => $request['vnp_TransactionNo'] ?? null,
-                'vnp_BankCode' => $request['vnp_BankCode'] ?? null,
-            ]);
-
-            $this->paymentLogService->store([
-                'id_payment' => $payment->id,
-                'old_status' => $oldStatus,
-                'new_status' => $newStatus,
-                'note' => json_encode($request),
-            ]);
-
-            if ($newStatus == 'success') {
-                $this->orderService->update([
-                    'id' => $payment->order->id,
-                    'status' => 'paid',
-                ]);
-
-                $view = 'web.payment.payment_success';
-                $message = 'Giao dịch thành công';
-                $status = 200;
-            } else {
-                $view = 'web.payment.payment_failed';
-                $message = 'Giao dịch không thành công';
-                $status = 201;
-            }
             return [
                 'view' => $view,
                 'data' => $request,
-                'status' => $status,
-                'message' => $message,
+                'status' => $success ? 200 : 201,
+                'message' => $success ? 'Giao dịch thành công' : 'Giao dịch thất bại',
+            ];
+        });
+    }
+
+    protected function makeHashHtttQuery(array $data, bool $urldecode = true)
+    {
+        ksort($data);
+        $query = http_build_query($data);
+        if ($urldecode == true)
+            $query = urlencode($query);
+        return [
+            'query' => $query,
+            'secureHash' => hash_hmac('sha512', $query, config('vnpay.vnp_HashSecret')),
+        ];
+    }
+
+    public function vnpayIpn(array $request)
+    {
+        return $this->tryThrow(function () use ($request) {
+            Log::info('VNPAY IPN payload:', $request);
+
+            $vnpSecureHash = $request['vnp_SecureHash'] ?? '';
+            unset($request['vnp_SecureHash'], $request['vnp_SecureHashType']);
+
+            $make = $this->makeHashHtttQuery($request);
+            $secureHash = $make['secureHash'];
+
+            if ($secureHash !== $vnpSecureHash)
+                return [
+                    'RspCode' => '97',
+                    'Message' => 'Invalid checksum',
+                ];
+
+            $payment = $this->paymentService->findByVnpTxnRef($request['vnp_TxnRef']);
+            if (! $payment)
+                return [
+                    'RspCode' => '01',
+                    'Message' => 'Order not found',
+                ];
+
+            $amount = $request['vnp_Amount'] / 100;
+            if ($amount != $payment->vnp_Amount)
+                return [
+                    'RspCode' => '04',
+                    'Message' => 'Invalid amount',
+                ];
+
+            if ($payment->status == 'pending') {
+                $newStatus = $request['vnp_ResponseCode'] == '00' ? 'success' : 'failed';
+                $this->paymentService->update([
+                    'id' => $payment->id,
+                    'status' => $newStatus,
+                    'vnp_ResponseCode' => $request['vnp_ResponseCode'],
+                    'vnp_TransactionNo' => $request['vnp_TransactionNo'] ?? null,
+                    'vnp_BankCode' => $request['vnp_BankCode'] ?? null,
+                ]);
+
+                if ($newStatus == 'success')
+                    $this->orderService->update([
+                        'id' => $payment->order->id,
+                        'status' => 'paid',
+                    ]);
+
+                $this->paymentLogService->store([
+                    'id_payment' => $payment->id,
+                    'old_status' => 'pending',
+                    'new_status' => $newStatus,
+                    'note' => json_encode($request),
+                ]);
+            }
+
+            return [
+                'RspCode' => '00',
+                'Message' => 'Confirm Success',
             ];
         });
     }

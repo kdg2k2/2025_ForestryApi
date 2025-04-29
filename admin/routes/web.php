@@ -33,4 +33,5 @@ Route::controller(AuthController::class)->group(function () {
 Route::prefix("vnpay")->controller(VnPayController::class)->group(function () {
     Route::get('create-payment', 'createPayment')->name('vnpay.create-payment');
     Route::get('return', 'vnpayReturn')->name('vnpay.return');
+    Route::get('ipn', 'vnpayIpn')->name('vnpay.ipn');
 });

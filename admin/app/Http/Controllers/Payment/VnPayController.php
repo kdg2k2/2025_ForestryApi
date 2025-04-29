@@ -33,4 +33,13 @@ class VnPayController extends Controller
             ? view($res['view'])
             : view($res['view'], ['inputData' => $res['data']]);
     }
+
+    public function vnpayIpn(Request $request)
+    {
+        $res = $this->vnPayService->vnpayIpn($request->all());
+        return response()->json([
+            'RspCode' => $res['RspCode'],
+            'Message' => $res['Message'],
+        ], 200);
+    }
 }

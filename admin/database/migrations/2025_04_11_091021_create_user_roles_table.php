@@ -17,6 +17,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->string('name_en')->unique();
             $table->string('name_vn')->unique();
+            $table->integer('price')->default(0);
             $table->integer('download_limit_per_month')->nullable()->default(3); // null thì ko giới hạn
             $table->integer('view_limit_per_month')->nullable()->default(3); // null thì ko giới hạn
             $table->integer('page_view_limit')->nullable()->default(3);
