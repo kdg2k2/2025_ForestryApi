@@ -2,16 +2,21 @@
 
 namespace App\Services;
 
+use App\Repositories\DocumentImageRepository;
 use App\Repositories\DocumentRepository;
+use Exception;
+use Illuminate\Support\Facades\Gate;
 
 class DocumentService extends BaseService
 {
     protected $documentRepository;
+    protected $documentImageRepository;
     protected $customValidateService;
     protected $orderService;
     public function __construct()
     {
-        $this->documentRepository = app(abstract: DocumentRepository::class);
+        $this->documentRepository = app(DocumentRepository::class);
+        $this->documentImageRepository = app(DocumentImageRepository::class);
         $this->customValidateService = app(CustomValidateRequestService::class);
         $this->orderService = app(OrderService::class);
     }
@@ -35,11 +40,12 @@ class DocumentService extends BaseService
             $check = $this->checkContrainTextInArray($request);
 
             $record = $this->documentRepository->store($check['main']);
-
             $this->checkSpecialDocumentType($request, $record);
-            $record = $this->documentRepository->findById($record->id);
 
+            $this->renderImage($record->id);
+            $record = $this->documentRepository->findById($record->id);
             $record = $this->transformRecord($record);
+
             return $record;
         });
     }
@@ -56,8 +62,10 @@ class DocumentService extends BaseService
             $this->deleteRelationship($record);
 
             $this->checkSpecialDocumentType($prepare['request'], $record);
-            $record = $this->documentRepository->findById($record->id);
 
+            if ($prepare['removeOld'] == true)
+                $this->renderImage($record->id);
+            $record = $this->documentRepository->findById($record->id);
             $record = $this->transformRecord($record);
             return $record;
         });
@@ -70,13 +78,18 @@ class DocumentService extends BaseService
         });
     }
 
-    public function show(int $id, array $request = [])
+    public function show(int $id)
     {
-        return $this->tryThrow(function () use ($request, $id) {
-            return $this->documentRepository->show([
-                'id' => $id,
-                ...$request
-            ]);
+        return $this->tryThrow(function () use ($id) {
+            $document = $this->documentRepository->findById($id);
+            $res = $this->renderPdf($id);
+            $document->path = $res['path'];
+            $message = $res['message'];
+
+            return [
+                'document' => $document,
+                'message' => $message,
+            ];
         });
     }
 
@@ -101,7 +114,7 @@ class DocumentService extends BaseService
 
     protected function fileUpload($path)
     {
-        return (new FileUploadService())->storeDocument($path);
+        return (new FileUploadService())->storeDocument($path, false);
     }
 
     protected function prepareData(array $request)
@@ -332,7 +345,68 @@ class DocumentService extends BaseService
             [],
             $paths,
         );
-        
+
         return redirect(route('admin.document.index'))->with('success', $request['message']);
+    }
+
+    protected function renderImage(int $id)
+    {
+        return $this->tryThrow(function () use ($id) {
+            $document = $this->documentRepository->findById($id);
+            $this->documentImageRepository->deleteByIdDocument($id);
+
+            $fullPathToPdf = public_path($document->path);
+            if (!file_exists($fullPathToPdf))
+                throw new Exception("File gốc không tồn tại");
+
+            $folder = "uploads/documents/$id/images";
+            $outputDir = public_path($folder);
+            if (!is_dir($outputDir))
+                mkdir($outputDir, 0777, true);
+
+            $paths = (new PdfToImageService())->pdfToImage($fullPathToPdf, $outputDir);
+            $paths = array_map(function ($item) use ($id, $folder) {
+                return [
+                    "id_document" => $id,
+                    "path" => "$folder/$item",
+                ];
+            }, $paths);
+
+            (new DocumentImageService())->insert($paths);
+        });
+    }
+
+    protected function renderPdf(int $id)
+    {
+        $document = $this->documentRepository->findById($id);
+        $user = auth('api')->user();
+
+        if (Gate::forUser($user)->allows('view', $document) == false)
+            throw new Exception("Đã hết lượt xem tháng này");
+
+        $res = [
+            "path" => null,
+            "message" => null,
+        ];
+        $limitPage = $user->role->page_view_limit;
+        $limitedImages = $originImages = $document->images->toArray();
+        $isUnlimitPage = is_null($limitPage);
+
+        if ($isUnlimitPage == false) {
+            $res["message"] = "Bạn đang bị số hạn số trang được xem, hãy nâng cấp tài khoản";
+            $limitedImages = array_slice($originImages, 0, $limitPage);
+        }
+
+        $images = array_map(function ($item) {
+            return public_path($item['path']);
+        }, $limitedImages);
+        $res["path"] = asset((new PdfToImageService())->imagesToPdf($images, "uploads/documents/$id/reader-$user->id", "temp.pdf"));
+
+        (new DocumentViewLogService())->store([
+            "id_user" => $user->id,
+            "id_document" => $document->id,
+        ]);
+
+        return $res;
     }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->foreignId('id_document_type')->constrained('document_types')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('name')->unique();
+            $table->string('name', 500);
             $table->date('issued_date')->nullable(); // ngày ban hành
             $table->string('author')->nullable();
             $table->text('path');

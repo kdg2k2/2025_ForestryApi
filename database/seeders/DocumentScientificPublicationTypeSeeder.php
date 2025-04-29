@@ -22,6 +22,7 @@ class DocumentScientificPublicationTypeSeeder extends Seeder
             "Sách Tham Khảo",
             "Bài Báo",
             "Hồ Sơ Năng Lực",
+            "Sách",
         ];
 
         $timestamp = now()->format("Y-m-d H:i:s");

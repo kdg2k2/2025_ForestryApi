@@ -52,7 +52,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Order::class, 'id_user');
     }
 
-    public function cart()
+    public function viewDocumentLog()
+    {
+        return $this->hasMany(DocumentViewLog::class, 'id_user');
+    }
+  
+      public function cart()
     {
         return $this->hasOne(Cart::class);
     }

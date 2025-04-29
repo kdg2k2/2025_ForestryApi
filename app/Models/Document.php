@@ -56,10 +56,14 @@ class Document extends Model
     {
         return $this->hasMany(OrderDocument::class, 'id_document');
     }
-  
+
     public function getValidity()
     {
         return Document::validity[$this->legal->validity] ?? null;
+    }
 
+    public function images()
+    {
+        return $this->hasMany(DocumentImage::class, "id_document");
     }
 }
