@@ -23,6 +23,10 @@ class DatabaseSeeder extends Seeder
         $this->call(DocumentScientificPublicationTypeSeeder::class);
         $this->call(DocumentBiodiversityTypeSeeder::class);
 
+        $this->call(DocumentSeeder::class);
+        $this->call(DocumentLegalSeeder::class);
+        $this->call(DocumentScientificPublicationSeeder::class);
+
         $this->call(BioNationalParkTypeSeeder::class);
         $this->call(BioNationalParkSeeder::class);
 

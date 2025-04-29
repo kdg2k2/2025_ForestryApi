@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Imagick;
 use ImagickPixel;
 
@@ -9,6 +10,11 @@ class PdfToImageService extends BaseService
 {
     public function pdfToImage(string $fullPathToPdf, string $outputDir)
     {
+        if (empty($fullPathToPdf))
+            throw new Exception("Đường dẫn file pdf rỗng");
+        if (!file_exists($fullPathToPdf))
+            throw new Exception("File pdf không tồn tại");
+
         $paths = [];
 
         // 1) Khởi tạo instance
@@ -46,6 +52,9 @@ class PdfToImageService extends BaseService
 
     public function imagesToPdf(array $images, string $outputDir, string $fileName)
     {
+        if (empty($images))
+            return null;
+
         $path = "$outputDir/$fileName";
         if (!is_dir(public_path($outputDir)))
             mkdir($outputDir, 0777, true);
