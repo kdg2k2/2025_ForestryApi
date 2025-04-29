@@ -10,4 +10,8 @@ class OrderDocumentRepository
     {
         return OrderDocument::create($request);
     }
+    public function insetMany(array $request)
+    {
+        return OrderDocument::insert($request);
+    }
 }

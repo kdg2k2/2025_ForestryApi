@@ -3,10 +3,16 @@ const checkout = {
         return http.post("api/checkout", data);
     },
     init: function () {
-        $(".form-checkout").click(async function (e) {
-            e.preventDefault();
-            const form = new FormData(this);
-            const { message } = await checkout.checkout(form);
+        $(".form-checkout").submit(async function (e) {
+            try {
+                e.preventDefault();
+                const form = new FormData(this);
+                if (!form.get("cart_ids[]")) return;
+                const { data } = await checkout.checkout(form);
+                location.href = data;
+            } catch (error) {
+                alertErr(error.message);
+            }
         });
     },
 };

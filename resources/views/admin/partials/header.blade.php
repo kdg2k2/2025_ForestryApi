@@ -51,7 +51,7 @@
                                         <sup>đ</sup>
                                     </span>
                                 </div>
-                                <button class="btn btn-primary text-light">Thanh toán</button>
+                                <button class="btn-checkout btn-disable btn btn-primary text-light">Thanh toán</button>
                             </div>
                         </div>
                     </form>
@@ -60,9 +60,8 @@
                     <div class="user-wrap">
                         <div class="user-img"><img src="template-admin/admin/images/profile.png" alt="user" /></div>
                         <div class="user-content">
-                            <h6>{{ auth('api')->user()->name }}</h6>
+                            <h6>F4</h6>
                             <p class="mb-0">
-                                {{ auth('api')->user()->role->name_en }}
                                 <i class="fa-solid fa-chevron-down"></i>
                             </p>
                         </div>

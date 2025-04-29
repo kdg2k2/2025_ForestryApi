@@ -11,12 +11,10 @@ class CartRepository
         return Cart::create($request);
     }
 
-    public function getCartItems($userId, array $cartIds = [])
+
+    public function deleteCartItems($userId, array $cartIds = [])
     {
-        return Cart::where('user_id', $userId)
-            ->when($cartIds, function ($query) use ($cartIds) {
-                return $query->whereIn('id', $cartIds);
-            })
-            ->get();
+        $cart = Cart::where('user_id', $userId)->first();
+        return $cart->items()->whereIn('id', $cartIds)->delete();
     }
 }
