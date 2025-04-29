@@ -60,15 +60,23 @@
                     <div class="user-wrap">
                         <div class="user-img"><img src="template-admin/admin/images/profile.png" alt="user" /></div>
                         <div class="user-content">
-                            <h6>{{ auth('api')->user()->name }}</h6>
-                            <p class="mb-0">
-                                {{ auth('api')->user()->role->name_en }}
+                            <h6 id="user-name">
+                                User Name
+                            </h6>
+                            <p class="mb-0" id="user-role">
+                                User Role
                                 <i class="fa-solid fa-chevron-down"></i>
                             </p>
                         </div>
                     </div>
                     <div class="custom-menu overflow-hidden">
                         <ul class="profile-body">
+                            <li class="d-flex">
+                                <svg class="svg-color">
+                                    <use href="template-admin/admin/svg/iconly-sprite.svg#Profile"></use>
+                                </svg>
+                                <a class="ms-2" href="#">Nâng cấp</a>
+                            </li>
                             <li class="d-flex">
                                 <svg class="svg-color">
                                     <use href="template-admin/admin/svg/iconly-sprite.svg#Profile"></use>
@@ -85,8 +93,8 @@
                                 <svg class="svg-color">
                                     <use href="template-admin/admin/svg/iconly-sprite.svg#Login"></use>
                                 </svg>
-                                <a class="ms-2" href="" data-href="{{ route('auth.logout') }}" data-bs-toggle="modal"
-                                    data-bs-target="#confirm-logout">Thoát</a>
+                                <a class="ms-2" href="" data-href="{{ route('auth.logout') }}"
+                                    data-bs-toggle="modal" data-bs-target="#confirm-logout">Thoát</a>
                             </li>
                         </ul>
                     </div>

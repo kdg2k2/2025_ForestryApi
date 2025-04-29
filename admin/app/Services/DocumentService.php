@@ -338,13 +338,13 @@ class DocumentService extends BaseService
             return null;
         })->toArray(), fn($item) => !empty($item));
 
-        (new EmailService())->sendMail(
-            'emails.payment',
-            $request['data']['vnp_OrderInfo'],
-            [$user->email],
-            [],
-            $paths,
-        );
+        // (new EmailService())->sendMail(
+        //     'emails.payment',
+        //     $request['data']['vnp_OrderInfo'],
+        //     [$user->email],
+        //     [],
+        //     $paths,
+        // );
 
         return redirect(route('admin.document.index'))->with('success', $request['message']);
     }
