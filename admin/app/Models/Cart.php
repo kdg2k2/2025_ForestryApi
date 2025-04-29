@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
-     /**
+    protected $table = "carts";
+    protected $guarded = [];
+    /**
      * Quan hệ với User (một giỏ hàng thuộc về một người dùng).
      */
     public function user()
