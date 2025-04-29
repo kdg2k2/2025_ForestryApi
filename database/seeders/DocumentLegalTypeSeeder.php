@@ -14,6 +14,7 @@ class DocumentLegalTypeSeeder extends Seeder
     {
         $arr = [
             "Khác",
+            "Không Xác Định",
             "Tiêu Chuẩn Việt Nam",
             "Văn Bản",
             "Công Văn",
@@ -23,6 +24,10 @@ class DocumentLegalTypeSeeder extends Seeder
             "Quyết Định",
             "Thông Tư",
             "Nghị Định",
+            "Hiến Pháp",
+            "Luật",
+            "Nghị Quyết",
+            "Pháp Lệnh",
         ];
 
         $timestamp = now()->format("Y-m-d H:i:s");

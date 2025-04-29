@@ -10,7 +10,7 @@ abstract class BaseDocumentRequest extends FormRequest
     {
         $rules = [
             'id_document_type' => 'required|integer|exists:document_types,id',
-            'name' => 'required|string|unique:documents,name' . ($this->id ? ',' . $this->id : ''),
+            'name' => 'required|string',
             'issued_date' => 'nullable|date_format:Y-m-d',
             'author' => 'nullable|string',
             'path' => request()->isMethod('post') ? 'required|mimes:pdf' : 'nullable|mimes:pdf',
