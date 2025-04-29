@@ -58,27 +58,32 @@ const cartModule = {
                     const urlDocument = `/admin/documents/${item.document.id}/view`;
                     return /*html*/ `
                         <div class="d-flex justify-content-between align-items-center py-2 cart-item">
-                        <div class="d-flex align-items-center">
-                            <div class="px-3 text-success"><i class="fs-12 fa-regular fa-file"></i></div>
-                            <div>
-                                <a
-                                    href="${urlDocument}"
-                                >
-                                    <h5 class="m-0">${item.document.name}</h5>
-                                </a>
-                                <h6 class="pt-1 m-0 text-danger">${formatNumber(
-                                    item.document.price
-                                )} <sup>đ</sup></h6>
+                            <input type="hidden" value="${item.id}" name="cart_ids[]" />
+                            <div class="d-flex align-items-center">
+                                <div class="px-3 text-success"><i class="fs-12 fa-regular fa-file"></i></div>
+                                <div>
+                                    <a
+                                        href="${urlDocument}"
+                                    >
+                                        <h5 class="m-0">
+                                            ${item.document.name}
+                                        </h5>
+                                    </a>
+                                    <h6 class="pt-1 m-0 text-danger">
+                                        ${formatNumber(item.document.price)}
+                                        <sup>đ</sup>
+                                    </h6>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <span data-id="${
-                                item.id
-                            }" class="remove-item text-danger">
-                                <i class="fa-solid fa-trash"></i>
-                            </span>
-                        </div>
-                    </div>`;
+                            <div>
+                                <span
+                                    data-id="${item.id}"
+                                    class="remove-item text-danger"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+                                </span>
+                            </div>
+                        </div>`;
                 })
                 .join("");
             totalPrice = this.items.reduce((total, item) => {

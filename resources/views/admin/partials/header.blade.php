@@ -36,7 +36,7 @@
                     <span id="cart-count" class="p-1 bg-danger d-flex align-items-center justify-content-center">
                         0
                     </span>
-                    <div class="body-cart">
+                    <form class="body-cart form-checkout">
                         <div class="cart-header">
                             <h5 class="mb-0">Giỏ hàng</h5>
                             <a class="text-info" href="/cart">Xem giỏ hàng</a>
@@ -51,10 +51,10 @@
                                         <sup>đ</sup>
                                     </span>
                                 </div>
-                                <a href="/checkout" class="btn btn-primary text-light">Thanh toán</a>
+                                <button class="btn btn-primary text-light">Thanh toán</button>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </li>
                 <li class="profile-nav custom-dropdown">
                     <div class="user-wrap">

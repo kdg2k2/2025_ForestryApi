@@ -19,6 +19,7 @@ class CheckoutService
     public function checkout(int $userId, array $request)
     {
         $cartItems = $this->cartRepository->getCartItems($userId, $request['cart_ids']);
+        Log::info($cartItems);
         $totalPrice = 0;
         $idDocument = [];
         foreach ($cartItems as $item) {

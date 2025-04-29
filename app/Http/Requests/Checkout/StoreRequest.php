@@ -34,7 +34,23 @@ class StoreRequest extends FormRequest
     {
         return [
             "cart_ids" => "required|array",
-            "cart_ids.*" => "required|integer|exists:carts,id",
+            "cart_ids.*" => "required|integer|exists:cart_items,id",
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            "cart_ids.required" => "Giỏ hàng không được để trống",
+            "cart_ids.array" => "Giỏ hàng không hợp lệ",
+            "cart_ids.*.required" => "Giỏ hàng không được để trống",
+            "cart_ids.*.integer" => "Giỏ hàng không hợp lệ",
+            "cart_ids.*.exists" => "Giỏ hàng không tồn tại",
         ];
     }
 }
