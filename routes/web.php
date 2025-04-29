@@ -3,20 +3,19 @@
 use App\Http\Controllers\Payment\VnPayController;
 use App\Http\Controllers\Web\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Web\HomeController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-Route::get('/', function () {
-    return redirect(route('login'));
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::get('/terms-of-service', 'getTerms');
+    Route::get('/privacy-policy', 'getPrivacy');
+    Route::get('/faq', 'getFAQ');
+    Route::get('/document', 'getDocument');
+    Route::get('/document/index', 'getDocumentDetail');
+    Route::get('/maps', 'getMaps');
+    Route::get('/maps/index', 'getMapsDetail');
+    Route::get('register', 'getRegister')->name("register");
+    Route::get('login', 'getLogin')->name("login");
 });
 
 Route::controller(AuthController::class)->group(function () {
