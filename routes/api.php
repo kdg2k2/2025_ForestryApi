@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BioNationalParkTypeController as bnptc;
 use App\Http\Controllers\Api\BioNationalParkController as bnpc;
+use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\DocumentBiodiversityTypeController;
 use App\Http\Controllers\Api\DocumentControllser;
 use App\Http\Controllers\Api\DocumentLegalTypeController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\DocumentTypeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserRoleController;
 use App\Http\Controllers\Api\UserUnitController;
+use App\Http\Controllers\Api\CartController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware("api")->group(function () {
@@ -54,6 +56,14 @@ Route::middleware("api")->group(function () {
                 Route::post("store", "store");
                 Route::patch("update", "update");
                 Route::delete("delete", "delete");
+            });
+        });
+
+        Route::prefix("cart")->group(function () {
+            Route::controller(CartController::class)->group(function () {
+                Route::get("", "index");
+                Route::post("", "addItem");
+                Route::delete("", "deleteItem");
             });
         });
 
@@ -117,6 +127,12 @@ Route::middleware("api")->group(function () {
                 Route::patch("", "update")->name("bio-national-park.update");
                 Route::delete("{id}", "deleteSoft")->name("bio-national-park-type.delete");
                 Route::patch("restore/{id}", "restore")->name("bio-national-park-type.restore");
+            });
+        });
+
+        Route::prefix("checkout")->group(function () {
+            Route::controller(CheckoutController::class)->group(function () {
+                Route::post("", "checkout")->name("checkout");
             });
         });
     });

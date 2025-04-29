@@ -8,7 +8,7 @@ const createDataTableServerSide = (
     mapFn,
     extraParams = {}
 ) => {
-    element.DataTable({
+    const dataTable = element.DataTable({
         processing: true,
         serverSide: true,
         responsive: true,
@@ -54,6 +54,6 @@ const createDataTableServerSide = (
         },
         columns,
     });
-
     initializeTooltips();
+    return dataTable;
 };

@@ -12,3 +12,8 @@ $(document).ready(async function () {
         }
     });
 });
+
+$(".add-cart").on("click", function () {
+    const id = $(this).data("id");
+    cartModule.add(id);
+});

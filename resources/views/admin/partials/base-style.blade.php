@@ -15,4 +15,5 @@
 <link id="color" rel="stylesheet" href="template-admin/admin/css/color-1.css" media="screen" />
 <link href="template-admin/css/notify.css" rel="stylesheet" />
 <link href="template-admin/css/prettify.css" rel="stylesheet" />
+<link href="\template-admin\admin\css\cart.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kdg2k2/FontAwesome_6_Pro@main/css/all.min.css">
