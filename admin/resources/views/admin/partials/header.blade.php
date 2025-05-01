@@ -51,7 +51,7 @@
                                         <sup>đ</sup>
                                     </span>
                                 </div>
-                                <button class="btn btn-primary text-light">Thanh toán</button>
+                                <button class="btn-checkout btn-disable btn btn-primary text-light">Thanh toán</button>
                             </div>
                         </div>
                     </form>

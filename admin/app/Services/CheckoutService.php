@@ -2,40 +2,59 @@
 
 namespace App\Services;
 
-use App\Repositories\CartRepository;
-use App\Repositories\OrderRepository;
+use App\Repositories\CartItemRepository;
+use App\Repositories\OrderDocumentRepository;
 use Illuminate\Support\Facades\Log;
 
 class CheckoutService
 {
-    protected $orderRepository;
-    protected $cartRepository;
+    protected $orderDocumentRepository;
+    protected $vnpayService;
+    protected $cartItemRepository;
 
     public function __construct()
     {
-        $this->orderRepository = app(OrderRepository::class);
-        $this->cartRepository = app(CartRepository::class);
+        $this->orderDocumentRepository = app(OrderDocumentRepository::class);
+        $this->vnpayService = app(VnpayService::class);
+        $this->cartItemRepository = app(CartItemRepository::class);
     }
-    public function checkout(int $userId, array $request)
+    public function checkout(int $cartId, array $request)
     {
-        $cartItems = $this->cartRepository->getCartItems($userId, $request['cart_ids']);
-        Log::info($cartItems);
-        $totalPrice = 0;
-        $idDocument = [];
-        foreach ($cartItems as $item) {
-            $totalPrice += $item->price * $item->quantity;
-            Log::info($item);
-        }
+        $cartItems = $this->cartItemRepository->getCartItems($cartId, $request['cart_ids']);
+        Log::info('Cart items:', ['cartItems' => $cartItems]);
+        $totalPrice = array_reduce($cartItems->toArray(), function ($carry, $item) {
+            return $carry + ($item['document'] ? $item['document']['price'] : 0);
+        }, 0);
+        $orderCode = $this->generateRandomCode();
         //  Create order
-        // $order = $this->orderRepository->store([
-        //     "user_id" => $userId,
-        //     "order_code" => $this->generateRandomCode(),
-        //     "total_amount" => $totalPrice,
-        //     "status" => 'pending',
-        // ]);
+        $res = $this->vnpayService->createPaymentUrl([
+            'order_code' => $orderCode,
+            'total' => $totalPrice,
+            'info' => 'Thanh toán đơn hàng ' . $orderCode,
+            'type' => 'billpayment',
+            'return_url' => route('admin.document.vnpay-return'),
+        ]);
+
+        $orderDocument = [];
+        foreach ($cartItems as $item) {
+            if ($item->document_id) {
+                $orderDocument[] = [
+                    "id_order" => $res['order']['id'],
+                    "id_document" => $item->document_id,
+                    "price" => $item->document->price,
+                    "quantity" => $item->quantity,
+                ];
+            }
+        }
+        // Create order document
+        $this->orderDocumentRepository->insetMany($orderDocument);
+        // Delete cart items
+        $this->cartItemRepository->deleteCartItems($cartId, $request['cart_ids']);
+        return $res['url'];
     }
 
-    protected function generateRandomCode($length = 16) {
+    protected function generateRandomCode($length = 16)
+    {
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $charactersLength = strlen($characters);
         $randomCode = '';

@@ -16,6 +16,7 @@ const cartModule = {
         cartCount: $("#cart-count"),
         cartItems: $(".body-cart .body-cart__content"),
         totalPrice: $(".body-cart #total-price"),
+        btnCheckout: $(".btn-checkout"),
     },
     count: 0,
     items: [],
@@ -89,6 +90,7 @@ const cartModule = {
             totalPrice = this.items.reduce((total, item) => {
                 return total + item.document.price;
             }, 0);
+            this.element.btnCheckout.removeClass("btn-disable");
         }
         this.element.totalPrice.html(formatNumber(totalPrice));
         this.element.cartItems.html(html);

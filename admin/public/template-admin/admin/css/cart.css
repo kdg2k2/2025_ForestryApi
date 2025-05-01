@@ -84,3 +84,8 @@
 .cart-item + .cart-item {
     border-top: 1px solid #eee;
 }
+
+.btn-disable {
+    opacity: 0.8;
+    pointer-events: none;
+}
