@@ -14,8 +14,9 @@ $(document).on("click", function (e) {
 const cartModule = {
     element: {
         cartCount: $("#cart-count"),
-        cartItems: $(".body-cart .body-cart__content"),
-        totalPrice: $(".body-cart #total-price"),
+        cartItems: $(".body-cart__content"),
+        totalPrice: $(".total-price"),
+        btnCheckout: $(".btn-checkout"),
     },
     count: 0,
     items: [],
@@ -58,9 +59,13 @@ const cartModule = {
                     const urlDocument = `/admin/documents/${item.document.id}/view`;
                     return /*html*/ `
                         <div class="d-flex justify-content-between align-items-center py-2 cart-item">
-                            <input type="hidden" value="${item.id}" name="cart_ids[]" />
                             <div class="d-flex align-items-center">
-                                <div class="px-3 text-success"><i class="fs-12 fa-regular fa-file"></i></div>
+                                <input
+                                    type="checkbox"
+                                    value="${item.id}"
+                                    name="cart_ids[]"
+                                />
+                                <div class="px-3 text-success d-flex align-items-center"><i style="font-size: 20px;" class="fa-regular fa-file"></i></div>
                                 <div>
                                     <a
                                         href="${urlDocument}"
@@ -80,7 +85,7 @@ const cartModule = {
                                     data-id="${item.id}"
                                     class="remove-item text-danger"
                                 >
-                                    <i class="fa-solid fa-trash"></i>
+                                    <i style="font-size: 14px;" class="fa-solid fa-trash"></i>
                                 </span>
                             </div>
                         </div>`;
@@ -89,6 +94,7 @@ const cartModule = {
             totalPrice = this.items.reduce((total, item) => {
                 return total + item.document.price;
             }, 0);
+            this.element.btnCheckout.removeClass("btn-disable");
         }
         this.element.totalPrice.html(formatNumber(totalPrice));
         this.element.cartItems.html(html);

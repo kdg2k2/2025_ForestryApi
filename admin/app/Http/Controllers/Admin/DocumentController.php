@@ -39,9 +39,10 @@ class DocumentController extends Controller
 
     public function edit($id)
     {
-        $document = $this->documentService->show($id);
+        $res = $this->documentService->show($id);
         $documentTypes = $this->documentTypeService->list(["paginate" => 0]);
         $shares = $this->shareService->list(["paginate" => 0]);
+        $document = $res['document'];
         return view('admin.pages.document.edit', compact(
             'documentTypes',
             'shares',

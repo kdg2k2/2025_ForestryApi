@@ -39,7 +39,7 @@
                     <form class="body-cart form-checkout">
                         <div class="cart-header">
                             <h5 class="mb-0">Giỏ hàng</h5>
-                            <a class="text-info" href="/cart">Xem giỏ hàng</a>
+                            <a class="text-info" href="/admin/cart">Xem giỏ hàng</a>
                         </div>
                         <div class="body-cart__content"></div>
                         <div>
@@ -47,11 +47,11 @@
                                 <div class="total-price">
                                     <span>Tổng tiền:</span>
                                     <span class="text-danger fw-bold">
-                                        <span id="total-price">0</span>
+                                        <span class="total-price">0</span>
                                         <sup>đ</sup>
                                     </span>
                                 </div>
-                                <button class="btn btn-primary text-light">Thanh toán</button>
+                                <button class="btn-checkout btn-disable btn btn-primary text-light">Thanh toán</button>
                             </div>
                         </div>
                     </form>

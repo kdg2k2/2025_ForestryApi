@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CartController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\UserRoleController;
@@ -22,6 +23,8 @@ Route::prefix("documents")->controller(DocumentController::class)->group(functio
     Route::get("{id}", "edit")->name("admin.document.edit");
     Route::get("{id}/view", "view")->name("admin.document.view");
 });
+
+Route::get("/cart", [CartController::class, 'index'])->name("admin.cart.index");
 
 Route::prefix('role')->controller(UserRoleController::class)->group(function () {
     Route::get('upgrade', 'upgrade')->name('admin.role.upgrade');

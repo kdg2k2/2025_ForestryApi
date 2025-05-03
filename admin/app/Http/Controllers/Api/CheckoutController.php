@@ -16,9 +16,7 @@ class CheckoutController extends Controller
     }
     public function checkout(StoreRequest $request)
     {
-        $this->checkoutService->checkout(auth('api')->id(), $request->validated());
-        return response()->json([
-            'message' => 'Checkout successful',
-        ]);
+        $url = $this->checkoutService->checkout(auth('api')->id(), $request->validated());
+        return ['data' => $url];
     }
 }
