@@ -44,10 +44,11 @@ Route::middleware("api")->group(function () {
 
             # phân quyền
             Route::prefix("role")->controller(UserRoleController::class)->group(function () {
-                Route::get("list", "list");
+                Route::get("list", "list")->name('api.role.list');
                 Route::post("store", "store");
                 Route::patch("update", "update");
                 Route::delete("delete", "delete");
+                Route::post("upgrade", "upgrade");
             });
 
             # người dùng

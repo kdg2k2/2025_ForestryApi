@@ -19,6 +19,10 @@ class UserRoleSeeder extends Seeder
             return [
                 "name_en" => $item["name_en"],
                 "name_vn" => $item["name_vn"],
+                "price" => $item["price"],
+                "download_limit_per_month" => $item["download_limit_per_month"],
+                "view_limit_per_month" => $item["view_limit_per_month"],
+                "page_view_limit" => $item["page_view_limit"],
                 "created_at" => now()->format("Y-m-d H:i:s"),
                 "updated_at" => now()->format("Y-m-d H:i:s"),
             ];

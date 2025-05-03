@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\Admin\UserRoleController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,10 @@ Route::prefix("documents")->controller(DocumentController::class)->group(functio
     Route::get("vnpay-return", "vnpayReturn")->name("admin.document.vnpay-return");
     Route::get("{id}", "edit")->name("admin.document.edit");
     Route::get("{id}/view", "view")->name("admin.document.view");
+});
+
+Route::prefix('role')->controller(UserRoleController::class)->group(function () {
+    Route::get('upgrade', 'upgrade')->name('admin.role.upgrade');
+    Route::get('payment', 'payment')->name('admin.role.payment');
+    Route::get("vnpay-return", "vnpayReturn")->name("admin.role.vnpay-return");
 });

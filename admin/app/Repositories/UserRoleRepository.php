@@ -8,7 +8,10 @@ class UserRoleRepository
 {
     public function list(array $request)
     {
-        return UserRole::orderByDesc("id")->get()->toArray();
+        $records = UserRole::orderByDesc("id");
+        if ($request['ignore_admin'] == 1)
+            $records->where('id', '!=', 1);
+        return $records->get()->toArray();
     }
 
     public function store(array $request)
@@ -26,5 +29,10 @@ class UserRoleRepository
     public function delete(array $request)
     {
         return UserRole::find($request["id"])->delete();
+    }
+
+    public function findById(int $id)
+    {
+        return UserRole::find($id);
     }
 }

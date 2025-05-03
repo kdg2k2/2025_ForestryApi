@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\UserRole;
 
+use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ListRequest extends FormRequest
+class UpgradeRequest extends FormRequest
 {
+    use FailedValidation;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -20,9 +22,8 @@ class ListRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'per_page' => $this->per_page ?? null,
-            'page' => $this->page ?? null,
-            'ignore_admin' => $this->ignore_admin ?? null,
+            // 'per_page' => $this->per_page ?? null,
+            // 'page' => $this->page ?? null,
         ]);
     }
 
@@ -34,10 +35,7 @@ class ListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'paginate' => 'required|in:0,1',
-            'per_page' => 'nullable|integer|min:1',
-            'page' => 'nullable|integer|min:1',
-            'ignore_admin' => 'nullable|in:0,1',
+            'id_role' => 'required|integer|exists:user_roles,id',
         ];
     }
 }

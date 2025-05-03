@@ -20,6 +20,11 @@ class Order extends Model
         return $this->hasMany(OrderDocument::class, 'id_order');
     }
 
+    public function orderUserRole()
+    {
+        return $this->hasMany(OrderUserRole::class, 'id_order');
+    }
+
     public function payments()
     {
         return $this->hasMany(Payment::class, 'id_order');
