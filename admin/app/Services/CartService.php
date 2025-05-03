@@ -4,9 +4,16 @@ namespace App\Services;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Repositories\CartRepository;
 
-class CartService
+class CartService extends BaseService
 {
+    protected $cartRepository;
+    public function __construct()
+    {
+        $this->cartRepository = app(CartRepository::class);
+    }
+
     /**
      * Lấy giỏ hàng của người dùng hiện tại.
      */
@@ -18,7 +25,7 @@ class CartService
             },
             'items.document'
         ])
-            ->where('user_id', $userId)
+            ->where('id_user', $userId)
             ->first();
     }
 
@@ -28,7 +35,7 @@ class CartService
     public function addItemToCart($userId, $documentId, $quantity)
     {
         // Tìm hoặc tạo giỏ hàng
-        $cart = Cart::firstOrCreate(['user_id' => $userId]);
+        $cart = Cart::firstOrCreate(['id_user' => $userId]);
 
         // Thêm hoặc cập nhật sản phẩm trong giỏ hàng
         $cartItem = $cart->items()->updateOrCreate(
@@ -53,5 +60,12 @@ class CartService
         $cartItem = CartItem::findOrFail($cartItemId);
         $cartItem->delete();
         return true;
+    }
+
+    public function store(array $request)
+    {
+        return $this->tryThrow(function () use ($request) {
+            return $this->cartRepository->store($request);
+        });
     }
 }

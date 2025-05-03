@@ -95,50 +95,46 @@ class AuthService extends BaseService
 
     public function authGoogleRedirect()
     {
-        return $this->tryThrow(function () {
-            return 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
-                'client_id' => env('GOOGLE_CLIENT_ID'),
-                'redirect_uri' => env('GOOGLE_REDIRECT_URL'),
-                'response_type' => 'code',
-                'scope' => 'email profile',
-                'state' => Str::random(40),
-            ]);
-        });
+        return 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
+            'client_id' => env('GOOGLE_CLIENT_ID'),
+            'redirect_uri' => env('GOOGLE_REDIRECT_URL'),
+            'response_type' => 'code',
+            'scope' => 'email profile',
+            'state' => Str::random(40),
+        ]);
     }
 
     public function authGoogleCallback()
     {
-        return $this->tryThrow(function () {
-            $client = new Client();
-            $response = $client->post('https://oauth2.googleapis.com/token', [
-                'form_params' => [
-                    'code' => request('code'),
-                    'client_id' => env('GOOGLE_CLIENT_ID'),
-                    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-                    'redirect_uri' => env('GOOGLE_REDIRECT_URL'),
-                    'grant_type' => 'authorization_code',
-                ],
-            ]);
+        $client = new Client();
+        $response = $client->post('https://oauth2.googleapis.com/token', [
+            'form_params' => [
+                'code' => request('code'),
+                'client_id' => env('GOOGLE_CLIENT_ID'),
+                'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+                'redirect_uri' => env('GOOGLE_REDIRECT_URL'),
+                'grant_type' => 'authorization_code',
+            ],
+        ]);
 
-            $data = json_decode($response->getBody()->getContents(), true);
-            $googleUser = $client->get('https://www.googleapis.com/oauth2/v3/userinfo', [
-                'headers' => ['Authorization' => 'Bearer ' . $data['access_token']]
-            ]);
-            $googleUser = json_decode($googleUser->getBody()->getContents(), true);
+        $data = json_decode($response->getBody()->getContents(), true);
+        $googleUser = $client->get('https://www.googleapis.com/oauth2/v3/userinfo', [
+            'headers' => ['Authorization' => 'Bearer ' . $data['access_token']]
+        ]);
+        $googleUser = json_decode($googleUser->getBody()->getContents(), true);
 
-            $existingUser = $this->userService->findByEmail($googleUser['email']);
-            if (!$existingUser) {
-                $userInfo = [
-                    'name' => $googleUser['name'],
-                    'email' => $googleUser['email'],
-                    'password' => bcrypt(time() + rand(0, 1000)),
-                ];
-                $existingUser = $this->newUserGoogle($userInfo);
-                $existingUser = $this->userService->findById($existingUser['id']);
-            }
+        $existingUser = $this->userService->findByEmail($googleUser['email']);
+        if (empty($existingUser)) {
+            $userInfo = [
+                'name' => $googleUser['name'],
+                'email' => $googleUser['email'],
+                'password' => (string)(time() + rand(0, 1000)),
+            ];
+            $existingUser = $this->newUserGoogle($userInfo);
+            $existingUser = $this->userService->findById($existingUser['id']);
+        }
 
-            return $this->createTokenWithUserRecord($existingUser);
-        });
+        return $this->createTokenWithUserRecord($existingUser);
     }
 
     protected function newUserGoogle(array $userInfo)

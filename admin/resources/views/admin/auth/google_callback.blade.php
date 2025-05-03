@@ -11,6 +11,9 @@
             access_token: @json($access),
         };
         const callbackUrl = @json('auth.google.callback');
+        console.log(callbackUrl);
+        console.log(window.opener);
+
 
         if (window.opener) {
             window.opener.postMessage(payload, window.location.origin);

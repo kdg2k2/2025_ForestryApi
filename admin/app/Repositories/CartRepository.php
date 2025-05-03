@@ -14,7 +14,7 @@ class CartRepository
 
     public function deleteCartItems($userId, array $cartIds = [])
     {
-        $cart = Cart::where('user_id', $userId)->first();
+        $cart = Cart::where('id_user', $userId)->first();
         return $cart->items()->whereIn('id', $cartIds)->delete();
     }
 }
