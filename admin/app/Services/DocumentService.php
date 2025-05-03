@@ -310,7 +310,7 @@ class DocumentService extends BaseService
         $res = (new VnpayService())->createPaymentUrl([
             'total' => $document->price,
             'type' => 'billpayment',
-            'info' => 'Thanh toán đơn hàng mua tài liệu ' . $document->name,
+            'info' => 'Buy document name ' . $document->name,
             'return_url' => route('admin.document.vnpay-return'),
         ]);
 
@@ -326,27 +326,32 @@ class DocumentService extends BaseService
 
     public function vnpayReturn(array $request)
     {
-        if (in_array($request['status'], [400, 201]))
-            return redirect(route('admin.document.index'))->with('err', $request['message']);
-
-        $order = $this->orderService->findByOrderCode($request['data']['vnp_TxnRef']);
-        $user = $order->user;
-        $paths = array_filter($order->orderDocument->map(function ($item) {
-            $path = public_path($item->document->path);
-            if (file_exists($path))
-                return $path;
-            return null;
-        })->toArray(), fn($item) => !empty($item));
-
-        // (new EmailService())->sendMail(
-        //     'emails.payment',
-        //     $request['data']['vnp_OrderInfo'],
-        //     [$user->email],
-        //     [],
-        //     $paths,
-        // );
+        $res = (new VnpayService())->vnpayReturn($request);
+        if (in_array($res['status'], [400, 201]))
+            return redirect(route('admin.document.index'))->with('err', $res['message']);
 
         return redirect(route('admin.document.index'))->with('success', $request['message']);
+    }
+
+    public function vnpayIpn($order)
+    {
+        return $this->tryThrow(function () use ($order) {
+            $user = $order->user;
+            $paths = array_filter($order->orderDocument->map(function ($item) {
+                $path = public_path($item->document->path);
+                if (file_exists($path))
+                    return $path;
+                return null;
+            })->toArray(), fn($item) => !empty($item));
+
+            (new EmailService())->sendMail(
+                'emails.payment',
+                'Thanh toán mua tài liệu thành công',
+                [$user->email],
+                [],
+                $paths,
+            );
+        });
     }
 
     protected function renderImage(int $id)

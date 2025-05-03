@@ -11,8 +11,12 @@ class VnpayService extends BaseService
     protected $orderService;
     protected $paymentService;
     protected $paymentLogService;
+    protected $userRoleService;
+    protected $documentService;
     public function __construct()
     {
+        $this->documentService = app(DocumentService::class);
+        $this->userRoleService = app(UserRoleService::class);
         $this->paymentLogService = app(PaymentLogService::class);
         $this->paymentService = app(PaymentService::class);
         $this->orderService = app(OrderService::class);
@@ -22,9 +26,8 @@ class VnpayService extends BaseService
     {
         return $this->tryThrow(function () use ($request) {
             $maxOrderID = $this->orderService->maxId();
-            $orderCode = "ORDER" . ($maxOrderID + 1);
-            if (isset($request['order_code']))
-                $orderCode = $request['order_code'];
+            $orderCode = "ORDER" . ($maxOrderID + 1) . date("dmYHis");
+          
             $order = $this->orderService->store([
                 'id_user' => auth('api')->id(),
                 'order_code' => $orderCode,
@@ -78,11 +81,8 @@ class VnpayService extends BaseService
             $make = $this->makeHashHtttQuery($request);
             $secureHash = $make['secureHash'];
 
-            $view = 'web.payment.payment_failed';
-
             if ($secureHash != $vnpSecureHash)
                 return [
-                    'view' => $view,
                     'data' => null,
                     'status' => 400,
                     'message' => 'Giao dịch không hợp lệ',
@@ -91,7 +91,6 @@ class VnpayService extends BaseService
             $success = $request['vnp_ResponseCode'] == '00';
 
             return [
-                'view' => $view,
                 'data' => $request,
                 'status' => $success ? 200 : 201,
                 'message' => $success ? 'Giao dịch thành công' : 'Giao dịch thất bại',
@@ -168,11 +167,14 @@ class VnpayService extends BaseService
                     'vnp_BankCode' => $request['vnp_BankCode'] ?? null,
                 ]);
 
-                if ($newStatus == 'success')
+                if ($newStatus == 'success') {
                     $this->orderService->update([
                         'id' => $payment->order->id,
                         'status' => 'paid',
                     ]);
+
+                    $this->handleAfterPaySuccess($payment->order);
+                }
 
                 $this->paymentLogService->store([
                     'id_payment' => $payment->id,
@@ -187,5 +189,14 @@ class VnpayService extends BaseService
                 'Message' => 'Confirm Success',
             ];
         });
+    }
+
+    protected function handleAfterPaySuccess($order)
+    {
+        if ($order->orderUserRole && $order->orderUserRole->count() > 0)
+            $this->userRoleService->vnpayIpn($order);
+
+        if ($order->orderDocument && $order->orderDocument->count() > 0)
+            $this->documentService->vnpayIpn($order);
     }
 }
