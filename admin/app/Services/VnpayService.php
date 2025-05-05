@@ -250,6 +250,13 @@ class VnpayService extends BaseService
                     'vnp_BankCode' => $request['vnp_BankCode'] ?? null,
                 ]);
 
+                $this->paymentLogService->store([
+                    'id_payment' => $payment->id,
+                    'old_status' => 'pending',
+                    'new_status' => $newStatus,
+                    'note' => json_encode($request),
+                ]);
+
                 if ($newStatus == 'success') {
                     $this->orderService->update([
                         'id' => $payment->order->id,
@@ -258,13 +265,6 @@ class VnpayService extends BaseService
 
                     $this->handleAfterPaySuccess($payment->order);
                 }
-
-                $this->paymentLogService->store([
-                    'id_payment' => $payment->id,
-                    'old_status' => 'pending',
-                    'new_status' => $newStatus,
-                    'note' => json_encode($request),
-                ]);
             }
 
             return [
