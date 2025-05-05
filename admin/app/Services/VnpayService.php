@@ -60,7 +60,6 @@ class VnpayService extends BaseService
                 'vnp_ExpireDate' => date('YmdHis', strtotime('+30 minutes')),
             ];
 
-            dd($data);
             $make = $this->makeHashHtttQuery($data);
             $query = $make['query'];
             $secureHash = $make['secureHash'];
@@ -78,11 +77,11 @@ class VnpayService extends BaseService
     public function vnpayReturn(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            $format = $this->formatVnpayRequest($request);
-            $request = $format['request'];
-            $vnpSecureHash = $format['vnpSecureHash'];
+            $formatted = $this->formatVnpayRequest($request);
+            $vnpData = $formatted['request'];
+            $vnpSecureHash = $formatted['vnpSecureHash'];
 
-            $make = $this->makeHashHtttQuery($request);
+            $make = $this->makeHashHtttQuery($vnpData);
             $secureHash = $make['secureHash'];
 
             if ($secureHash != $vnpSecureHash)
@@ -115,6 +114,9 @@ class VnpayService extends BaseService
     protected function formatVnpayRequest(array $request)
     {
         $vnpSecureHash = $request['vnp_SecureHash'] ?? null;
+        if (empty($vnpSecureHash))
+            $vnpSecureHash = $request['data'] ? $request['data']['vnp_SecureHash'] : null;
+
         unset($request['vnp_SecureHash']);
         return [
             'vnpSecureHash' => $vnpSecureHash,

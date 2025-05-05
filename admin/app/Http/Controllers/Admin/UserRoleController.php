@@ -27,6 +27,7 @@ class UserRoleController extends Controller
 
     public function vnpayReturn(Request $request)
     {
-        return $this->userRoleService->vnpayReturn($request->all());
+        $res = $this->userRoleService->vnpayReturn($request->all());
+        return redirect($res['route'])->with($res['message_type'], $res['message']);
     }
 }

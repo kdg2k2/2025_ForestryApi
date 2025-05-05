@@ -69,10 +69,11 @@ class UserRoleService extends BaseService
     public function vnpayReturn(array $request)
     {
         $res = (new VnpayService())->vnpayReturn($request);
-        if (in_array($res['status'], [400, 201]))
-            return redirect(route('admin.role.upgrade'))->with('err', $res['message']);
-
-        return redirect(route('admin.role.upgrade'))->with('success', $res['message']);
+        return [
+            'route' => route('admin.role.upgrade'),
+            'message' => $res['message'],
+            'message_type' => in_array($res['status'], [400, 201]) ? 'err' : 'success',
+        ];
     }
 
     public function vnpayIpn($order)
