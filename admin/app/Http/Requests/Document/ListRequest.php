@@ -52,7 +52,7 @@ class ListRequest extends FormRequest
             'allow_download' => 'nullable|in:0,1',
             'is_shared' => 'nullable|in:0,1',
             'id_document_type' => 'nullable|integer|exists:document_types,id',
-            'id_uploader' => 'nullable|integer|exists:users,id',
+            'id_uploader' => 'nullable|integer|exists:admins,id',
             'id_unit' => 'nullable|integer|exists:user_units,id',
             'issued_year' => 'nullable|integer',
             'search' => 'nullable|string',

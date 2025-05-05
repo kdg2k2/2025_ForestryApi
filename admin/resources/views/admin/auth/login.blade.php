@@ -83,14 +83,5 @@
                 redirect();
             }
         }, false);
-
-        document.getElementById('btnGoogleLogin').addEventListener('click', function() {
-            const url = @json(route('auth.google.redirect'));
-            const w = 500,
-                h = 600;
-            const left = (screen.width - w) / 2,
-                top = (screen.height - h) / 2;
-            window.open(url, 'GoogleLogin', `width=${w},height=${h},top=${top},left=${left}`);
-        });
     </script>
 @endsection

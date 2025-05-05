@@ -97,16 +97,6 @@
                 uploader: item.uploader?.name ?? '',
                 actions: `
                         <div class="text-center">
-                            <a href="${paymentUrl}?id=${item.id}" title="Mua tài liệu"
-                                class="btn btn-sm btn-outline-success rounded-pill mb-1" data-bs-toggle="tooltip"
-                                data-placement="top">
-                                <i class="fal fa-money-bill-alt"></i>
-                            </a>
-                            <span data-id="${item.id}" title="Thêm vào giỏ hàng"
-                                class="btn btn-sm btn-outline-primary rounded-pill mb-1 btn-add-cart" data-bs-toggle="tooltip"
-                                data-placement="top">
-                                <i class="fal fa-cart-plus"></i>
-                            </span>
                             <a href="/admin/documents/${item.id}/view" title="Xem"
                                 class="btn btn-sm btn-outline-info rounded-pill mb-1" data-bs-toggle="tooltip"
                                 data-placement="top">
@@ -168,7 +158,7 @@
             modal.find('.btn-delete').off('click').on('click', async (e) => {
                 try {
                     e.preventDefault();
-                    const { message } = await http.delete(`api/document/delete`, { id });
+                    const { message } = await http.delete(deleteUrl, { id });
                     alertSuccess(message);
                     getDocuments({ paginate: 1 });
                     modal.modal('hide');

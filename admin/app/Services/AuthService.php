@@ -11,11 +11,11 @@ use Tymon\JWTAuth\Token;
 
 class AuthService extends BaseService
 {
-    protected $userService;
+    protected $adminService;
     protected $customValidateService;
     public function __construct()
     {
-        $this->userService = app(UserService::class);
+        $this->adminService = app(AdminService::class);
         $this->customValidateService = app(CustomValidateRequestService::class);
     }
 
@@ -43,7 +43,7 @@ class AuthService extends BaseService
                 throw new Exception('Invalid refresh token', 401);
 
             $userId = $payload['sub'];
-            $user = $this->userService->findById($userId);
+            $user = $this->adminService->findById($userId);
 
             if (!$user)
                 throw new Exception('User not found', 404);
@@ -123,7 +123,7 @@ class AuthService extends BaseService
         ]);
         $googleUser = json_decode($googleUser->getBody()->getContents(), true);
 
-        $existingUser = $this->userService->findByEmail($googleUser['email']);
+        $existingUser = $this->adminService->findByEmail($googleUser['email']);
         if (empty($existingUser)) {
             $userInfo = [
                 'name' => $googleUser['name'],
@@ -131,7 +131,7 @@ class AuthService extends BaseService
                 'password' => (string)(time() + rand(0, 1000)),
             ];
             $existingUser = $this->newUserGoogle($userInfo);
-            $existingUser = $this->userService->findById($existingUser['id']);
+            $existingUser = $this->adminService->findById($existingUser['id']);
         }
 
         return $this->createTokenWithUserRecord($existingUser);
@@ -144,6 +144,6 @@ class AuthService extends BaseService
             new \App\Http\Requests\User\StoreRequest
         );
 
-        return $this->userService->store($validated);
+        return $this->adminService->store($validated);
     }
 }

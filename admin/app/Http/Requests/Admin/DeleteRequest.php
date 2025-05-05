@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Admin;
 
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class DeleteRequest extends FormRequest
 {
     use FailedValidation;
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the admin is authorized to make this request.
      */
     public function authorize(): bool
     {
@@ -35,8 +35,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:admins,email',
-            'password' => 'required|string',
+            'id' => 'required|integer|exists:admins,id',
         ];
     }
 }

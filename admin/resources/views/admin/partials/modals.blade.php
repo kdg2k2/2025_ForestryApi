@@ -74,8 +74,34 @@
 </div>
 
 <script>
+    const csrf = $("meta[name='csrf_token']").attr('content');
     $('#confirm-delete').on('show.bs.modal', function(e) {
-        $(this).find('.btn-delete').attr('href', $(e.relatedTarget).data('href'));
+        const modal = $(this);
+        const btnDelete = modal.find('.btn-delete');
+        const trigger = $(e.relatedTarget);
+        const deleteUrl = trigger.data('href');
+        const onSuccessFnName = trigger.data('onsuccess');
+        console.log(onSuccessFnName);
+        console.log(typeof window[onSuccessFnName]);
+
+        btnDelete.on('click', function(evt) {
+            evt.preventDefault();
+
+            apiRequest('post', deleteUrl, {
+                    '_method': 'delete'
+                }, csrf)
+                .then(data => {
+                    modal.modal("hide");
+                    alertSuccess(data.message);
+
+                    if (onSuccessFnName && typeof window[onSuccessFnName] === 'function') {
+                        window[onSuccessFnName](data);
+                    }
+                })
+                .catch(err => {
+                    console.error('Delete failed', err);
+                });
+        });
     });
 
     $('#confirm-lock').on('show.bs.modal', function(e) {
@@ -89,8 +115,6 @@
     $('#confirm-logout').on('show.bs.modal', function(e) {
         $('#btn-confirm-logout').one('click', function(evt) {
             evt.preventDefault();
-
-            const csrf = $("meta[name='csrf_token']").attr('content');
 
             apiRequest('post', $(e.relatedTarget).data('href'), {}, csrf)
                 .then(data => {

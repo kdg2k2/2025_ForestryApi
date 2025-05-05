@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BioNationalParkTypeController as bnptc;
 use App\Http\Controllers\Api\BioNationalParkController as bnpc;
@@ -23,13 +24,6 @@ Route::middleware("api")->group(function () {
         Route::post("refresh", "refresh")->middleware("throttle:5,1")->name("auth.refresh");
         # logout
         Route::post("logout", "logout")->middleware("auth:api")->name("auth.logout");
-        # google
-        Route::prefix("google")->group(function () {
-            # redirect to Google's OAuth page
-            Route::get('redirect', 'authGoogleRedirect')->name('auth.google.redirect');
-            # handle the callback from Google
-            Route::get('callback', 'authGoogleCallback')->name('auth.google.callback');
-        });
     });
 
     Route::middleware("auth:api")->group(function () {
@@ -42,29 +36,12 @@ Route::middleware("api")->group(function () {
                 Route::delete("delete", "delete");
             });
 
-            # phân quyền
-            Route::prefix("role")->controller(UserRoleController::class)->group(function () {
-                Route::get("list", "list")->name('api.role.list');
-                Route::post("store", "store");
-                Route::patch("update", "update");
-                Route::delete("delete", "delete");
-                Route::post("upgrade", "upgrade");
-            });
-
             # người dùng
             Route::controller(UserController::class)->group(function () {
                 Route::get("list", "list");
                 Route::post("store", "store");
                 Route::patch("update", "update");
                 Route::delete("delete", "delete");
-            });
-        });
-
-        Route::prefix("cart")->group(function () {
-            Route::controller(CartController::class)->group(function () {
-                Route::get("", "index");
-                Route::post("", "addItem");
-                Route::delete("", "deleteItem");
             });
         });
 
@@ -131,10 +108,12 @@ Route::middleware("api")->group(function () {
             });
         });
 
-        Route::prefix("checkout")->group(function () {
-            Route::controller(CheckoutController::class)->group(function () {
-                Route::post("", "checkout")->name("checkout");
-            });
+        # admin
+        Route::prefix("admin")->controller(AdminController::class)->group(function () {
+            Route::get("list", "list")->name("api.admin.list");
+            Route::post("store", "store")->name("api.admin.store");
+            Route::patch("update", "update")->name("api.admin.update");
+            Route::delete("delete", "delete")->name("api.admin.delete");
         });
     });
 });

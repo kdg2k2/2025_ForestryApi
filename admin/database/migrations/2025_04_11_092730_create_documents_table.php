@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('author')->nullable();
             $table->text('path');
             $table->boolean('allow_download')->default(true);
-            $table->foreignId('id_uploader')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('id_uploader')->nullable()->constrained('admins')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('id_share')->nullable()->constrained('document_shares')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('price')->default(10000);
         });

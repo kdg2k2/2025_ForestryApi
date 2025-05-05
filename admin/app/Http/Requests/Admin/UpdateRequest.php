@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Admin;
 
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     use FailedValidation;
     /**
@@ -22,8 +22,8 @@ class LoginRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            // 'per_page' => $this->per_page ?? null,
-            // 'page' => $this->page ?? null,
+            // Thêm các giá trị mặc định ở đây
+            // 'field' => $this->field ?? 'default_value',
         ]);
     }
 
@@ -35,8 +35,13 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:admins,email',
-            'password' => 'required|string',
+            'id' => 'required|integer|exists:admins,id',
+            'name' => 'required|string|max:255',
+            'email' => "required|email|unique:admins,email,$this->id|max:255",
+            'password' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'path' => 'nullable|mimes:png,jpeg,jpg|max:5120',
+            'id_unit' => 'required|integer|exists:user_units,id',
         ];
     }
 }

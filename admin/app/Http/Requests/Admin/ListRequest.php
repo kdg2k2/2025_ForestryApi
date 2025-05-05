@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Admin;
 
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class ListRequest extends FormRequest
 {
     use FailedValidation;
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the admin is authorized to make this request.
      */
     public function authorize(): bool
     {
@@ -22,8 +22,8 @@ class LoginRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            // 'per_page' => $this->per_page ?? null,
-            // 'page' => $this->page ?? null,
+            'per_page' => $this->per_page ?? null,
+            'page' => $this->page ?? null,
         ]);
     }
 
@@ -35,8 +35,10 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:admins,email',
-            'password' => 'required|string',
+            'paginate' => 'required|in:0,1',
+            'per_page' => 'nullable|integer|min:1',
+            'page' => 'nullable|integer|min:1',
+            'id_unit' => 'nullable|integer|exists:admin_units,id',
         ];
     }
 }

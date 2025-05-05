@@ -29,33 +29,6 @@
                         </svg>
                     </a>
                 </li>
-                <li class="cart-w" style="position: relative;">
-                    <div id="cart">
-                        <i class="fal fa-shopping-cart"></i>
-                    </div>
-                    <span id="cart-count" class="p-1 bg-danger d-flex align-items-center justify-content-center">
-                        0
-                    </span>
-                    <form class="body-cart form-checkout">
-                        <div class="cart-header">
-                            <h5 class="mb-0">Giỏ hàng</h5>
-                            <a class="text-info" href="/admin/cart">Xem giỏ hàng</a>
-                        </div>
-                        <div class="body-cart__content"></div>
-                        <div>
-                            <div class="cart-footer">
-                                <div class="total-price">
-                                    <span>Tổng tiền:</span>
-                                    <span class="text-danger fw-bold">
-                                        <span class="total-price">0</span>
-                                        <sup>đ</sup>
-                                    </span>
-                                </div>
-                                <button class="btn-checkout btn-disable btn btn-primary text-light">Thanh toán</button>
-                            </div>
-                        </div>
-                    </form>
-                </li>
                 <li class="profile-nav custom-dropdown">
                     <div class="user-wrap">
                         <div class="user-img"><img src="template-admin/admin/images/profile.png" alt="user" /></div>
@@ -71,12 +44,6 @@
                     </div>
                     <div class="custom-menu overflow-hidden">
                         <ul class="profile-body">
-                            <li class="d-flex">
-                                <svg class="svg-color">
-                                    <use href="template-admin/admin/svg/iconly-sprite.svg#Tick-square"></use>
-                                </svg>
-                                <a class="ms-2" href="{{ route('admin.role.upgrade') }}">Nâng cấp</a>
-                            </li>
                             <li class="d-flex">
                                 <svg class="svg-color">
                                     <use href="template-admin/admin/svg/iconly-sprite.svg#Profile"></use>

@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Model
 {
     use SoftDeletes;
     protected $guarded = [];
@@ -42,11 +41,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(UserUnit::class, 'id_unit');
     }
 
-    public function documents()
-    {
-        return $this->hasMany(Document::class, 'id_uploader');
-    }
-
     public function orders()
     {
         return $this->hasMany(Order::class, 'id_user');
@@ -56,8 +50,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(DocumentViewLog::class, 'id_user');
     }
-  
-      public function cart()
+
+    public function cart()
     {
         return $this->hasOne(Cart::class);
     }

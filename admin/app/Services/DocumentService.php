@@ -82,9 +82,8 @@ class DocumentService extends BaseService
     {
         return $this->tryThrow(function () use ($id) {
             $document = $this->documentRepository->findById($id);
-            $res = $this->renderPdf($id);
-            $document->path = $res['path'];
-            $message = $res['message'];
+            $document->path = asset($document['path']);
+            $message = null;
 
             return [
                 'document' => $document,
@@ -386,9 +385,6 @@ class DocumentService extends BaseService
     {
         $document = $this->documentRepository->findById($id);
         $user = auth('api')->user();
-
-        if (Gate::forUser($user)->allows('view', $document) == false)
-            throw new Exception("Đã hết lượt xem tháng này");
 
         $res = [
             "path" => null,
