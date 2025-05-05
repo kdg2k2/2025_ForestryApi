@@ -51,13 +51,14 @@ class VnpayService extends BaseService
             ]);
 
             $ipClient = $this->getClientIp();
+            $nowDate = date('YmdHis');
 
             $data = [
                 'vnp_Version' => '2.1.0',
                 'vnp_TmnCode' => config('vnpay.vnp_TmnCode'),
                 'vnp_Amount' => $payment->vnp_Amount * 100,
                 'vnp_Command' => 'pay',
-                'vnp_CreateDate' => now()->format('YmdHis'),
+                'vnp_CreateDate' => $nowDate,
                 'vnp_CurrCode' => 'VND',
                 'vnp_IpAddr' => $ipClient,
                 'vnp_Locale' => 'vn',
@@ -65,7 +66,7 @@ class VnpayService extends BaseService
                 'vnp_OrderType' => $request['type'],
                 'vnp_ReturnUrl' => $request['return_url'],
                 'vnp_TxnRef' => $payment->vnp_TxnRef,
-                'vnp_ExpireDate' => date('YmdHis', strtotime('+30 minutes')),
+                'vnp_ExpireDate' => date('YmdHis', strtotime($nowDate . '+30 minutes')),
             ];
 
             $make = $this->makeHashHtttQuery($data);
@@ -250,6 +251,13 @@ class VnpayService extends BaseService
                     'vnp_BankCode' => $request['vnp_BankCode'] ?? null,
                 ]);
 
+                $this->paymentLogService->store([
+                    'id_payment' => $payment->id,
+                    'old_status' => 'pending',
+                    'new_status' => $newStatus,
+                    'note' => json_encode($request),
+                ]);
+
                 if ($newStatus == 'success') {
                     $this->orderService->update([
                         'id' => $payment->order->id,
@@ -258,13 +266,6 @@ class VnpayService extends BaseService
 
                     $this->handleAfterPaySuccess($payment->order);
                 }
-
-                $this->paymentLogService->store([
-                    'id_payment' => $payment->id,
-                    'old_status' => 'pending',
-                    'new_status' => $newStatus,
-                    'note' => json_encode($request),
-                ]);
             }
 
             return [
