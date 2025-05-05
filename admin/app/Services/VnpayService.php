@@ -13,8 +13,10 @@ class VnpayService extends BaseService
     protected $paymentLogService;
     protected $userRoleService;
     protected $documentService;
+    protected $removeVietnameseAccent;
     public function __construct()
     {
+        $this->removeVietnameseAccent = app(RemoveVietnameseAccent::class);
         $this->documentService = app(DocumentService::class);
         $this->userRoleService = app(UserRoleService::class);
         $this->paymentLogService = app(PaymentLogService::class);
@@ -27,7 +29,7 @@ class VnpayService extends BaseService
         return $this->tryThrow(function () use ($request) {
             $maxOrderID = $this->orderService->maxId();
             $orderCode = "ORDER" . ($maxOrderID + 1) . date("dmYHis");
-          
+
             $order = $this->orderService->store([
                 'id_user' => auth('api')->id(),
                 'order_code' => $orderCode,
@@ -51,12 +53,14 @@ class VnpayService extends BaseService
                 'vnp_CurrCode' => 'VND',
                 'vnp_IpAddr' => Http::get('https://api64.ipify.org?format=json')->json()['ip'],
                 'vnp_Locale' => 'vn',
-                'vnp_OrderInfo' => $request['info'],
+                'vnp_OrderInfo' => $this->removeVietnameseAccent->stringToSlug($request['info']),
                 'vnp_OrderType' => $request['type'],
                 'vnp_ReturnUrl' => $request['return_url'] ?? route('vnpay.return'),
                 'vnp_TxnRef' => $payment->vnp_TxnRef,
+                'vnp_ExpireDate' => date('YmdHis', strtotime('+30 minutes')),
             ];
 
+            dd($data);
             $make = $this->makeHashHtttQuery($data);
             $query = $make['query'];
             $secureHash = $make['secureHash'];

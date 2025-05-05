@@ -310,7 +310,7 @@ class DocumentService extends BaseService
         $res = (new VnpayService())->createPaymentUrl([
             'total' => $document->price,
             'type' => 'billpayment',
-            'info' => 'Buy document name ' . $document->name,
+            'info' => 'Thanh toán mua tài liệu ' . $document->name,
             'return_url' => route('admin.document.vnpay-return'),
         ]);
 

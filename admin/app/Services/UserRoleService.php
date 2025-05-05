@@ -53,7 +53,7 @@ class UserRoleService extends BaseService
         $res = (new VnpayService())->createPaymentUrl([
             'total' => $role->price,
             'type' => 'billpayment',
-            'info' => "Upgrade role to $role->name_en",
+            'info' => "Thanh toán gia hạn quyền tài khoản lên $role->name_en ($role->name_vn)",
             'return_url' => route('admin.role.vnpay-return'),
         ]);
 
