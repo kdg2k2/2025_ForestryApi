@@ -3,9 +3,7 @@
 namespace App\Services;
 
 use Exception;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Str;
 
 class VnpayService extends BaseService
 {
@@ -35,6 +33,8 @@ class VnpayService extends BaseService
 
             $maxOrderID = $this->orderService->maxId();
             $orderCode = "ORDER" . ($maxOrderID + 1) . date("dmYHis");
+            if (!empty($request['order_code']))
+                $orderCode = $request['order_code'];
 
             $order = $this->orderService->store([
                 'id_user' => auth('api')->id(),
@@ -74,7 +74,7 @@ class VnpayService extends BaseService
             $url = config('vnpay.vnp_Url') . '?' . $query . '&vnp_SecureHash=' . $secureHash;
 
             ksort($data);
-            Log::channel('vnpay')->info('VNPAY PAYMENT URL payload:',  [
+            Log::channel('vnpay')->info('VNPAY PAYMENT URL payload:', [
                 'ip' => $ipClient,
                 'time' => $this->getCurrentTime(),
                 'request' => $data,
@@ -91,7 +91,7 @@ class VnpayService extends BaseService
     public function vnpayReturn(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            Log::channel('vnpay')->info('VNPAY RETURN payload:',  [
+            Log::channel('vnpay')->info('VNPAY RETURN payload:', [
                 'ip' => $this->getClientIp(),
                 'time' => $this->getCurrentTime(),
                 'request' => $request,
@@ -185,13 +185,13 @@ class VnpayService extends BaseService
             $ipClient = $this->getClientIp();
             $currentTime = $this->getCurrentTime();
 
-            Log::channel('vnpay')->info('VNPAY IPN payload:',  [
+            Log::channel('vnpay')->info('VNPAY IPN payload:', [
                 'ip' => $ipClient,
                 'time' => $currentTime,
                 'request' => $request,
             ]);
 
-            if (! $this->isAllowedVnpayIp($ipClient)) {
+            if (!$this->isAllowedVnpayIp($ipClient)) {
                 Log::channel('vnpay')->warning('VNPAY IPN blocked unauthorized IP', [
                     'ip' => $ipClient,
                     'time' => $currentTime,
@@ -220,7 +220,7 @@ class VnpayService extends BaseService
                 ];
 
             $payment = $this->paymentService->findByVnpTxnRef($request['vnp_TxnRef']);
-            if (! $payment)
+            if (!$payment)
                 return [
                     'RspCode' => '01',
                     'Message' => 'Order not found',

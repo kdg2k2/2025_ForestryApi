@@ -327,10 +327,11 @@ class DocumentService extends BaseService
     public function vnpayReturn(array $request)
     {
         $res = (new VnpayService())->vnpayReturn($request);
-        if (in_array($res['status'], [400, 201]))
-            return redirect(route('admin.document.index'))->with('err', $res['message']);
-
-        return redirect(route('admin.document.index'))->with('success', $request['message']);
+        return [
+            'route' => route('admin.document.index'),
+            'message' => $res['message'],
+            'message_type' => in_array($res['status'], [400, 201]) ? 'err' : 'success',
+        ];
     }
 
     public function vnpayIpn($order)

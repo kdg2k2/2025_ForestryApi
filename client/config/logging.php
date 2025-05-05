@@ -126,6 +126,12 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+        'vnpay' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/vnpay.log'),
+            'level' => 'info',
+            'days' => 60,
+        ],
     ],
 
 ];

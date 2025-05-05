@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Repositories\CartItemRepository;
 use App\Repositories\OrderDocumentRepository;
-use Illuminate\Support\Facades\Log;
 
 class CheckoutService
 {
@@ -29,9 +28,9 @@ class CheckoutService
         $res = $this->vnpayService->createPaymentUrl([
             'order_code' => $orderCode,
             'total' => $totalPrice,
-            'info' => 'Thanh toán đơn hàng ' . $orderCode,
+            'info' => 'Thanh toan don hang ' . $orderCode,
             'type' => 'billpayment',
-            'return_url' => route('admin.document.vnpay-return'),
+            'return_url' => route('admin.checkout.vnpay-return'),
         ]);
 
         $orderDocument = [];
@@ -61,7 +60,7 @@ class CheckoutService
         for ($i = 0; $i < $length; $i++) {
             $randomCode .= $characters[rand(0, $charactersLength - 1)];
         }
-
-        return $randomCode;
+        // uppercase
+        return strtoupper($randomCode);
     }
 }

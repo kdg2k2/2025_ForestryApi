@@ -3,12 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\VnpayService;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
 {
-    public function result(Request $request)
+    protected $vnpService;
+
+    public function __construct()
     {
-        return view('admin.pages.checkout.result');
+        $this->vnpService = app(VnpayService::class);
+    }
+
+    public function vnpayReturn(Request $request)
+    {
+        $vnpResponse = $this->vnpService->vnpayReturn($request->all());
+        return $vnpResponse['vnp_TxnRef'];
     }
 }
