@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Str;
@@ -27,6 +28,11 @@ class VnpayService extends BaseService
     public function createPaymentUrl(array $request)
     {
         return $this->tryThrow(function () use ($request) {
+            if (empty($request['return_url']))
+                throw new Exception('return_url is required');
+            if (filter_var($request['return_url'], FILTER_VALIDATE_URL) == false)
+                throw new Exception('return_url is not a valid url');
+
             $maxOrderID = $this->orderService->maxId();
             $orderCode = "ORDER" . ($maxOrderID + 1) . date("dmYHis");
 
@@ -44,6 +50,8 @@ class VnpayService extends BaseService
                 'status' => 'pending',
             ]);
 
+            $ipClient = $this->getClientIp();
+
             $data = [
                 'vnp_Version' => '2.1.0',
                 'vnp_TmnCode' => config('vnpay.vnp_TmnCode'),
@@ -51,11 +59,11 @@ class VnpayService extends BaseService
                 'vnp_Command' => 'pay',
                 'vnp_CreateDate' => now()->format('YmdHis'),
                 'vnp_CurrCode' => 'VND',
-                'vnp_IpAddr' => Http::get('https://api64.ipify.org?format=json')->json()['ip'],
+                'vnp_IpAddr' => $ipClient,
                 'vnp_Locale' => 'vn',
                 'vnp_OrderInfo' => $this->removeVietnameseAccent->stringToSlug($request['info']),
                 'vnp_OrderType' => $request['type'],
-                'vnp_ReturnUrl' => $request['return_url'] ?? route('vnpay.return'),
+                'vnp_ReturnUrl' => $request['return_url'],
                 'vnp_TxnRef' => $payment->vnp_TxnRef,
                 'vnp_ExpireDate' => date('YmdHis', strtotime('+30 minutes')),
             ];
@@ -64,7 +72,13 @@ class VnpayService extends BaseService
             $query = $make['query'];
             $secureHash = $make['secureHash'];
             $url = config('vnpay.vnp_Url') . '?' . $query . '&vnp_SecureHash=' . $secureHash;
-            Log::info('createPaymentUrl payload:', [$url]);
+
+            ksort($data);
+            Log::channel('vnpay')->info('VNPAY PAYMENT URL payload:',  [
+                'ip' => $ipClient,
+                'time' => $this->getCurrentTime(),
+                'request' => $data,
+            ]);
 
             return [
                 'order' => $order,
@@ -77,6 +91,12 @@ class VnpayService extends BaseService
     public function vnpayReturn(array $request)
     {
         return $this->tryThrow(function () use ($request) {
+            Log::channel('vnpay')->info('VNPAY RETURN payload:',  [
+                'ip' => $this->getClientIp(),
+                'time' => $this->getCurrentTime(),
+                'request' => $request,
+            ]);
+
             $formatted = $this->formatVnpayRequest($request);
             $vnpData = $formatted['request'];
             $vnpSecureHash = $formatted['vnpSecureHash'];
@@ -99,6 +119,16 @@ class VnpayService extends BaseService
                 'message' => $success ? 'Giao dịch thành công' : 'Giao dịch thất bại',
             ];
         });
+    }
+
+    protected function getClientIp()
+    {
+        return request()->ip();
+    }
+
+    public function getCurrentTime()
+    {
+        return date('Y-m-d H:i:s');
     }
 
     protected function makeHashHtttQuery(array $data)
@@ -124,10 +154,57 @@ class VnpayService extends BaseService
         ];
     }
 
+    protected function isAllowedVnpayIp($ip): bool
+    {
+        $allowedIps = [
+            // Test IPs
+            '113.160.92.202',
+            '203.205.17.226',
+            '202.93.156.34',
+            '103.220.84.4',
+            // Production IPs
+            '113.52.45.78',
+            '116.97.245.130',
+            '42.118.107.252',
+            '113.20.97.250',
+            '203.171.19.146',
+            '103.220.87.4',
+            '103.220.86.4',
+            '103.220.86.10',
+            '103.220.87.10',
+            '103.220.86.139',
+            '103.220.87.139',
+        ];
+
+        return in_array($ip, $allowedIps);
+    }
+
     public function vnpayIpn(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            Log::info('VNPAY IPN payload:', $request);
+            $ipClient = $this->getClientIp();
+            $currentTime = $this->getCurrentTime();
+
+            Log::channel('vnpay')->info('VNPAY IPN payload:',  [
+                'ip' => $ipClient,
+                'time' => $currentTime,
+                'request' => $request,
+            ]);
+
+            if (! $this->isAllowedVnpayIp($ipClient)) {
+                Log::channel('vnpay')->warning('VNPAY IPN blocked unauthorized IP', [
+                    'ip' => $ipClient,
+                    'time' => $currentTime,
+                ]);
+
+                $request['vnp_ResponseCode'] = '99';
+            }
+
+            if ($request['vnp_ResponseCode'] == '99')
+                return [
+                    'RspCode' => '99',
+                    'Message' => 'Unknow error',
+                ];
 
             $format = $this->formatVnpayRequest($request);
             $request = $format['request'];
