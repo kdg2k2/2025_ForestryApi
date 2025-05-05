@@ -52,9 +52,6 @@
     <script>
         const datatable = $('#datatable');
         const listUrl = @json(route('api.document.list'));
-        const storeUrl = @json(route('api.document.store'));
-        const updateUrl = @json(route('api.document.update'));
-        const deleteUrl = @json(route('api.document.delete'));
         const showUrl = @json(route('api.document.show'));
         const paymentUrl = @json(route('admin.document.payment'));
 
@@ -91,37 +88,29 @@
             ], (item) => ({
                 name: item.name ?? '',
                 type: item.type?.name ?? '',
-                issued_date: formatDateTime(item.issued_date) ?? '',
+                issued_date: item.issued_date ? formatDateTime(item.issued_date) : '',
                 author: item.author ?? '',
                 price: formatNumber(item.price) ?? '',
                 uploader: item.uploader?.name ?? '',
                 actions: `
-                                    <div class="text-center">
-                                        <a href="${paymentUrl}?id=${item.id}" title="Mua tài liệu"
-                                            class="btn btn-sm btn-outline-success rounded-pill" data-bs-toggle="tooltip"
-                                            data-placement="top">
-                                            <i class="fal fa-money-bill-alt"></i>
-                                        </a>
-                                        <span data-id="${item.id}" title="Thêm vào giỏ hàng"
-                                            class="btn btn-sm btn-outline-primary rounded-pill btn-add-cart" data-bs-toggle="tooltip"
-                                            data-placement="top">
-                                            <i class="fal fa-cart-plus"></i>
-                                        </span>
-                                        <a href="/admin/documents/${item.id}/view" title="Xem"
-                                            class="btn btn-sm btn-outline-info rounded-pill" data-bs-toggle="tooltip"
-                                            data-placement="top">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </a>
-                                        <a href="/admin/documents/${item.id}" title="Cập nhật"
-                                            class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="tooltip"
-                                            data-placement="top">
-                                            <i class="fal fa-edit"></i>
-                                        </a>
-                                        <a title="Xóa" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#confirm-delete" title="Xóa" class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="tooltip" data-placement="top">
-                                                <i class="fal fa-trash-alt"></i>
-                                        </a>
-                                    </div>
-                                `
+                                        <div class="text-center">
+                                            <a href="${paymentUrl}?id=${item.id}" title="Mua tài liệu"
+                                                class="btn btn-sm btn-outline-success rounded-pill" data-bs-toggle="tooltip"
+                                                data-placement="top">
+                                                <i class="fal fa-money-bill-alt"></i>
+                                            </a>
+                                            <span data-id="${item.id}" title="Thêm vào giỏ hàng"
+                                                class="btn btn-sm btn-outline-primary rounded-pill btn-add-cart" data-bs-toggle="tooltip"
+                                                data-placement="top">
+                                                <i class="fal fa-cart-plus"></i>
+                                            </span>
+                                            <a href="/admin/documents/${item.id}/view" title="Xem"
+                                                class="btn btn-sm btn-outline-info rounded-pill" data-bs-toggle="tooltip"
+                                                data-placement="top">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    `
             }), param);
         }
 

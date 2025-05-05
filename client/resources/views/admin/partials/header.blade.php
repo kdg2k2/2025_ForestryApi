@@ -38,13 +38,16 @@
                     </span>
                     <form class="body-cart form-checkout">
                         <div class="cart-header">
-                            <h5 class="mb-0">Giỏ hàng</h5>
+                            <div class="d-flex align-items-center">
+                                <input title="Chọn tất cả" type="checkbox" class="check-all form-check-input m-0 me-1" />
+                                <h5 class="mb-0">Giỏ hàng</h5>
+                            </div>
                             <a class="text-info" href="/admin/cart">Xem giỏ hàng</a>
                         </div>
                         <div class="body-cart__content"></div>
                         <div>
                             <div class="cart-footer">
-                                <div class="total-price">
+                                <div>
                                     <span>Tổng tiền:</span>
                                     <span class="text-danger fw-bold">
                                         <span class="total-price">0</span>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CartController;
+use App\Http\Controllers\Admin\CheckoutController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\UserRoleController;
@@ -20,8 +21,11 @@ Route::prefix("documents")->controller(DocumentController::class)->group(functio
     Route::get("create", "create")->name("admin.document.create");
     Route::get("payment", "payment")->name("admin.document.payment");
     Route::get("vnpay-return", "vnpayReturn")->name("admin.document.vnpay-return");
-    Route::get("{id}", "edit")->name("admin.document.edit");
     Route::get("{id}/view", "view")->name("admin.document.view");
+});
+
+Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
+    Route::get('result', 'result')->name('admin.checkout.result');
 });
 
 Route::get("/cart", [CartController::class, 'index'])->name("admin.cart.index");

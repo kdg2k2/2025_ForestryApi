@@ -10,12 +10,12 @@ class AuthController extends Controller
     {
         if (auth('api')->user())
             return redirect(route('dashboard'));
-        return view("admin.auth.login");
+        return view("pages.auth.login");
     }
 
     public function register()
     {
-        return view("admin.auth.register");
+        return view("pages.auth.register");
     }
 
     public function verify()

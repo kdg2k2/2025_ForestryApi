@@ -27,7 +27,7 @@ class VnpayService extends BaseService
         return $this->tryThrow(function () use ($request) {
             $maxOrderID = $this->orderService->maxId();
             $orderCode = "ORDER" . ($maxOrderID + 1) . date("dmYHis");
-          
+
             $order = $this->orderService->store([
                 'id_user' => auth('api')->id(),
                 'order_code' => $orderCode,
@@ -61,8 +61,6 @@ class VnpayService extends BaseService
             $query = $make['query'];
             $secureHash = $make['secureHash'];
             $url = config('vnpay.vnp_Url') . '?' . $query . '&vnp_SecureHash=' . $secureHash;
-            Log::info('createPaymentUrl payload:', [$url]);
-
             return [
                 'order' => $order,
                 'payment' => $payment,

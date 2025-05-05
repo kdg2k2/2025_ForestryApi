@@ -21,7 +21,6 @@ class CheckoutService
     public function checkout(int $cartId, array $request)
     {
         $cartItems = $this->cartItemRepository->getCartItems($cartId, $request['cart_ids']);
-        Log::info('Cart items:', ['cartItems' => $cartItems]);
         $totalPrice = array_reduce($cartItems->toArray(), function ($carry, $item) {
             return $carry + ($item['document'] ? $item['document']['price'] : 0);
         }, 0);

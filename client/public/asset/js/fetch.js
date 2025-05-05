@@ -76,7 +76,7 @@ const makeHttpRequest = (method = "get", url, params = {}, csrfToken = "") => {
                     : await response.text();
 
                 if (!response.ok) {
-                    const msg = data.message || data;
+                    let msg = data.message || data;
                     if (data.errors)
                         msg = Object.values(data.errors).flat().join(" - ");
                     alertErr(msg);
