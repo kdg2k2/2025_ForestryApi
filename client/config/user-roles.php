@@ -1,0 +1,48 @@
+<?php
+return [
+    'ADMIN' => [
+        "id" => 1,
+        "name_en" => "Admin",
+        "name_vn" => "Quản Trị Viên",
+        'price' => -1,
+        'download_limit_per_month' => null,
+        'view_limit_per_month' => null,
+        'page_view_limit' => null,
+    ],
+    'FORESTER_COMMAND' => [
+        "id" => 2,
+        "name_en" => "Forester Command",
+        "name_vn" => "Chỉ Huy Chiến Lược Lâm Nghiệp",
+        'price' => 500000,
+        'download_limit_per_month' => 240,
+        'view_limit_per_month' => 240,
+        'page_view_limit' => null,
+    ],
+    'FORESTER_INSIGHT' => [
+        "id" => 3,
+        "name_en" => "Forester Insight",
+        "name_vn" => "Thấu Hiểu Dữ Liệu Lâm Nghiệp",
+        'price' => 200000,
+        'download_limit_per_month' => 120,
+        'view_limit_per_month' => 120,
+        'page_view_limit' => 9,
+    ],
+    'FORESTER_CONNECT' => [
+        "id" => 4,
+        "name_en" => "Forester Connect",
+        "name_vn" => "Kết Nối Thông Tin Lâm Nghiệp",
+        'price' => 50000,
+        'download_limit_per_month' => 40,
+        'view_limit_per_month' => 40,
+        'page_view_limit' => 6,
+    ],
+    'FORESTER_START' => [
+        "id" => 5,
+        "name_en" => "Forester Start",
+        "name_vn" => "Miễn Phí",
+        'price' => 0,
+        'download_limit_per_month' => 10,
+        'view_limit_per_month' => 10,
+        'page_view_limit' => 3,
+    ],
+];
