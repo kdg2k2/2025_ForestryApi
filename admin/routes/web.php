@@ -7,14 +7,6 @@ use App\Http\Controllers\Web\HomeController;
 
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'index');
-    Route::get('/terms-of-service', 'getTerms');
-    Route::get('/privacy-policy', 'getPrivacy');
-    Route::get('/faq', 'getFAQ');
-    Route::get('/document', 'getDocument');
-    Route::get('/document/index', 'getDocumentDetail');
-    Route::get('/maps', 'getMaps');
-    Route::get('/maps/index', 'getMapsDetail');
-    Route::get('register', 'getRegister')->name("register");
     Route::get('login', 'getLogin')->name("login");
 });
 

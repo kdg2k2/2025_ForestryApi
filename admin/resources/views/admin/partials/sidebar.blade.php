@@ -131,52 +131,6 @@
                 </ul>
             </li>
 
-            <li class="sidebar-main-title">
-                <div>
-                    <h5 class="f-w-700 sidebar-title pt-3">MỤC KHÁC</h5>
-                </div>
-            </li>
-
-            <li class="sidebar-list">
-                <i class="fa-solid fa-thumbtack"></i>
-                <a class="sidebar-link" href="template-admin/admin/support">
-                    <svg class="stroke-icon">
-                        <use href="../template-admin/admin/svg/iconly-sprite.svg#Info-circle"></use>
-                    </svg>
-                    <h6 class="f-w-600">Trợ giúp</h6>
-                </a>
-            </li>
-
-            <li class="sidebar-list">
-                <i class="fa-solid fa-thumbtack"></i>
-                <a class="sidebar-link" href="template-admin/admin/terms">
-                    <svg class="stroke-icon">
-                        <use href="../template-admin/admin/svg/iconly-sprite.svg#Star-kit"></use>
-                    </svg>
-                    <h6 class="f-w-600">Điều khoản</h6>
-                </a>
-            </li>
-
-            <li class="sidebar-list">
-                <i class="fa-solid fa-thumbtack"></i>
-                <a class="sidebar-link" href="template-admin/admin/conditions">
-                    <svg class="stroke-icon">
-                        <use href="../template-admin/admin/svg/iconly-sprite.svg#Shield"></use>
-                    </svg>
-                    <h6 class="f-w-600">Chính sách</h6>
-                </a>
-            </li>
-
-            <li class="sidebar-list">
-                <i class="fa-solid fa-thumbtack"></i>
-                <a class="sidebar-link" href="template-admin/admin/faq">
-                    <svg class="stroke-icon">
-                        <use href="../template-admin/admin/svg/iconly-sprite.svg#Danger"></use>
-                    </svg>
-                    <h6 class="f-w-600">Câu hỏi thường gặp</h6>
-                </a>
-            </li>
-
         </ul>
     </div>
     <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
