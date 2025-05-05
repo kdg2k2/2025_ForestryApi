@@ -57,7 +57,8 @@ class DocumentController extends Controller
 
     public function vnpayReturn(Request $request)
     {
-        return $this->documentService->vnpayReturn($this->vnpayService->vnpayReturn($request->all()));
+        $res = $this->documentService->vnpayReturn($request->all());
+        return redirect($res['route'])->with($res['message_type'], $res['message']);
     }
 
     public function view($id)
