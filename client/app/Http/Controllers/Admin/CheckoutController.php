@@ -18,6 +18,11 @@ class CheckoutController extends Controller
     public function vnpayReturn(Request $request)
     {
         $vnpResponse = $this->vnpService->vnpayReturn($request->all());
-        return $vnpResponse['vnp_TxnRef'];
+        return redirect()->route('admin.checkout.order', $vnpResponse['data']['vnp_TxnRef']);
+    }
+
+    public function order($orderCode)
+    {
+        return view('admin.pages.checkout.order');
     }
 }

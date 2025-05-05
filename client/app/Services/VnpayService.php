@@ -33,6 +33,9 @@ class VnpayService extends BaseService
 
             $maxOrderID = $this->orderService->maxId();
             $orderCode = "ORDER" . ($maxOrderID + 1) . date("dmYHis");
+            if (isset($request['order_code']) && !empty($request['order_code'])) {
+                $orderCode = $request['order_code'];
+            }
 
             $order = $this->orderService->store([
                 'id_user' => auth('api')->id(),
@@ -49,13 +52,14 @@ class VnpayService extends BaseService
             ]);
 
             $ipClient = $this->getClientIp();
+            $nowDate = date('YmdHis');
 
             $data = [
                 'vnp_Version' => '2.1.0',
                 'vnp_TmnCode' => config('vnpay.vnp_TmnCode'),
                 'vnp_Amount' => $payment->vnp_Amount * 100,
                 'vnp_Command' => 'pay',
-                'vnp_CreateDate' => now()->format('YmdHis'),
+                'vnp_CreateDate' => $nowDate,
                 'vnp_CurrCode' => 'VND',
                 'vnp_IpAddr' => $ipClient,
                 'vnp_Locale' => 'vn',
@@ -63,7 +67,7 @@ class VnpayService extends BaseService
                 'vnp_OrderType' => $request['type'],
                 'vnp_ReturnUrl' => $request['return_url'],
                 'vnp_TxnRef' => $payment->vnp_TxnRef,
-                'vnp_ExpireDate' => date('YmdHis', strtotime('+30 minutes')),
+                'vnp_ExpireDate' => date('YmdHis', strtotime($nowDate . '+30 minutes')),
             ];
 
             $make = $this->makeHashHtttQuery($data);
@@ -72,7 +76,7 @@ class VnpayService extends BaseService
             $url = config('vnpay.vnp_Url') . '?' . $query . '&vnp_SecureHash=' . $secureHash;
 
             ksort($data);
-            Log::channel('vnpay')->info('VNPAY PAYMENT URL payload:',  [
+            Log::channel('vnpay')->info('VNPAY PAYMENT URL payload:', [
                 'ip' => $ipClient,
                 'time' => $this->getCurrentTime(),
                 'request' => $data,
@@ -89,7 +93,7 @@ class VnpayService extends BaseService
     public function vnpayReturn(array $request)
     {
         return $this->tryThrow(function () use ($request) {
-            Log::channel('vnpay')->info('VNPAY RETURN payload:',  [
+            Log::channel('vnpay')->info('VNPAY RETURN payload:', [
                 'ip' => $this->getClientIp(),
                 'time' => $this->getCurrentTime(),
                 'request' => $request,
@@ -174,6 +178,9 @@ class VnpayService extends BaseService
             '103.220.87.139',
         ];
 
+        if ($this->isLocal()) {
+            array_push($allowedIps, request()->ip());
+        }
         return in_array($ip, $allowedIps);
     }
 
@@ -183,13 +190,13 @@ class VnpayService extends BaseService
             $ipClient = $this->getClientIp();
             $currentTime = $this->getCurrentTime();
 
-            Log::channel('vnpay')->info('VNPAY IPN payload:',  [
+            Log::channel('vnpay')->info('VNPAY IPN payload:', [
                 'ip' => $ipClient,
                 'time' => $currentTime,
                 'request' => $request,
             ]);
 
-            if (! $this->isAllowedVnpayIp($ipClient)) {
+            if (!$this->isAllowedVnpayIp($ipClient)) {
                 Log::channel('vnpay')->warning('VNPAY IPN blocked unauthorized IP', [
                     'ip' => $ipClient,
                     'time' => $currentTime,
@@ -218,7 +225,7 @@ class VnpayService extends BaseService
                 ];
 
             $payment = $this->paymentService->findByVnpTxnRef($request['vnp_TxnRef']);
-            if (! $payment)
+            if (!$payment)
                 return [
                     'RspCode' => '01',
                     'Message' => 'Order not found',
@@ -248,6 +255,13 @@ class VnpayService extends BaseService
                     'vnp_BankCode' => $request['vnp_BankCode'] ?? null,
                 ]);
 
+                $this->paymentLogService->store([
+                    'id_payment' => $payment->id,
+                    'old_status' => 'pending',
+                    'new_status' => $newStatus,
+                    'note' => json_encode($request),
+                ]);
+
                 if ($newStatus == 'success') {
                     $this->orderService->update([
                         'id' => $payment->order->id,
@@ -256,13 +270,6 @@ class VnpayService extends BaseService
 
                     $this->handleAfterPaySuccess($payment->order);
                 }
-
-                $this->paymentLogService->store([
-                    'id_payment' => $payment->id,
-                    'old_status' => 'pending',
-                    'new_status' => $newStatus,
-                    'note' => json_encode($request),
-                ]);
             }
 
             return [

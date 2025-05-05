@@ -26,6 +26,7 @@ Route::prefix("documents")->controller(DocumentController::class)->group(functio
 
 Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
     Route::get('vnpay-return', 'vnpayReturn')->name('admin.checkout.vnpay-return');
+    Route::get('{orderCode}', 'order')->name('admin.checkout.order');
 });
 
 Route::get("/cart", [CartController::class, 'index'])->name("admin.cart.index");

@@ -1,0 +1,33 @@
+.checkout-header .icon-checkout {
+    font-size: 52px;
+    color: rgba(48, 142, 135, 1);
+}
+
+.checkout-header .title-checkout {
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(48, 142, 135, 1);
+}
+
+.info-checkout {
+    padding: 28px 0;
+    align-items: start;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.info-checkout > td {
+    flex: 1;
+}
+.info-checkout .info-item {
+    font-size: 16px;
+    font-weight: 400;
+    display: flex;
+    margin-bottom: 6px;
+}
+
+.info-checkout .info-item span:first-child {
+    min-width: 30%;
+    flex-shrink: 0;
+}

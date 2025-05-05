@@ -33,8 +33,9 @@ class VnpayService extends BaseService
 
             $maxOrderID = $this->orderService->maxId();
             $orderCode = "ORDER" . ($maxOrderID + 1) . date("dmYHis");
-            if (!empty($request['order_code']))
+            if (isset($request['order_code']) && !empty($request['order_code'])) {
                 $orderCode = $request['order_code'];
+            }
 
             $order = $this->orderService->store([
                 'id_user' => auth('api')->id(),

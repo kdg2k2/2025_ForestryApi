@@ -25,6 +25,13 @@ class OrderRepository
 
     public function findByOrderCode(string $orderCode)
     {
-        return Order::where("order_code", $orderCode)->first();
+        return Order::where("order_code", $orderCode)
+            ->with([
+                "user",
+                "orderUserRole",
+                "payments",
+                "orderDocument"
+            ])
+            ->first();
     }
 }

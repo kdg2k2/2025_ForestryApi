@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserRoleController;
 use App\Http\Controllers\Api\UserUnitController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware("api")->group(function () {
@@ -127,6 +128,12 @@ Route::middleware("api")->group(function () {
         Route::prefix("checkout")->group(function () {
             Route::controller(CheckoutController::class)->group(function () {
                 Route::post("", "checkout")->name("checkout");
+            });
+        });
+
+        Route::prefix("order")->group(function () {
+            Route::controller(OrderController::class)->group(function () {
+                Route::get("{orderCode}", "order")->name("order.detail");
             });
         });
     });
